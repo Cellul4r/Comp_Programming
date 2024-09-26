@@ -17,10 +17,9 @@ const int INF = 1e9;
 const int N = 1e5;
 
 void solve() {
-    
+
     
 }
-
 int main() {
     ios_base::sync_with_stdio(false);
     cin.tie(NULL);
