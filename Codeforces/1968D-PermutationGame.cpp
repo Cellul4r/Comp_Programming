@@ -75,55 +75,99 @@ const int N =1e5+1;
 const int INF = 1e9+7;
 const long long LINF = 1e18+7;
 
+int n,k,b,s;
+vi p;
+vl a;
+int now = 0;
+vector<bool> vis;
+vi p1,p2;
+
+ll dfs(int u, vi adj[]) {
+
+    if(now == k-1 || vis[u]) {
+        return a[u];
+    }
+
+    // dbg(u);
+    vis[u] = true;
+    ++now;
+    ll maxVal = a[u] * (k - now + 1);
+    for(auto v:adj[u]) {
+
+        maxVal = max(maxVal,a[u] + dfs(v, adj));
+    }
+
+    vis[u] = false;
+    --now;
+
+    return maxVal;
+}
+
+// ll findSum(int s, int e, vi adj[]) {
+
+//     int i = s, cnt = 0;
+//     ll ans = 0;
+//     while(i != e) {
+//         dbg(i);
+//         ++cnt;
+//         ans += a[i];
+//         for(auto v:adj[i]) {
+//             i = v;
+//         }
+//     }
+//     dbg(ans);
+//     dbg(cnt);
+//     dbg(a[e]);
+//     ans += (k - cnt) * a[e];
+//     dbg(k-cnt);
+//     return ans;
+// }
 void solve(){
 
-    int n,m;
-    cin>>n>>m;
-    vi a(n);
-    vi intel(m+1);
-    vi stren(m+1);
+    cin>>n>>k>>b>>s;
+    --b,--s;
+    p.resize(n);
+    a.resize(n);
+    vis.resize(n);
+    for(auto &x:p) {
+        cin>>x;
+        --x;
+    }
     for(auto &x:a) {
         cin>>x;
-        if(x > 0) intel[x]++;
-        else if(x < 0) stren[abs(x)]++;
-    }
-    // state of dp[i] when i is the point of intelligence.
-    vi dp(m+1);
-    int k = 0;
-    // dbg(a);
-    rep(i,n){
-        // if(k == m) break;
-        // dbg(a[i]);
-        // dbg(dp);
-        // dbg(intel);
-        // dbg(stren);
-        if(a[i] == 0) {
-            ++k;
-            // dbg(dp);
-            for(int j=k;j>=0; --j){
-                // dbg(j);
-                auto upIntel = (j-1 >= 0 ? dp[j-1] : 0) + intel[j];
-                auto upStr = dp[j] + stren[k-j];
-                // dbg(upStr);
-                // dbg(upIntel);
-                dp[j] = max({upIntel,upStr});
-                // dbg(j);
-                // dbg(k-j);
-            }
-            // dbg(dp)
-        } else if(a[i] < 0) {
-            --stren[abs(a[i])];
-        } else {
-            --intel[a[i]];
-        }
     }
 
-    cout << *max_element(all(dp)) << nl;
+    vi adj[n];
+    rep(i,n) {
+        vis[i] = false;
+        adj[i].push_back(p[i]);
+    }   
+
+    auto bod = dfs(b,adj);
+    // now = 0;
+    // rep(i,n) vis[i] = false;
+    auto sas = dfs(s,adj);
+    // dbg(bod);
+    // dbg(sas);
+    
+    // ll sumB = findSum(b, bod, adj);
+    // ll sumS = findSum(s, sas, adj);
+    // dbg(sumB);
+    // dbg(sumS);
+
+    if(bod > sas) {
+        cout << "Bodya";
+    } else if(bod < sas) {
+        cout << "Sasha";
+    } else {
+        cout << "Draw";
+    }
+    cout << nl;
 }
 
 int main(){
    ios::sync_with_stdio(false);cin.tie(nullptr);
    int t = 1;
-//    cin>>t;
+   cin>>t;
    while(t--)solve();
 }

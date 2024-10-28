@@ -79,51 +79,48 @@ void solve(){
 
     int n,m;
     cin>>n>>m;
-    vi a(n);
-    vi intel(m+1);
-    vi stren(m+1);
+    vl a(n), b(m);
+    a.resize(n);
+    b.resize(m);
+
     for(auto &x:a) {
         cin>>x;
-        if(x > 0) intel[x]++;
-        else if(x < 0) stren[abs(x)]++;
     }
-    // state of dp[i] when i is the point of intelligence.
-    vi dp(m+1);
-    int k = 0;
-    // dbg(a);
-    rep(i,n){
-        // if(k == m) break;
-        // dbg(a[i]);
-        // dbg(dp);
-        // dbg(intel);
-        // dbg(stren);
-        if(a[i] == 0) {
-            ++k;
-            // dbg(dp);
-            for(int j=k;j>=0; --j){
-                // dbg(j);
-                auto upIntel = (j-1 >= 0 ? dp[j-1] : 0) + intel[j];
-                auto upStr = dp[j] + stren[k-j];
-                // dbg(upStr);
-                // dbg(upIntel);
-                dp[j] = max({upIntel,upStr});
-                // dbg(j);
-                // dbg(k-j);
-            }
-            // dbg(dp)
-        } else if(a[i] < 0) {
-            --stren[abs(a[i])];
-        } else {
-            --intel[a[i]];
-        }
+    for(auto &x:b) {
+        cin>>x;
     }
 
-    cout << *max_element(all(dp)) << nl;
+    vector<vi> nxt(n, vi(m));
+    rep(i,m){
+        int r = -1;
+        ll sum = 0;
+        rep(j,n){
+            while(r < n && sum <= b[i]) sum += a[++r];
+            nxt[j][i] = r;
+            sum -= a[j];
+            // dbg(r);
+        }
+    }
+    vector<vl> dp(n+1, vl(m,LINF));
+    ll ans = LINF;
+    dp[0][0] = 0;
+    rep(i,m) {
+        rep(j,n) {
+            ckmin(dp[nxt[j][i]][i], dp[j][i] + m - i - 1);
+
+            if(i < m-1) {
+                ckmin(dp[j][i+1], dp[j][i]);
+            }
+        }
+    }
+    
+    rep(i,m) ckmin(ans, dp[n][i]);
+    cout << (ans == LINF ? -1 : ans) << nl;
 }
 
 int main(){
    ios::sync_with_stdio(false);cin.tie(nullptr);
    int t = 1;
-//    cin>>t;
+   cin>>t;
    while(t--)solve();
 }

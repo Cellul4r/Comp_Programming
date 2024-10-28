@@ -75,55 +75,51 @@ const int N =1e5+1;
 const int INF = 1e9+7;
 const long long LINF = 1e18+7;
 
+// vi memo;
+// int recur(int i, vi &a) {
+
+//     if(i == 0) return 0;
+
+//     if(~memo[i]) return memo[i];
+
+//     int ans = INF;
+//     rep(j,k) {
+//         if(j+1 <= i && a[j] != -1){
+//             int out = recur(i-j-1,a);
+//             ckmin(ans, a[j] + recur(i-j-1,a));
+//         }
+//     }
+
+//     // dbg(i);
+//     // dbg(ans);
+//     return memo[i] = ans;
+// }
 void solve(){
 
-    int n,m;
-    cin>>n>>m;
-    vi a(n);
-    vi intel(m+1);
-    vi stren(m+1);
-    for(auto &x:a) {
-        cin>>x;
-        if(x > 0) intel[x]++;
-        else if(x < 0) stren[abs(x)]++;
+    int n,k;
+    cin>>n>>k;
+    vi a(k);
+    for(auto &x:a) cin>>x;
+
+    vi dp(k+1, INF);
+    dp[0] = 0;
+    rep(i,k) {
+        dp[i+1] = a[i];
     }
-    // state of dp[i] when i is the point of intelligence.
-    vi dp(m+1);
-    int k = 0;
-    // dbg(a);
-    rep(i,n){
-        // if(k == m) break;
-        // dbg(a[i]);
-        // dbg(dp);
-        // dbg(intel);
-        // dbg(stren);
-        if(a[i] == 0) {
-            ++k;
-            // dbg(dp);
-            for(int j=k;j>=0; --j){
-                // dbg(j);
-                auto upIntel = (j-1 >= 0 ? dp[j-1] : 0) + intel[j];
-                auto upStr = dp[j] + stren[k-j];
-                // dbg(upStr);
-                // dbg(upIntel);
-                dp[j] = max({upIntel,upStr});
-                // dbg(j);
-                // dbg(k-j);
-            }
-            // dbg(dp)
-        } else if(a[i] < 0) {
-            --stren[abs(a[i])];
-        } else {
-            --intel[a[i]];
+    FOR(i,1,k+1) {
+        rep(j,k) {
+            if(i < j+1 || a[j] == -1) continue;
+            ckmin(dp[i], a[j] + dp[i-j-1]);
         }
     }
-
-    cout << *max_element(all(dp)) << nl;
+    // int ans = recur(k,a);
+    // dbg(ans);
+    cout << (dp[k] == INF ? -1 : dp[k]) << nl;
 }
 
 int main(){
    ios::sync_with_stdio(false);cin.tie(nullptr);
    int t = 1;
-//    cin>>t;
+   cin>>t;
    while(t--)solve();
 }

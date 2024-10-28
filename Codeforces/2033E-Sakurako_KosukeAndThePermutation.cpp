@@ -75,55 +75,51 @@ const int N =1e5+1;
 const int INF = 1e9+7;
 const long long LINF = 1e18+7;
 
+vi p;
 void solve(){
 
-    int n,m;
-    cin>>n>>m;
-    vi a(n);
-    vi intel(m+1);
-    vi stren(m+1);
-    for(auto &x:a) {
-        cin>>x;
-        if(x > 0) intel[x]++;
-        else if(x < 0) stren[abs(x)]++;
-    }
-    // state of dp[i] when i is the point of intelligence.
-    vi dp(m+1);
-    int k = 0;
-    // dbg(a);
-    rep(i,n){
-        // if(k == m) break;
-        // dbg(a[i]);
-        // dbg(dp);
-        // dbg(intel);
-        // dbg(stren);
-        if(a[i] == 0) {
-            ++k;
-            // dbg(dp);
-            for(int j=k;j>=0; --j){
-                // dbg(j);
-                auto upIntel = (j-1 >= 0 ? dp[j-1] : 0) + intel[j];
-                auto upStr = dp[j] + stren[k-j];
-                // dbg(upStr);
-                // dbg(upIntel);
-                dp[j] = max({upIntel,upStr});
-                // dbg(j);
-                // dbg(k-j);
-            }
-            // dbg(dp)
-        } else if(a[i] < 0) {
-            --stren[abs(a[i])];
-        } else {
-            --intel[a[i]];
-        }
+    int n;
+    cin>>n;
+    p.resize(n+1);
+    map<int,int> save;
+    FOR(i,1,n+1) {
+        cin>>p[i];
+        save[p[i]] = i;
     }
 
-    cout << *max_element(all(dp)) << nl;
+    bool sorted =true, reversed = true;
+    FOR(i,1,n+1){
+        if(i != p[i]) sorted = false;
+        if(n-i+1 != p[i]) reversed = false;
+    }
+    if(sorted || reversed) {
+        cout << 0 << nl;
+        return;
+    }
+
+    int i=1, ans=0;
+    while(i<=n) {
+        if(p[i] != save[i]) {
+            int j = p[p[i]];
+            swap(save[i],save[j]);
+            swap(p[save[i]], p[save[j]]);
+            // dbg(p);
+            // dbg(save);
+            ++ans;
+            ++i;
+        } else {
+            ++i;
+        }
+        
+    }
+
+    // dbg(ans);
+    cout << ans << nl;
 }
 
 int main(){
    ios::sync_with_stdio(false);cin.tie(nullptr);
    int t = 1;
-//    cin>>t;
+   cin>>t;
    while(t--)solve();
 }

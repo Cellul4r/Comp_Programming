@@ -75,55 +75,42 @@ const int N =1e5+1;
 const int INF = 1e9+7;
 const long long LINF = 1e18+7;
 
-void solve(){
+map<ll, vector<ll>> adj;
+map<ll, bool> vis;
 
-    int n,m;
-    cin>>n>>m;
-    vi a(n);
-    vi intel(m+1);
-    vi stren(m+1);
-    for(auto &x:a) {
-        cin>>x;
-        if(x > 0) intel[x]++;
-        else if(x < 0) stren[abs(x)]++;
-    }
-    // state of dp[i] when i is the point of intelligence.
-    vi dp(m+1);
-    int k = 0;
-    // dbg(a);
-    rep(i,n){
-        // if(k == m) break;
-        // dbg(a[i]);
-        // dbg(dp);
-        // dbg(intel);
-        // dbg(stren);
-        if(a[i] == 0) {
-            ++k;
-            // dbg(dp);
-            for(int j=k;j>=0; --j){
-                // dbg(j);
-                auto upIntel = (j-1 >= 0 ? dp[j-1] : 0) + intel[j];
-                auto upStr = dp[j] + stren[k-j];
-                // dbg(upStr);
-                // dbg(upIntel);
-                dp[j] = max({upIntel,upStr});
-                // dbg(j);
-                // dbg(k-j);
-            }
-            // dbg(dp)
-        } else if(a[i] < 0) {
-            --stren[abs(a[i])];
-        } else {
-            --intel[a[i]];
+ll dfs(ll u) {
+    
+    vis[u] = true;
+
+    ll ansSize = u;
+    for(auto v:adj[u]) {
+        if(!vis[v]) {
+            ansSize = max(ansSize,dfs(v));
         }
     }
 
-    cout << *max_element(all(dp)) << nl;
+    return ansSize;
+}
+void solve(){
+
+    adj.clear();
+    vis.clear();
+    int n;
+    cin>>n;
+    vl a(n);
+    // ll ans = n;
+    rep(i,n) {
+        cin>>a[i];
+        adj[a[i]+1LL*i].emplace_back(a[i]+2LL*i);
+    }
+    
+    cout << dfs(1ll*n) << nl;
+
 }
 
 int main(){
    ios::sync_with_stdio(false);cin.tie(nullptr);
    int t = 1;
-//    cin>>t;
+   cin>>t;
    while(t--)solve();
 }

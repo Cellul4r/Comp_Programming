@@ -71,58 +71,48 @@ template<class T> bool ckmax(T& a, const T& b) { return a < b ? a = b, 1 : 0; }
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
 const char nl = '\n';
-const int N =1e5+1;
+const int N =1e7+1;
 const int INF = 1e9+7;
 const long long LINF = 1e18+7;
 
-void solve(){
+int isPrime[N];
+void sievePrime(int n) {
 
-    int n,m;
-    cin>>n>>m;
-    vi a(n);
-    vi intel(m+1);
-    vi stren(m+1);
-    for(auto &x:a) {
-        cin>>x;
-        if(x > 0) intel[x]++;
-        else if(x < 0) stren[abs(x)]++;
-    }
-    // state of dp[i] when i is the point of intelligence.
-    vi dp(m+1);
-    int k = 0;
-    // dbg(a);
-    rep(i,n){
-        // if(k == m) break;
-        // dbg(a[i]);
-        // dbg(dp);
-        // dbg(intel);
-        // dbg(stren);
-        if(a[i] == 0) {
-            ++k;
-            // dbg(dp);
-            for(int j=k;j>=0; --j){
-                // dbg(j);
-                auto upIntel = (j-1 >= 0 ? dp[j-1] : 0) + intel[j];
-                auto upStr = dp[j] + stren[k-j];
-                // dbg(upStr);
-                // dbg(upIntel);
-                dp[j] = max({upIntel,upStr});
-                // dbg(j);
-                // dbg(k-j);
+    isPrime[2] = 1;
+    for(int i=2;i<=n;++i) {
+        if(isPrime[i] == 1) {
+            // dbg(i);
+            for(int j=i;j<=n;j+=i) {
+                if(isPrime[j] == 1) isPrime[j] = i;
             }
-            // dbg(dp)
-        } else if(a[i] < 0) {
-            --stren[abs(a[i])];
-        } else {
-            --intel[a[i]];
         }
     }
+}
+void solve(){
 
-    cout << *max_element(all(dp)) << nl;
+    rep(i,10000000+1) isPrime[i] = 1;
+    isPrime[0] = isPrime[1] = 0;
+    int x;
+    sievePrime(10000000);
+    // vi prime;
+    // rep(i,10000000+1) {
+    //     if(isPrime[i]) prime.emplace_back(i);
+    // }
+    while(scanf("%d",&x) != EOF) {
+        // cin>>x;
+        printf("1");
+        while(x != 1) {
+            // dbg(isPrime[x]);
+            printf(" x ");
+            printf("%d",isPrime[x]);
+            x /= isPrime[x];
+        }
+        printf("\n");
+    }
 }
 
 int main(){
-   ios::sync_with_stdio(false);cin.tie(nullptr);
+//    ios::sync_with_stdio(false);cin.tie(nullptr);
    int t = 1;
 //    cin>>t;
    while(t--)solve();

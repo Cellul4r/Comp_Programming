@@ -75,50 +75,33 @@ const int N =1e5+1;
 const int INF = 1e9+7;
 const long long LINF = 1e18+7;
 
-void solve(){
+int dp[4002];
+int recur(int i, vi &a) {
 
-    int n,m;
-    cin>>n>>m;
-    vi a(n);
-    vi intel(m+1);
-    vi stren(m+1);
+    // dbg(i);
+    if(i == 0) return 0;
+
+    if(~dp[i]) return dp[i];
+    int ans = -INF;
+    bool flag = false;
     for(auto &x:a) {
-        cin>>x;
-        if(x > 0) intel[x]++;
-        else if(x < 0) stren[abs(x)]++;
-    }
-    // state of dp[i] when i is the point of intelligence.
-    vi dp(m+1);
-    int k = 0;
-    // dbg(a);
-    rep(i,n){
-        // if(k == m) break;
-        // dbg(a[i]);
-        // dbg(dp);
-        // dbg(intel);
-        // dbg(stren);
-        if(a[i] == 0) {
-            ++k;
-            // dbg(dp);
-            for(int j=k;j>=0; --j){
-                // dbg(j);
-                auto upIntel = (j-1 >= 0 ? dp[j-1] : 0) + intel[j];
-                auto upStr = dp[j] + stren[k-j];
-                // dbg(upStr);
-                // dbg(upIntel);
-                dp[j] = max({upIntel,upStr});
-                // dbg(j);
-                // dbg(k-j);
-            }
-            // dbg(dp)
-        } else if(a[i] < 0) {
-            --stren[abs(a[i])];
-        } else {
-            --intel[a[i]];
+        if(i >= x) {
+            flag = true;
+            ans = max(ans, 1 + recur(i - x, a));
         }
     }
 
-    cout << *max_element(all(dp)) << nl;
+    // dbg(i);
+    // dbg(ans);
+    return dp[i] = (flag ? ans : -INF);
+}
+void solve(){
+
+    memset(dp,-1,sizeof(dp));
+    int n;
+    vi a(3);
+    cin>>n>>a[0]>>a[1]>>a[2];
+    cout << recur(n,a);
 }
 
 int main(){

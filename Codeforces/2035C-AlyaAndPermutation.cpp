@@ -75,55 +75,82 @@ const int N =1e5+1;
 const int INF = 1e9+7;
 const long long LINF = 1e18+7;
 
+void binary(int n) {
+
+    for(int i=5;i>=0;--i) {
+
+        int k = n >> i;
+        if(k & 1) cout << "1";
+        else cout << "0";
+    }
+    cout << nl;
+}
+
+bool powerTwo(int n) {
+
+    if(n == 0) return 0;
+    while(n != 1) {
+        if(n % 2 != 0) return false;
+        n /= 2;
+    }
+    return true;
+}
 void solve(){
 
-    int n,m;
-    cin>>n>>m;
-    vi a(n);
-    vi intel(m+1);
-    vi stren(m+1);
-    for(auto &x:a) {
-        cin>>x;
-        if(x > 0) intel[x]++;
-        else if(x < 0) stren[abs(x)]++;
-    }
-    // state of dp[i] when i is the point of intelligence.
-    vi dp(m+1);
-    int k = 0;
-    // dbg(a);
-    rep(i,n){
-        // if(k == m) break;
-        // dbg(a[i]);
-        // dbg(dp);
-        // dbg(intel);
-        // dbg(stren);
-        if(a[i] == 0) {
-            ++k;
-            // dbg(dp);
-            for(int j=k;j>=0; --j){
-                // dbg(j);
-                auto upIntel = (j-1 >= 0 ? dp[j-1] : 0) + intel[j];
-                auto upStr = dp[j] + stren[k-j];
-                // dbg(upStr);
-                // dbg(upIntel);
-                dp[j] = max({upIntel,upStr});
-                // dbg(j);
-                // dbg(k-j);
-            }
-            // dbg(dp)
-        } else if(a[i] < 0) {
-            --stren[abs(a[i])];
-        } else {
-            --intel[a[i]];
-        }
-    }
+    int n;
+    cin>>n;
 
-    cout << *max_element(all(dp)) << nl;
+    // FOR(i,1,n+1) {
+    //     cout << i << " ";
+    //     binary(i);
+    // }
+
+    vl a;
+    ll ans = 0;
+    if(n & 1) {
+        a.emplace_back(2);
+        a.emplace_back(1);
+        FOR(i,3,n+1) {
+            a.emplace_back(i);
+        }
+    
+    } else if(powerTwo(n)) {
+        // cout << "HI";
+        for(int i=2;i<n;i+=2) {
+            a.emplace_back(i);
+            a.emplace_back(i-1);
+        }
+        a.emplace_back(n-1);
+        a.emplace_back(n);
+    } else {
+        ll x = 1ll*floor(log2(n));
+        x = 1ll<<x;
+        FOR(i,1,n+1) {
+            if(i != x && i != x-1 && i != n && i != n-1) a.emplace_back(i);
+        }
+        a.emplace_back(x);
+        a.emplace_back(n);
+        a.emplace_back(n-1);
+        a.emplace_back(x-1);
+    }
+    
+    rep(i,n) {
+            if((i+1) & 1) {
+                ans = ans & a[i];
+            }else {
+                ans = ans | a[i];
+            }
+    }
+    cout << ans << nl;
+    for(auto &x:a) {
+        cout << x << " ";
+    }
+    cout << nl;
 }
 
 int main(){
    ios::sync_with_stdio(false);cin.tie(nullptr);
    int t = 1;
-//    cin>>t;
+   cin>>t;
    while(t--)solve();
 }

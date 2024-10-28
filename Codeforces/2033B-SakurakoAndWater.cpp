@@ -77,53 +77,39 @@ const long long LINF = 1e18+7;
 
 void solve(){
 
-    int n,m;
-    cin>>n>>m;
-    vi a(n);
-    vi intel(m+1);
-    vi stren(m+1);
-    for(auto &x:a) {
-        cin>>x;
-        if(x > 0) intel[x]++;
-        else if(x < 0) stren[abs(x)]++;
-    }
-    // state of dp[i] when i is the point of intelligence.
-    vi dp(m+1);
-    int k = 0;
-    // dbg(a);
-    rep(i,n){
-        // if(k == m) break;
-        // dbg(a[i]);
-        // dbg(dp);
-        // dbg(intel);
-        // dbg(stren);
-        if(a[i] == 0) {
-            ++k;
-            // dbg(dp);
-            for(int j=k;j>=0; --j){
-                // dbg(j);
-                auto upIntel = (j-1 >= 0 ? dp[j-1] : 0) + intel[j];
-                auto upStr = dp[j] + stren[k-j];
-                // dbg(upStr);
-                // dbg(upIntel);
-                dp[j] = max({upIntel,upStr});
-                // dbg(j);
-                // dbg(k-j);
-            }
-            // dbg(dp)
-        } else if(a[i] < 0) {
-            --stren[abs(a[i])];
-        } else {
-            --intel[a[i]];
+    int n;
+    cin>>n;
+    vector<vi> board(n, vi(n,0));
+
+    for(auto &x:board) {
+        for(auto &y:x) {
+            cin>>y;
         }
     }
-
-    cout << *max_element(all(dp)) << nl;
+    // dbg(board);
+    // row
+    int ans = 0;
+    rep(i,n) {
+        int minVal = 0;
+        int minVal2 = 0;
+        int r=i,c=0;
+        while(r < n && c < n) {
+            // cout << board[c][r] << " ";
+            minVal = min(minVal,board[r][c]);
+            minVal2 = min(minVal2,board[c++][r++]);
+        }
+        // cout << nl;
+        // dbg(minVal);
+        // dbg(minVal2);
+        if(i == 0) ans += abs(minVal);
+        else ans += abs(minVal + minVal2);
+    }
+    cout << ans << nl;
 }
 
 int main(){
    ios::sync_with_stdio(false);cin.tie(nullptr);
    int t = 1;
-//    cin>>t;
+   cin>>t;
    while(t--)solve();
 }

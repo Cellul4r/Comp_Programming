@@ -77,53 +77,48 @@ const long long LINF = 1e18+7;
 
 void solve(){
 
-    int n,m;
-    cin>>n>>m;
-    vi a(n);
-    vi intel(m+1);
-    vi stren(m+1);
-    for(auto &x:a) {
-        cin>>x;
-        if(x > 0) intel[x]++;
-        else if(x < 0) stren[abs(x)]++;
+    int n;
+    cin>>n;
+    string s;
+    cin>>s;
+    int ones = 0;
+    for(auto &x:s) {
+        if(x == '1') ++ones;
     }
-    // state of dp[i] when i is the point of intelligence.
-    vi dp(m+1);
-    int k = 0;
-    // dbg(a);
-    rep(i,n){
-        // if(k == m) break;
-        // dbg(a[i]);
-        // dbg(dp);
-        // dbg(intel);
-        // dbg(stren);
-        if(a[i] == 0) {
-            ++k;
-            // dbg(dp);
-            for(int j=k;j>=0; --j){
-                // dbg(j);
-                auto upIntel = (j-1 >= 0 ? dp[j-1] : 0) + intel[j];
-                auto upStr = dp[j] + stren[k-j];
-                // dbg(upStr);
-                // dbg(upIntel);
-                dp[j] = max({upIntel,upStr});
-                // dbg(j);
-                // dbg(k-j);
-            }
-            // dbg(dp)
-        } else if(a[i] < 0) {
-            --stren[abs(a[i])];
-        } else {
-            --intel[a[i]];
-        }
+    if(n == 2) {
+        cout << (ones ? "YES" : "NO") << nl;
+        return; 
     }
 
-    cout << *max_element(all(dp)) << nl;
+    if(s[0] == '1' || s[n-1] == '1') {
+        cout << "YES" << nl;
+        return;
+    }
+
+    int i = 1;
+    while(i < n-1) {
+        if(s[i] == '1' && s[i+1] == '1') {
+            cout << "YES" << nl;
+            return;
+        } else {
+            ++i;
+        }
+    }
+    i = n-2;
+    while(i > 0) {
+        if(s[i] == '1' && s[i-1] == '1') {
+            cout << "YES" << nl;
+            return;
+        } else {
+            --i;
+        }
+    }
+    cout << "NO" << nl;
 }
 
 int main(){
    ios::sync_with_stdio(false);cin.tie(nullptr);
    int t = 1;
-//    cin>>t;
+   cin>>t;
    while(t--)solve();
 }

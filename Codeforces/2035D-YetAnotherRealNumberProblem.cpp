@@ -23,7 +23,7 @@ void __print(const pair<T, V> &x) {cerr << '{'; __print(x.first); cerr << ", "; 
 void _print() {cerr << "]\n";}
 template <typename T, typename... V>
 void _print(T t, V... v) {__print(t); if (sizeof...(v)) cerr << ", "; _print(v...);}
-//#ifdef DEBUG
+// #ifdef DEBUG
 #define dbg(x...) cerr << "\e[91m"<<__func__<<":"<<__LINE__<<" [" << #x << "] = ["; _print(x); cerr << "\e[39m" << endl;
 //#else
 //#define dbg(x...)
@@ -72,58 +72,75 @@ mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
 const char nl = '\n';
 const int N =1e5+1;
-const int INF = 1e9+7;
+const long long INF = 1e9+7;
 const long long LINF = 1e18+7;
+
+const ll M = INF;
+//pow mod manual
+ll powmod(ll x, ll y){
+  if(y==0) return 1LL;
+  ll t=powmod(x,y/2);
+  if (y%2==0) return (t*t)%M;
+  return (((x*t)%M)*t)%M;
+}
 
 void solve(){
 
-    int n,m;
-    cin>>n>>m;
-    vi a(n);
-    vi intel(m+1);
-    vi stren(m+1);
-    for(auto &x:a) {
-        cin>>x;
-        if(x > 0) intel[x]++;
-        else if(x < 0) stren[abs(x)]++;
-    }
-    // state of dp[i] when i is the point of intelligence.
-    vi dp(m+1);
-    int k = 0;
-    // dbg(a);
-    rep(i,n){
-        // if(k == m) break;
-        // dbg(a[i]);
-        // dbg(dp);
-        // dbg(intel);
-        // dbg(stren);
-        if(a[i] == 0) {
-            ++k;
-            // dbg(dp);
-            for(int j=k;j>=0; --j){
-                // dbg(j);
-                auto upIntel = (j-1 >= 0 ? dp[j-1] : 0) + intel[j];
-                auto upStr = dp[j] + stren[k-j];
-                // dbg(upStr);
-                // dbg(upIntel);
-                dp[j] = max({upIntel,upStr});
-                // dbg(j);
-                // dbg(k-j);
-            }
-            // dbg(dp)
-        } else if(a[i] < 0) {
-            --stren[abs(a[i])];
-        } else {
-            --intel[a[i]];
-        }
-    }
+    int n;
+    cin>>n;
+    vl a(n);
+    trav(x,a) cin>>x;
 
-    cout << *max_element(all(dp)) << nl;
+    ll cur = 0;
+    priority_queue<pl, vpl, greater<pl>> Q;
+
+    rep(i,n) {
+
+        cur = cur + a[i];
+        cur %= INF;
+
+        ll p = 0;
+        while(a[i] % 2 == 0) {
+            a[i] /= 2;
+            ++p;
+        }
+        ll y = a[i];
+
+        while(!Q.empty()) {
+
+            auto x = Q.top().first, cnt = Q.top().second;
+
+            bool flag = false;
+
+            if(y * (1ll << p) >= x) {
+                flag = true;
+            }
+
+            if(!flag) break;
+
+            Q.pop();
+
+            cur = ((cur - (y * powmod(2,p)) % INF + INF) % INF) % INF;
+            cur = (cur + (y * powmod(2,p+cnt) % INF)) % INF;
+            cur = ((cur - (x * powmod(2,cnt)) % INF + INF) % INF) % INF;
+            cur = (cur + x) % INF;
+
+            p += cnt;
+
+        }
+
+        if(p != 0) {
+            Q.push({y,p});
+        }
+
+        cout << cur << ' ';
+    }
+    cout << nl;
 }
 
 int main(){
    ios::sync_with_stdio(false);cin.tie(nullptr);
    int t = 1;
-//    cin>>t;
+   cin>>t;
    while(t--)solve();
 }
