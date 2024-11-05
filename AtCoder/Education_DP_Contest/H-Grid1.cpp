@@ -75,66 +75,43 @@ const int N =1e5+1;
 const int INF = 1e9+7;
 const long long LINF = 1e18+7;
 
-int dr[] = {0,1}, dc[] = {1,0};
-int n;
-vector<char> x;
-int conv(int i, int j) {
-
-    return n*i + j;
-}
-
-bool dfs(int u, vector<bool>& vis, vi adj[], vector<string>& a) {
-
-    dbg(u);
-    if(u == 2*n-1) {
-        return true;
-    }
-    vis[u] = true;
-    bool flag = false;
-    for(auto& v:adj[u]) {
-        if(!vis[v]) {
-            int w;
-            if(x[v] == '>') {
-                ++w;
-            } else {
-                --w;
-            }
-            flag |= dfs(w, vis, adj, a);
-        }
-    }
-    vis[u] = false;
-    return flag;
-}
 void solve(){
 
-    cin>>n;
-    vi adj[2*n];
-    vector<string> a(2);
-    cin>>a[0]>>a[1];
-    rep(i,2) {
-        rep(j,n) {
-            auto id = conv(i,j);
-            x.emplace_back(a[i][j]);
-            rep(k,2) {
-                int ni = i + dr[k], nj = j + dc[k];
-                auto idx = conv(ni,nj);
-                if(ni < 0 || nj < 0 || ni >= 2 || nj >= n) continue;
-                adj[id].emplace_back(idx);
-               
-            }
+    int n,m;
+    cin>>n>>m;
+    vector<vi> board(n, vi(m));
+    vi dp(m);
+    rep(i,n) {
+        string s;
+        cin>>s;
+        rep(j,m) {
+            board[i][j] = (s[j] == '#' ? -1 : 0);
         }
     }
-    rep(i,2*n) {
-        dbg(i);
-        // dbg(adj[i]);
+
+    rep(i,m) {
+        if(board[0][i] == -1) break;
+        dp[i] = 1;
     }
-    vector<bool> b(2*n,false);
-    cout << dfs(0, b, adj, a);
+
+    FOR(i,1,n){
+        FOR(j, 0, m){
+            if(board[i][j] == -1) {
+                 dp[j] = 0;
+                 continue;
+            }
+            // if(i > 0 && board[i-1][j] != -1) board[i][j] += board[i-1][j];
+            // board[i][j] %= INF;
+            if(j > 0) dp[j] += dp[j-1];
+            dp[j] %= INF;
+        }
+    }
+    cout << dp[m-1];
 }
 
 int main(){
    ios::sync_with_stdio(false);cin.tie(nullptr);
    int t = 1;
-   cin>>t;
+//    cin>>t;
    while(t--)solve();
 }

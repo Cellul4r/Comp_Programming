@@ -75,66 +75,64 @@ const int N =1e5+1;
 const int INF = 1e9+7;
 const long long LINF = 1e18+7;
 
-int dr[] = {0,1}, dc[] = {1,0};
-int n;
-vector<char> x;
-int conv(int i, int j) {
+// string recur(int i, int j, int n, int m, string& s, string& t, vector<vector<string>>& dp) {
 
-    return n*i + j;
-}
-
-bool dfs(int u, vector<bool>& vis, vi adj[], vector<string>& a) {
-
-    dbg(u);
-    if(u == 2*n-1) {
-        return true;
-    }
-    vis[u] = true;
-    bool flag = false;
-    for(auto& v:adj[u]) {
-        if(!vis[v]) {
-            int w;
-            if(x[v] == '>') {
-                ++w;
-            } else {
-                --w;
-            }
-            flag |= dfs(w, vis, adj, a);
-        }
-    }
-    vis[u] = false;
-    return flag;
-}
+//     if(i == n || j == m) {
+//         return "";
+//     }
+    
+//     string ans = recur(i+1, j+1, n, m, s, t, dp);
+//     if(s[i] == t[j]) {
+//         string k = s[i] + recur(i+1, j+1, n, m, s, t, dp);
+//     }
+// }
 void solve(){
 
-    cin>>n;
-    vi adj[2*n];
-    vector<string> a(2);
-    cin>>a[0]>>a[1];
-    rep(i,2) {
-        rep(j,n) {
-            auto id = conv(i,j);
-            x.emplace_back(a[i][j]);
-            rep(k,2) {
-                int ni = i + dr[k], nj = j + dc[k];
-                auto idx = conv(ni,nj);
-                if(ni < 0 || nj < 0 || ni >= 2 || nj >= n) continue;
-                adj[id].emplace_back(idx);
-               
+    string s,t;
+    cin>>s>>t;
+    int n = sz(s), m = sz(t);
+    vector<vi> dp(n+1, vi(m+1));
+    vector<vpi> par(n+1, vpi(m+1,mp(-1,-1)));
+    for(int i=n-1;i>=0;--i) {
+        for(int j=m-1;j>=0;--j) {
+            if(s[i] == t[j]) {
+                dp[i][j] = 1 + dp[i+1][j+1];
+                par[i][j] = mp(i+1,j+1);
+            } else if(dp[i+1][j] > dp[i][j+1]){
+                dp[i][j] = dp[i+1][j];
+                par[i][j] = mp(i+1,j);
+            } else {
+                dp[i][j] = dp[i][j+1];
+                par[i][j] = mp(i,j+1);
             }
+            // dbg(ans);
         }
     }
-    rep(i,2*n) {
-        dbg(i);
-        // dbg(adj[i]);
+    // rep(i,n+1) {
+    //     rep(j,m+1) {
+    //         cout << "{" << par[i][j].first << " " << par[i][j].second << "}";
+    //     }
+    //     cout << nl;
+    // }
+    string ans;
+    int i=0,j=0;
+    while(i < n && j < m) {
+        // cout << s[i] << " " << t[j] << nl;
+        if(s[i] == t[j]) ans += s[i];
+        // cout << i << " " << j << nl;
+        int tmp = i;
+        i = par[i][j].first;
+        j = par[tmp][j].second;
+        // cout << i << " " << j << nl;
+        // break;
     }
-    vector<bool> b(2*n,false);
-    cout << dfs(0, b, adj, a);
+    // cout << dp[0][0];
+    cout << ans;
 }
 
 int main(){
    ios::sync_with_stdio(false);cin.tie(nullptr);
    int t = 1;
-   cin>>t;
+//    cin>>t;
    while(t--)solve();
 }

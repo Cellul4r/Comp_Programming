@@ -72,69 +72,58 @@ mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
 const char nl = '\n';
 const int N =1e5+1;
+const ll M = 1e8;
 const int INF = 1e9+7;
 const long long LINF = 1e18+7;
 
-int dr[] = {0,1}, dc[] = {1,0};
-int n;
-vector<char> x;
-int conv(int i, int j) {
+ll dp[N];
+ll recur(int i, int n, vpi& a) {
 
-    return n*i + j;
-}
-
-bool dfs(int u, vector<bool>& vis, vi adj[], vector<string>& a) {
-
-    dbg(u);
-    if(u == 2*n-1) {
-        return true;
+    if(i == n) {
+        return 1ll;
     }
-    vis[u] = true;
-    bool flag = false;
-    for(auto& v:adj[u]) {
-        if(!vis[v]) {
-            int w;
-            if(x[v] == '>') {
-                ++w;
-            } else {
-                --w;
-            }
-            flag |= dfs(w, vis, adj, a);
-        }
-    }
-    vis[u] = false;
-    return flag;
+
+    if(~dp[i]) return dp[i];
+
+    ll ans = recur(i+1, n, a);
+    ans %= M;
+    auto idx = lb(a.begin()+i+1,a.end(), mp(a[i].second, 0)) - a.begin();
+    ans += recur(idx, n, a);
+    ans %= M;
+    return dp[i] = ans;
 }
 void solve(){
 
+    int n;
     cin>>n;
-    vi adj[2*n];
-    vector<string> a(2);
-    cin>>a[0]>>a[1];
-    rep(i,2) {
-        rep(j,n) {
-            auto id = conv(i,j);
-            x.emplace_back(a[i][j]);
-            rep(k,2) {
-                int ni = i + dr[k], nj = j + dc[k];
-                auto idx = conv(ni,nj);
-                if(ni < 0 || nj < 0 || ni >= 2 || nj >= n) continue;
-                adj[id].emplace_back(idx);
-               
-            }
+    while(n != -1) {
+
+        vpi a(n);
+        trav(x,a) {
+            cin>>x.first>>x.second;
         }
+        sort(all(a));
+        // memset(dp,-1,sizeof(dp));
+        // ll ans = recur(0, n, a) - 1ll;
+        vl memo(n+1);
+        memo[n] = 1;
+        for(int i=n-1;i>=0;--i) {
+
+            memo[i] = memo[i+1];
+            auto idx = lb(a.begin()+i+1,a.end(), mp(a[i].second, 0)) - a.begin();
+            memo[i] += memo[idx];
+            memo[i] %= M;
+        }
+        --memo[0];
+        if(memo[0] < 0) memo[0] += M;
+        cout << setw(8) << setfill('0') << memo[0] << nl;
+        cin>>n;
     }
-    rep(i,2*n) {
-        dbg(i);
-        // dbg(adj[i]);
-    }
-    vector<bool> b(2*n,false);
-    cout << dfs(0, b, adj, a);
 }
 
 int main(){
    ios::sync_with_stdio(false);cin.tie(nullptr);
    int t = 1;
-   cin>>t;
+//    cin>>t;
    while(t--)solve();
 }

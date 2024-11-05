@@ -71,70 +71,54 @@ template<class T> bool ckmax(T& a, const T& b) { return a < b ? a = b, 1 : 0; }
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
 const char nl = '\n';
-const int N =1e5+1;
+const int N = 3e3+1;
 const int INF = 1e9+7;
 const long long LINF = 1e18+7;
 
-int dr[] = {0,1}, dc[] = {1,0};
-int n;
-vector<char> x;
-int conv(int i, int j) {
+// state of dp is we are tossing to the coins i which now we have j head coin.
+ld memo[N][N];
+ld recur(int i, int coin, int n, vd& a) {
 
-    return n*i + j;
-}
-
-bool dfs(int u, vector<bool>& vis, vi adj[], vector<string>& a) {
-
-    dbg(u);
-    if(u == 2*n-1) {
-        return true;
+    if(i == n) {
+        // dbg(i);
+        // dbg(coin);
+        if(coin >= (n+1)/2) return 1;
+        else return 0;
     }
-    vis[u] = true;
-    bool flag = false;
-    for(auto& v:adj[u]) {
-        if(!vis[v]) {
-            int w;
-            if(x[v] == '>') {
-                ++w;
-            } else {
-                --w;
-            }
-            flag |= dfs(w, vis, adj, a);
-        }
-    }
-    vis[u] = false;
-    return flag;
+
+    if(memo[i][coin] + 1.00 < 1e-9) return memo[i][coin];
+    // choosing head
+    auto ans = a[i] * recur(i+1, coin+1, n, a);
+    // choosing tail
+    ans += (1.00 - a[i]) * recur(i+1, coin, n, a);
+    return memo[i][coin] = ans;
+
 }
 void solve(){
 
+    int n;
     cin>>n;
-    vi adj[2*n];
-    vector<string> a(2);
-    cin>>a[0]>>a[1];
-    rep(i,2) {
-        rep(j,n) {
-            auto id = conv(i,j);
-            x.emplace_back(a[i][j]);
-            rep(k,2) {
-                int ni = i + dr[k], nj = j + dc[k];
-                auto idx = conv(ni,nj);
-                if(ni < 0 || nj < 0 || ni >= 2 || nj >= n) continue;
-                adj[id].emplace_back(idx);
-               
-            }
+    vd a(n);
+    trav(x,a) cin>>x;
+    // memset(memo, -1.00, sizeof(memo));
+    vector<vd> dp(n+1, vd(n+1));
+    // dbg(dp[0]);
+    rep(i, n) {
+        FOR(j, 0, n+1) {
+            if(j < n) dp[i+1][j+1] += dp[i][j] * a[i];
+            dp[i+1][j] += dp[i][j] * (1.0 - a[i]);
         }
+        // dbg(dp[i+1]);
     }
-    rep(i,2*n) {
-        dbg(i);
-        // dbg(adj[i]);
-    }
-    vector<bool> b(2*n,false);
-    cout << dfs(0, b, adj, a);
+    ld ans = 0.0;
+    FOR(i, (n+1)/2, n+1) ans += dp[n][i]; 
+    cout << fixed << setprecision(9) << ans;
+    // cout << fixed << setprecision(9) << recur(0, 0, n, a);
 }
 
 int main(){
    ios::sync_with_stdio(false);cin.tie(nullptr);
    int t = 1;
-   cin>>t;
+//    cin>>t;
    while(t--)solve();
 }

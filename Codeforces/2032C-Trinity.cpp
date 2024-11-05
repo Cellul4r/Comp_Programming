@@ -75,61 +75,64 @@ const int N =1e5+1;
 const int INF = 1e9+7;
 const long long LINF = 1e18+7;
 
-int dr[] = {0,1}, dc[] = {1,0};
-int n;
-vector<char> x;
-int conv(int i, int j) {
+bool test(vl &a) {
 
-    return n*i + j;
-}
-
-bool dfs(int u, vector<bool>& vis, vi adj[], vector<string>& a) {
-
-    dbg(u);
-    if(u == 2*n-1) {
-        return true;
-    }
-    vis[u] = true;
-    bool flag = false;
-    for(auto& v:adj[u]) {
-        if(!vis[v]) {
-            int w;
-            if(x[v] == '>') {
-                ++w;
-            } else {
-                --w;
+    dbg(a);
+    for(int x=0;x<sz(a);++x) {
+        for(int y=0;y<sz(a);++y) {
+            for(int z=0;z<sz(a);++z) {
+                if(x == y || x == z || y == z) continue;
+                if(a[x] + a[y] <= a[z]) {
+                    cout << x << " " << y << " " << z << nl;
+                    return false;
+                }
+                if(a[x] + a[z] <= a[y]) {
+                    cout << x << " " << y << " " << z << nl;
+                    return false;
+                }
+                if(a[y] + a[z] <= a[x]) {
+                    cout << x << " " << y << " " << z << nl;
+                    return false;
+                }
             }
-            flag |= dfs(w, vis, adj, a);
         }
     }
-    vis[u] = false;
-    return flag;
+    
+    return true;
 }
 void solve(){
 
+    int n;
     cin>>n;
-    vi adj[2*n];
-    vector<string> a(2);
-    cin>>a[0]>>a[1];
-    rep(i,2) {
-        rep(j,n) {
-            auto id = conv(i,j);
-            x.emplace_back(a[i][j]);
-            rep(k,2) {
-                int ni = i + dr[k], nj = j + dc[k];
-                auto idx = conv(ni,nj);
-                if(ni < 0 || nj < 0 || ni >= 2 || nj >= n) continue;
-                adj[id].emplace_back(idx);
-               
-            }
-        }
+    vl a(n);
+    set<ll> save;
+    trav(x,a) {
+        cin>>x;
+        save.insert(x);
     }
-    rep(i,2*n) {
-        dbg(i);
-        // dbg(adj[i]);
+    sort(all(a));
+
+    // dbg(a);
+    if(a[0] + a[1] > a[n-1]) {
+        cout << 0 << nl;
+        return;
     }
-    vector<bool> b(2*n,false);
-    cout << dfs(0, b, adj, a);
+
+    int ans = 0;
+    rep(i,n-1) {
+        if(a[i] + a[i+1] > a[n-1]) break;
+        ++ans;
+    }
+    int l=ans, r = n-1;
+    for(int i=n-1;i>=0;--i) {
+        while(a[r] > a[i]) --r;
+        while(l > 0 && a[l] + a[l-1] > a[i]) --l;
+
+        ans = min(ans,n - (r - l + 1));
+    }
+    // dbg(a);
+    // dbg(test(a));
+    cout << ans << nl;
 }
 
 int main(){

@@ -75,66 +75,99 @@ const int N =1e5+1;
 const int INF = 1e9+7;
 const long long LINF = 1e18+7;
 
-int dr[] = {0,1}, dc[] = {1,0};
-int n;
-vector<char> x;
-int conv(int i, int j) {
+vector<pair<int,int>> adj[N];
+int color[N];
+vi part[3];
 
-    return n*i + j;
-}
+bool dfs(int u, int p, int c) {
 
-bool dfs(int u, vector<bool>& vis, vi adj[], vector<string>& a) {
-
-    dbg(u);
-    if(u == 2*n-1) {
-        return true;
+    if(color[u] != 0) {
+        return color[u] == p;
     }
-    vis[u] = true;
-    bool flag = false;
-    for(auto& v:adj[u]) {
-        if(!vis[v]) {
-            int w;
-            if(x[v] == '>') {
-                ++w;
-            } else {
-                --w;
-            }
-            flag |= dfs(w, vis, adj, a);
+
+    color[u] = p;
+    part[p].emplace_back(u);
+
+    for(auto vc:adj[u]) {
+        if(!dfs(vc.first, vc.second == c ? p : p ^ 3, c)) {
+            return false;
         }
     }
-    vis[u] = false;
-    return flag;
+
+    return true;
 }
 void solve(){
 
-    cin>>n;
-    vi adj[2*n];
-    vector<string> a(2);
-    cin>>a[0]>>a[1];
-    rep(i,2) {
-        rep(j,n) {
-            auto id = conv(i,j);
-            x.emplace_back(a[i][j]);
-            rep(k,2) {
-                int ni = i + dr[k], nj = j + dc[k];
-                auto idx = conv(ni,nj);
-                if(ni < 0 || nj < 0 || ni >= 2 || nj >= n) continue;
-                adj[id].emplace_back(idx);
-               
+    int n,m;
+    cin>>n>>m;
+    rep(i,m) {
+        int u,v;
+        char c;
+        int cc;
+        cin>>u>>v>>c;
+        if(c == 'R') cc = 1;
+        else cc = 2;
+        --u,--v;
+        adj[u].emplace_back(mp(v,cc));
+        adj[v].emplace_back(mp(u,cc));
+    }
+
+    // color red 
+    vector<int> f,g;
+    rep(i,n) {
+        if(color[i] == 0) {
+            part[1].clear();
+            part[2].clear();
+
+            if(!dfs(i, 1, 1)) {
+                rep(j,n+1) f.emplace_back(-1);
+                break;
             }
+            int k = 1;
+            if(part[2].size() < part[1].size()) k = 2;
+
+            trav(x,part[k]) f.emplace_back(x);
         }
+        
+
     }
-    rep(i,2*n) {
-        dbg(i);
-        // dbg(adj[i]);
+    // dbg(f);
+    // color blue
+    memset(color,0,sizeof(color));
+    rep(i,n) {
+        if(color[i] == 0) {
+            part[1].clear();
+            part[2].clear();
+
+            if(!dfs(i, 1, 2)) {
+                rep(j,n+1) g.emplace_back(-1);
+                break;
+            }
+            int k = 1;
+            if(part[2].size() < part[1].size()) k = 2;
+
+            trav(x,part[k]) g.emplace_back(x);
+        }
+        
     }
-    vector<bool> b(2*n,false);
-    cout << dfs(0, b, adj, a);
+    // dbg(g);
+    if(sz(g) < sz(f)) f = g;
+
+    if(sz(f) > n) {
+        cout << -1 << nl;
+        return;
+    }
+
+    cout << sz(f) << nl;
+    trav(x,f) {
+        cout << x + 1 << " ";
+    }
+    cout << nl;
 }
 
 int main(){
    ios::sync_with_stdio(false);cin.tie(nullptr);
    int t = 1;
-   cin>>t;
+//    cin>>t;
    while(t--)solve();
 }

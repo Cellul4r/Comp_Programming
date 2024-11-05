@@ -71,70 +71,55 @@ template<class T> bool ckmax(T& a, const T& b) { return a < b ? a = b, 1 : 0; }
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
 const char nl = '\n';
-const int N =1e5+1;
+const int N = 301;
 const int INF = 1e9+7;
 const long long LINF = 1e18+7;
 
-int dr[] = {0,1}, dc[] = {1,0};
-int n;
-vector<char> x;
-int conv(int i, int j) {
-
-    return n*i + j;
-}
-
-bool dfs(int u, vector<bool>& vis, vi adj[], vector<string>& a) {
-
-    dbg(u);
-    if(u == 2*n-1) {
-        return true;
-    }
-    vis[u] = true;
-    bool flag = false;
-    for(auto& v:adj[u]) {
-        if(!vis[v]) {
-            int w;
-            if(x[v] == '>') {
-                ++w;
-            } else {
-                --w;
-            }
-            flag |= dfs(w, vis, adj, a);
-        }
-    }
-    vis[u] = false;
-    return flag;
-}
+double dp[N][N][N];
 void solve(){
 
+    int n;
     cin>>n;
-    vi adj[2*n];
-    vector<string> a(2);
-    cin>>a[0]>>a[1];
-    rep(i,2) {
-        rep(j,n) {
-            auto id = conv(i,j);
-            x.emplace_back(a[i][j]);
-            rep(k,2) {
-                int ni = i + dr[k], nj = j + dc[k];
-                auto idx = conv(ni,nj);
-                if(ni < 0 || nj < 0 || ni >= 2 || nj >= n) continue;
-                adj[id].emplace_back(idx);
-               
+    int c1=0,c2=0,c3=0;
+    rep(i,n) {
+        int x;
+        cin>>x;
+        if(x == 1) ++c1;
+        else if(x == 2) ++c2;
+        else ++c3;
+    }
+
+    rep(k,n+1){
+        rep(j,n+1){
+            rep(i,n+1){
+                if(i+j+k == 0 || i+j+k > n) {
+                    continue;
+                }
+                int c0 = n - i - j - k;
+                dp[i][j][k] = 1;
+                double p1 = 1.0 * i / n;
+                double p2 = 1.0 * j / n;
+                double p3 = 1.0 * k / n;
+                if(i) {
+                    dp[i][j][k] += dp[i-1][j][k] * p1;
+                }
+                if(j) {
+                    dp[i][j][k] += dp[i+1][j-1][k] * p2;
+                }
+                if(k) {
+                    dp[i][j][k] += dp[i][j+1][k-1] * p3;
+                }
+                dp[i][j][k] *= (double)n / (i+j+k);
             }
         }
     }
-    rep(i,2*n) {
-        dbg(i);
-        // dbg(adj[i]);
-    }
-    vector<bool> b(2*n,false);
-    cout << dfs(0, b, adj, a);
+
+    cout << fixed << setprecision(10) << dp[c1][c2][c3];
 }
 
 int main(){
    ios::sync_with_stdio(false);cin.tie(nullptr);
    int t = 1;
-   cin>>t;
+//    cin>>t;
    while(t--)solve();
 }

@@ -30,6 +30,7 @@ void _print(T t, V... v) {__print(t); if (sizeof...(v)) cerr << ", "; _print(v..
 //#endif
 
 typedef long long ll;
+typedef unsigned long long ull;
 typedef long double ld;
 typedef complex<ld> cd;
 
@@ -75,61 +76,31 @@ const int N =1e5+1;
 const int INF = 1e9+7;
 const long long LINF = 1e18+7;
 
-int dr[] = {0,1}, dc[] = {1,0};
-int n;
-vector<char> x;
-int conv(int i, int j) {
-
-    return n*i + j;
-}
-
-bool dfs(int u, vector<bool>& vis, vi adj[], vector<string>& a) {
-
-    dbg(u);
-    if(u == 2*n-1) {
-        return true;
-    }
-    vis[u] = true;
-    bool flag = false;
-    for(auto& v:adj[u]) {
-        if(!vis[v]) {
-            int w;
-            if(x[v] == '>') {
-                ++w;
-            } else {
-                --w;
-            }
-            flag |= dfs(w, vis, adj, a);
-        }
-    }
-    vis[u] = false;
-    return flag;
-}
 void solve(){
 
-    cin>>n;
-    vi adj[2*n];
-    vector<string> a(2);
-    cin>>a[0]>>a[1];
-    rep(i,2) {
-        rep(j,n) {
-            auto id = conv(i,j);
-            x.emplace_back(a[i][j]);
-            rep(k,2) {
-                int ni = i + dr[k], nj = j + dc[k];
-                auto idx = conv(ni,nj);
-                if(ni < 0 || nj < 0 || ni >= 2 || nj >= n) continue;
-                adj[id].emplace_back(idx);
-               
+    ull a,k;
+    cin>>a>>k;
+    int cnt = 0;
+    while(cnt < k-1) {
+        // dbg(a);
+        ++cnt;
+        ull min=10, max=0;
+        auto tmp = a;
+        while(tmp > 0) {
+            auto k = tmp % 10ull;
+            if(k == 0) {
+                cout << a << nl;
+                return;
             }
+            ckmin(min, k);
+            ckmax(max, k);
+            tmp /= 10ull;
         }
+        // dbg(max);
+        a += min*max;
     }
-    rep(i,2*n) {
-        dbg(i);
-        // dbg(adj[i]);
-    }
-    vector<bool> b(2*n,false);
-    cout << dfs(0, b, adj, a);
+
+    cout << a << nl;
 }
 
 int main(){
