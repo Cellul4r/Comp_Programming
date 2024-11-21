@@ -75,38 +75,23 @@ const int N =1e5+1;
 const int INF = 1e9+7;
 const long long LINF = 1e18+7;
 
+ll find(vi a) {
+    sort(all(a));
+
+    return 1ll * a[sz(a) / 2] - a[(sz(a) - 1) / 2] + 1ll;  
+}
 void solve(){
 
     int n;
     cin>>n;
-    vl a(n);
-    trav(x,a) cin>>x;
-    ll ans = LINF;
-    ll lo = 1, hi = LINF;
-    while(lo <= hi) {
-        ll mid = lo + (hi - lo) / 2ll;
-        int i=1;
-        int cnt = 0;
-        while(i < n) {
-            if(a[i] - a[i-1] <= mid) {
-                ++cnt;
-                ++i;
-            }
-            ++i;
-        }
-
-        if(cnt >= n/2) {
-            ans = mid;
-            hi = mid-1;
-        } else {
-            lo = mid + 1;
-        }
+    vi x(n),y(n);
+    rep(i,n) {
+        cin>>x[i]>>y[i];
     }
-
-    cout << ans << nl;
+    cout << find(x) * find(y) << nl;
 }
 
-int main() {
+int main(){
    ios::sync_with_stdio(false);cin.tie(nullptr);
    int t = 1;
    cin>>t;

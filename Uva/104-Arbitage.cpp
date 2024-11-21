@@ -71,44 +71,66 @@ template<class T> bool ckmax(T& a, const T& b) { return a < b ? a = b, 1 : 0; }
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
 const char nl = '\n';
-const int N =1e5+1;
+const int N = 21;
 const int INF = 1e9+7;
 const long long LINF = 1e18+7;
 
+double dist[N][N][N];
+int par[N][N][N];
+void printPath(int i, int j, int d) {
+
+    if(d == 0) {
+        cout << i+1 << " " << j+1;
+        return;
+    }
+    printPath(i, par[i][j][d], d-1);
+    cout << " " << j+1;
+}
 void solve(){
 
     int n;
-    cin>>n;
-    vl a(n);
-    trav(x,a) cin>>x;
-    ll ans = LINF;
-    ll lo = 1, hi = LINF;
-    while(lo <= hi) {
-        ll mid = lo + (hi - lo) / 2ll;
-        int i=1;
-        int cnt = 0;
-        while(i < n) {
-            if(a[i] - a[i-1] <= mid) {
-                ++cnt;
-                ++i;
+    while(cin>>n) {
+        memset(dist,0.0,sizeof(dist));
+        memset(par,0,sizeof(par));
+        rep(i,n) {
+            rep(j,n) {
+                if(i == j) {
+                    dist[i][j][0] = 1.0;
+                } else {
+                    cin>>dist[i][j][0];
+                }
             }
-            ++i;
         }
 
-        if(cnt >= n/2) {
-            ans = mid;
-            hi = mid-1;
-        } else {
-            lo = mid + 1;
+        FOR(d,1,n) {
+            rep(k,n) {
+                rep(i,n) {
+                    rep(j,n) {
+                        double x = dist[i][k][d-1] * dist[k][j][0];
+                        if(x > dist[i][j][d]) {
+                            dist[i][j][d] = x;
+                            par[i][j][d] = k;
+                            if(i == j && x > 1.01) {
+                                // cout << x << " " << i << nl;
+                                printPath(i,j,d);
+                                cout << nl;
+                                goto e;
+                            }
+                        }
+                    }
+                }
+            }
         }
+        cout << "no arbitrage sequence exists" << nl;
+        e:;
     }
-
-    cout << ans << nl;
 }
 
-int main() {
+int main(){
+    // freopen("input.txt", "r", stdin);
+    // freopen("output.txt", "w", stdout);
    ios::sync_with_stdio(false);cin.tie(nullptr);
    int t = 1;
-   cin>>t;
+//    cin>>t;
    while(t--)solve();
 }

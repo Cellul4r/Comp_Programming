@@ -64,6 +64,7 @@ template<class T> using pqg = priority_queue<T, vector<T>, greater<T>>;
 #define ub upper_bound
 #define all(x) x.begin(), x.end()
 #define ins insert
+#define DP dp[pos][is_eq][prev]
 
 template<class T> bool ckmin(T& a, const T& b) { return b < a ? a = b, 1 : 0; }
 template<class T> bool ckmax(T& a, const T& b) { return a < b ? a = b, 1 : 0; }
@@ -75,40 +76,53 @@ const int N =1e5+1;
 const int INF = 1e9+7;
 const long long LINF = 1e18+7;
 
+ll dp[20][2][11];
+ll r[20];
+int n;
+ll recur(int pos, bool is_eq, int prev) {
+    if(~DP) return DP;
+    if(pos == n) {
+        return DP = 1;
+    }
+    DP = 0;
+    for(int i=0;i<=(is_eq ? r[pos]:9);i++) {
+        if(i == prev) continue;
+        int next = i;
+        if(prev == 10 && i == 0) {
+            next = 10;
+        }
+        DP += recur(pos+1, is_eq && i == r[pos], next);
+    }
+    return DP;
+}
 void solve(){
 
-    int n;
-    cin>>n;
-    vl a(n);
-    trav(x,a) cin>>x;
-    ll ans = LINF;
-    ll lo = 1, hi = LINF;
-    while(lo <= hi) {
-        ll mid = lo + (hi - lo) / 2ll;
-        int i=1;
-        int cnt = 0;
-        while(i < n) {
-            if(a[i] - a[i-1] <= mid) {
-                ++cnt;
-                ++i;
-            }
-            ++i;
-        }
-
-        if(cnt >= n/2) {
-            ans = mid;
-            hi = mid-1;
-        } else {
-            lo = mid + 1;
-        }
+    ll a,b;
+    cin>>a>>b;
+    string s = to_string(b);
+    n = sz(s);
+    for(ll i=0;i<n;++i) r[i] = s[i] - '0';
+    memset(dp,-1,sizeof dp);
+    ll ans = recur(0,1,10);
+    if(a == 0) {
+        cout << ans;
+        return;
     }
-
-    cout << ans << nl;
+    // dbg(ans);
+    --a;
+    s = to_string(a);
+    // dbg(s);
+    n = sz(s);
+    for(ll i=0;i<n;++i) r[i] = s[i] - '0';
+    memset(dp,-1,sizeof dp);
+    // dbg(recur(0,1,10));
+    ans -= recur(0,1,10);
+    cout << ans;
 }
 
-int main() {
+int main(){
    ios::sync_with_stdio(false);cin.tie(nullptr);
    int t = 1;
-   cin>>t;
+//    cin>>t;
    while(t--)solve();
 }

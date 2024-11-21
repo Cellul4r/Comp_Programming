@@ -75,40 +75,66 @@ const int N =1e5+1;
 const int INF = 1e9+7;
 const long long LINF = 1e18+7;
 
+ll kadane(vl& a, int n) {
+
+    ll maxSum = a[0];
+    ll now = a[0];
+    FOR(i,1,n) {
+        now = max(now+a[i], a[i]);
+        ckmax(maxSum,now);
+    }
+
+    return maxSum;
+}
 void solve(){
 
-    int n;
-    cin>>n;
-    vl a(n);
-    trav(x,a) cin>>x;
-    ll ans = LINF;
-    ll lo = 1, hi = LINF;
-    while(lo <= hi) {
-        ll mid = lo + (hi - lo) / 2ll;
-        int i=1;
-        int cnt = 0;
-        while(i < n) {
-            if(a[i] - a[i-1] <= mid) {
-                ++cnt;
-                ++i;
+    int a,b,c;
+    cin>>a>>b>>c;
+    ll maxSum = -LINF;
+    vector<vector<vl>> x(a, vector<vl>(b, vl(c)));
+    rep(i, a) {
+        rep(j, b) {
+            rep(k, c) {
+                cin>>x[i][j][k];
             }
-            ++i;
-        }
-
-        if(cnt >= n/2) {
-            ans = mid;
-            hi = mid-1;
-        } else {
-            lo = mid + 1;
         }
     }
 
-    cout << ans << nl;
+    rep(i,a) {
+        vector<vl> tmp(b,vl(c));
+        FOR(j,i,a) {
+            rep(k,b) {
+                rep(l,c) {
+                    tmp[k][l] += x[j][k][l];
+                }
+            }
+            rep(k,b) {
+                vl innerTmp(c);
+                FOR(l,k,b) {
+                    rep(m,c) {
+                        innerTmp[m] += tmp[l][m];
+                    }
+                    ll sum = kadane(innerTmp, c);
+
+                    ckmax(maxSum,sum);
+                }
+
+                
+            }
+        }
+    }
+
+    cout << maxSum << nl;
 }
 
-int main() {
+int main(){
    ios::sync_with_stdio(false);cin.tie(nullptr);
    int t = 1;
    cin>>t;
-   while(t--)solve();
+   while(t--) {
+        solve();
+        if(t) {
+            cout << nl;
+        }
+   }
 }

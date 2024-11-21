@@ -75,40 +75,61 @@ const int N =1e5+1;
 const int INF = 1e9+7;
 const long long LINF = 1e18+7;
 
-void solve(){
+int dr[] = {-1,0,1,0}, dc[] = {0,1,0,-1};
+void bfs(queue<pi>& Q, vector<vi> &level, vector<string>& a, int r, int c) {
 
-    int n;
-    cin>>n;
-    vl a(n);
-    trav(x,a) cin>>x;
-    ll ans = LINF;
-    ll lo = 1, hi = LINF;
-    while(lo <= hi) {
-        ll mid = lo + (hi - lo) / 2ll;
-        int i=1;
-        int cnt = 0;
-        while(i < n) {
-            if(a[i] - a[i-1] <= mid) {
-                ++cnt;
-                ++i;
+    while(!Q.empty()) {
+        int ur = Q.front().first, uc = Q.front().second;
+        Q.pop();
+
+        rep(i,4) {
+            int vr,vc;
+            vr = ur + dr[i];
+            vc = uc + dc[i];
+            if(vr < 0 || vc < 0 || vr >= r || vc >= c 
+                || level[vr][vc] != -1 || a[vr][vc] == 'T') {
+                continue;
             }
-            ++i;
-        }
-
-        if(cnt >= n/2) {
-            ans = mid;
-            hi = mid-1;
-        } else {
-            lo = mid + 1;
+            level[vr][vc] = level[ur][uc] + 1;
+            Q.push(mp(vr,vc));
         }
     }
+}
+void solve(){
 
-    cout << ans << nl;
+    int r,c;
+    cin>>r>>c;
+    int sr,sc;
+    queue<pi> Q;
+    vector<vi> level(r, vi(c,-1));
+    int ans = 0;
+    vector<string> a(r);
+    rep(i,r){
+        cin>>a[i];
+        rep(j,c) {
+            if(a[i][j] == 'E') {
+                level[i][j] = 0;
+                Q.push(mp(i,j));
+            } else if(a[i][j] == 'S') {
+                sr = i, sc = j;
+            }
+        }
+    }
+    bfs(Q,level,a,r,c);
+    int k = level[sr][sc];
+    rep(i,r) {
+        rep(j,c) {
+            if(a[i][j] >= '1' && a[i][j] <= '9' && level[i][j] != -1 && level[i][j] <= k) {
+                ans += (int)(a[i][j] - '0');
+            }
+        }
+    }
+    cout << ans;
 }
 
-int main() {
+int main(){
    ios::sync_with_stdio(false);cin.tie(nullptr);
    int t = 1;
-   cin>>t;
+//    cin>>t;
    while(t--)solve();
 }

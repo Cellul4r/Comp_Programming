@@ -79,36 +79,37 @@ void solve(){
 
     int n;
     cin>>n;
-    vl a(n);
-    trav(x,a) cin>>x;
-    ll ans = LINF;
-    ll lo = 1, hi = LINF;
-    while(lo <= hi) {
-        ll mid = lo + (hi - lo) / 2ll;
-        int i=1;
-        int cnt = 0;
-        while(i < n) {
-            if(a[i] - a[i-1] <= mid) {
-                ++cnt;
-                ++i;
-            }
-            ++i;
-        }
-
-        if(cnt >= n/2) {
-            ans = mid;
-            hi = mid-1;
-        } else {
-            lo = mid + 1;
+    map<int,int> com;
+    vi a(n),b(n),c(n);
+    rep(i,n) {
+        cin>>a[i]>>b[i]>>c[i];
+        b[i]++;
+        com[a[i]],com[b[i]];
+    }
+    int id = 0;
+    trav(x,com) {
+        x.second = id++;
+    }
+    // dbg(com);
+    vector<vpi> proj(id);
+    rep(i,n) {
+        proj[com[b[i]]].emplace_back(mp(com[a[i]], c[i]));
+    }
+    vl dp(id);
+    rep(i,id) {
+        if(i > 0) dp[i] = dp[i-1];
+        
+        trav(x, proj[i]) {
+            ckmax(dp[i], dp[x.first] + 1ll * x.second);
         }
     }
 
-    cout << ans << nl;
+    cout << dp[id-1];
 }
 
-int main() {
+int main(){
    ios::sync_with_stdio(false);cin.tie(nullptr);
    int t = 1;
-   cin>>t;
+//    cin>>t;
    while(t--)solve();
 }

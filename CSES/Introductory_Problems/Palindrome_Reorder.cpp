@@ -77,38 +77,56 @@ const long long LINF = 1e18+7;
 
 void solve(){
 
-    int n;
-    cin>>n;
-    vl a(n);
-    trav(x,a) cin>>x;
-    ll ans = LINF;
-    ll lo = 1, hi = LINF;
-    while(lo <= hi) {
-        ll mid = lo + (hi - lo) / 2ll;
-        int i=1;
-        int cnt = 0;
-        while(i < n) {
-            if(a[i] - a[i-1] <= mid) {
-                ++cnt;
-                ++i;
-            }
-            ++i;
-        }
-
-        if(cnt >= n/2) {
-            ans = mid;
-            hi = mid-1;
-        } else {
-            lo = mid + 1;
+    string s;
+    cin>>s;
+    int n = sz(s);
+    vi alpha(26);
+    trav(x,s) {
+        alpha[x-'A']++;
+    }
+    int odd = 0;
+    trav(x,alpha) {
+        if(x & 1) {
+            ++odd;
         }
     }
-
-    cout << ans << nl;
+    bool flag = true;
+    if((n & 1) && odd != 1) {
+        flag = false;
+    } else if(n % 2 == 0 && odd != 0) {
+        flag = false;
+    }
+    if(!flag) {
+        cout << "NO SOLUTION";
+        return;
+    }
+    int left = 0, right = n-1;
+    char o;
+    int i=0;
+    while(left <= right) {
+        if(alpha[i] == 0) {
+            ++i;
+            continue;
+        } else if(alpha[i] == 1) {
+            // dbg(i+'A');
+            o = i + 'A';
+            ++i;
+            continue;
+        }
+        s[left] = s[right] = i + 'A';
+        alpha[i] -= 2;
+        ++left;
+        --right;
+    }
+    if(n & 1) {
+        s[n/2] = o;
+    }
+    cout << s;
 }
 
-int main() {
+int main(){
    ios::sync_with_stdio(false);cin.tie(nullptr);
    int t = 1;
-   cin>>t;
+//    cin>>t;
    while(t--)solve();
 }

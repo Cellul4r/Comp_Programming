@@ -71,44 +71,58 @@ template<class T> bool ckmax(T& a, const T& b) { return a < b ? a = b, 1 : 0; }
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
 const char nl = '\n';
-const int N =1e5+1;
+const int N = 101;
 const int INF = 1e9+7;
 const long long LINF = 1e18+7;
 
+int n;
+int dist[N][N];
+// int par[N][N];
 void solve(){
 
-    int n;
-    cin>>n;
-    vl a(n);
-    trav(x,a) cin>>x;
-    ll ans = LINF;
-    ll lo = 1, hi = LINF;
-    while(lo <= hi) {
-        ll mid = lo + (hi - lo) / 2ll;
-        int i=1;
-        int cnt = 0;
-        while(i < n) {
-            if(a[i] - a[i-1] <= mid) {
-                ++cnt;
-                ++i;
+   rep(i,n) {
+        rep(j,n) {
+            if(i == j) {
+                dist[i][j] = 0;
             }
-            ++i;
+            else {
+                dist[i][j] = INF;
+            }
         }
-
-        if(cnt >= n/2) {
-            ans = mid;
-            hi = mid-1;
-        } else {
-            lo = mid + 1;
+    }
+    FOR(i,1,n){
+        rep(j,i) {
+            string s;
+            cin>>s;
+            if(s == "x") continue;
+            int x = stoi(s);
+            dist[i][j] = dist[j][i] = x;
+            // dbg(i,j);
         }
     }
 
+    rep(k,n) {
+        rep(i,n) {
+            rep(j,n) {
+                if(dist[i][k] + dist[k][j] < dist[i][j]) {
+                    dist[i][j] = dist[i][k] + dist[k][j];
+                    // par[i][j] = k;
+                }
+            }
+        }
+    }
+    int ans = 0;
+    rep(j,n) {
+        // dbg(j,dist[0][j]);
+        // auto k = par[0][j];
+        ckmax(ans,dist[0][j]);
+    }
     cout << ans << nl;
 }
 
-int main() {
+int main(){
    ios::sync_with_stdio(false);cin.tie(nullptr);
    int t = 1;
-   cin>>t;
-   while(t--)solve();
+//    cin>>t;
+   while(cin>>n)solve();
 }

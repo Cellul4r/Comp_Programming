@@ -75,38 +75,53 @@ const int N =1e5+1;
 const int INF = 1e9+7;
 const long long LINF = 1e18+7;
 
+bool dfs(int u, int p, vector<bool>& vis, set<int> adj[]) {
+    
+    if(vis[u]) {
+        return true;
+    }
+    // dbg(u);
+    vis[u] = true;
+    // dbg(adj[u]);
+    for(auto v:adj[u]) {
+        if(v == p) {
+            continue;
+        }
+        if(dfs(v,u,vis,adj)) {
+            return true;
+        }
+    }
+    return false;
+}
 void solve(){
 
     int n;
     cin>>n;
-    vl a(n);
-    trav(x,a) cin>>x;
-    ll ans = LINF;
-    ll lo = 1, hi = LINF;
-    while(lo <= hi) {
-        ll mid = lo + (hi - lo) / 2ll;
-        int i=1;
-        int cnt = 0;
-        while(i < n) {
-            if(a[i] - a[i-1] <= mid) {
-                ++cnt;
-                ++i;
+    vi a(n);
+    set<int> adj[n];
+    rep(i,n) {
+        cin>>a[i];
+        --a[i];
+        adj[i].ins(a[i]);
+        adj[a[i]].ins(i);
+    }
+    int comp = 0, cycle = 0;
+    vector<bool> vis(n);
+    rep(i,n) {
+        if(!vis[i]) {
+            // dbg(i);
+            ++comp;
+            if(dfs(i,-1,vis,adj)) {
+                ++cycle;
             }
-            ++i;
-        }
-
-        if(cnt >= n/2) {
-            ans = mid;
-            hi = mid-1;
-        } else {
-            lo = mid + 1;
+            
         }
     }
-
-    cout << ans << nl;
+    // dbg(cycle);
+    cout << cycle + min(1,comp-cycle) << " " << comp << nl;
 }
 
-int main() {
+int main(){
    ios::sync_with_stdio(false);cin.tie(nullptr);
    int t = 1;
    cin>>t;

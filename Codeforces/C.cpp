@@ -77,36 +77,37 @@ const long long LINF = 1e18+7;
 
 void solve(){
 
-    int n;
-    cin>>n;
+    int n,m;
+    ll v;
+    cin>>n>>m>>v;
     vl a(n);
-    trav(x,a) cin>>x;
-    ll ans = LINF;
-    ll lo = 1, hi = LINF;
-    while(lo <= hi) {
-        ll mid = lo + (hi - lo) / 2ll;
-        int i=1;
-        int cnt = 0;
-        while(i < n) {
-            if(a[i] - a[i-1] <= mid) {
-                ++cnt;
-                ++i;
-            }
-            ++i;
-        }
-
-        if(cnt >= n/2) {
-            ans = mid;
-            hi = mid-1;
-        } else {
-            lo = mid + 1;
-        }
+    trav(x,a) {
+        cin>>x;
     }
+    int l=1,r=2;
+    int cnt = 0;
+    ll ans = 0;
+    ll she = 0;
+    ll now = a[l];
+    vl tmp;
+    while(l < n && r < n) {
+        ll k = now + a[r] - a[l];
+        if(k >= v && k < now) {
+            she += a[l]; 
+        } else {
+            ckmax(ans,she);
+            she = 0;
+            now = 0;
+            ++cnt;
+        }
+        ++r;
+    }
+    
 
-    cout << ans << nl;
+    cout << (cnt == m ? ans : -1) << nl;
 }
 
-int main() {
+int main(){
    ios::sync_with_stdio(false);cin.tie(nullptr);
    int t = 1;
    cin>>t;

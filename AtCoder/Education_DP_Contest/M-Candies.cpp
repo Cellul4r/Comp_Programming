@@ -77,38 +77,41 @@ const long long LINF = 1e18+7;
 
 void solve(){
 
-    int n;
-    cin>>n;
-    vl a(n);
-    trav(x,a) cin>>x;
-    ll ans = LINF;
-    ll lo = 1, hi = LINF;
-    while(lo <= hi) {
-        ll mid = lo + (hi - lo) / 2ll;
-        int i=1;
-        int cnt = 0;
-        while(i < n) {
-            if(a[i] - a[i-1] <= mid) {
-                ++cnt;
-                ++i;
-            }
-            ++i;
+    int n,k;
+    cin>>n>>k;
+    vi a(n);
+    trav(x,a) {
+        cin>>x;
+    }
+    vector<vi> dp(n+1, vi(k+1));
+    rep(i,n+1) {
+        dp[i][0] = 1; 
+    }
+    rep(i,k+1) {
+        dp[0][i] += dp[0][i-1];
+    }
+    // sort(all(a));
+    int now = 0;
+    FOR(i,1,n+1) {
+        now += a[i-1];
+        // dbg(dp[i-1]);
+        FOR(j,1,k+1) {
+            int l = j - a[i-1] - 1;
+            // dbg(j,l);
+            dp[i][j] = (dp[i-1][j] - (l >= 0 ? dp[i-1][l] : 0) + INF) % INF;
         }
-
-        if(cnt >= n/2) {
-            ans = mid;
-            hi = mid-1;
-        } else {
-            lo = mid + 1;
+        rep(j,k+1) {
+            dp[i][j] += dp[i][j-1];
+            dp[i][j] %= INF;
         }
     }
-
-    cout << ans << nl;
+    // dbg(dp[n]);
+    cout << (dp[n][k] - (k-1 >= 0 ? dp[n][k-1] : 0) + INF) % INF;
 }
 
-int main() {
+int main(){
    ios::sync_with_stdio(false);cin.tie(nullptr);
    int t = 1;
-   cin>>t;
+//    cin>>t;
    while(t--)solve();
 }

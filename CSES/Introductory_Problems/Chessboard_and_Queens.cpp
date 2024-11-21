@@ -75,40 +75,43 @@ const int N =1e5+1;
 const int INF = 1e9+7;
 const long long LINF = 1e18+7;
 
-void solve(){
-
-    int n;
-    cin>>n;
-    vl a(n);
-    trav(x,a) cin>>x;
-    ll ans = LINF;
-    ll lo = 1, hi = LINF;
-    while(lo <= hi) {
-        ll mid = lo + (hi - lo) / 2ll;
-        int i=1;
-        int cnt = 0;
-        while(i < n) {
-            if(a[i] - a[i-1] <= mid) {
-                ++cnt;
-                ++i;
-            }
-            ++i;
-        }
-
-        if(cnt >= n/2) {
-            ans = mid;
-            hi = mid-1;
-        } else {
-            lo = mid + 1;
+bool board[8][8];
+int recur(int i, vector<bool>& col, vector<bool>& d1, vector<bool>& d2) {
+    
+    if(i == 8) {
+        return 1;
+    }
+    int ans = 0;
+    rep(j,8) {
+        int di1 = i - j + 8;
+        int di2 = i + j;
+        if(di1 < 0) di1 += 9;
+        if(di2 < 0) di2 += 9;
+        if(board[i][j] && !col[j] && !d1[di1] && !d2[di2]) {
+            col[j] = d1[di1] = d2[di2] = true;
+            ans += recur(i+1,col,d1,d2);
+            col[j] = d1[di1] = d2[di2] = false;
         }
     }
+    return ans;
+}
+void solve(){
 
-    cout << ans << nl;
+    rep(i,8) {
+        string s;
+        cin>>s;
+        rep(j,8) {
+            if(s[j] == '.') board[i][j] = true;
+            else board[i][j] = false;
+        }
+    }
+    vector<bool> col(8), di1(20), di2(20);
+    cout << recur(0,col,di1,di2);
 }
 
-int main() {
+int main(){
    ios::sync_with_stdio(false);cin.tie(nullptr);
    int t = 1;
-   cin>>t;
+//    cin>>t;
    while(t--)solve();
 }

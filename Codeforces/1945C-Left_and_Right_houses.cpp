@@ -75,38 +75,59 @@ const int N =1e5+1;
 const int INF = 1e9+7;
 const long long LINF = 1e18+7;
 
+int ceil(int a, int b) {
+
+    return  (a + b - 1) / b;
+}
 void solve(){
 
     int n;
     cin>>n;
-    vl a(n);
-    trav(x,a) cin>>x;
-    ll ans = LINF;
-    ll lo = 1, hi = LINF;
-    while(lo <= hi) {
-        ll mid = lo + (hi - lo) / 2ll;
-        int i=1;
-        int cnt = 0;
-        while(i < n) {
-            if(a[i] - a[i-1] <= mid) {
-                ++cnt;
-                ++i;
+    string s;
+    cin>>s;
+    vi one(n+1),zero(n+1);
+    rep(i,n) {
+        one[i+1] = one[i];
+        zero[i+1] = zero[i];
+        if(s[i] == '0') zero[i+1]++;
+        else one[i+1]++;
+    }
+    // dbg(zero);
+    // dbg(one);
+    double now = (double)INF;
+    int id = INF;
+    FOR(i,0,n+1) {
+        if(i == 0) {
+            int k = ceil(n,2);
+            if(one[n] >= k) {
+                double x = abs((double)n/2.0 - i);
+                if(x < now) {
+                    now = x;
+                    id = i;
+                } else if(x - now < 1e-9 && i < id) {
+                    id = i;
+                }
             }
-            ++i;
-        }
-
-        if(cnt >= n/2) {
-            ans = mid;
-            hi = mid-1;
+        } else if(i == n+1) {
+            continue;
         } else {
-            lo = mid + 1;
+            int k = ceil(i,2), x = ceil(n-i,2);
+            if(zero[i] >= k && one[n] - one[i] >= x) {
+                double b = abs((double)n/2.0 - (double)i);
+                // dbg(i,b);
+                if(b < now) {
+                    now = b;
+                    id = i;
+                } else if(b - now < 1e-9 && i < id) {
+                    id = i;
+                }
+            } 
         }
     }
-
-    cout << ans << nl;
+    cout << id << nl;
 }
 
-int main() {
+int main(){
    ios::sync_with_stdio(false);cin.tie(nullptr);
    int t = 1;
    cin>>t;

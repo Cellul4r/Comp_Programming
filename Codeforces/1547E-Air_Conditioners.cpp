@@ -77,36 +77,46 @@ const long long LINF = 1e18+7;
 
 void solve(){
 
-    int n;
-    cin>>n;
-    vl a(n);
-    trav(x,a) cin>>x;
-    ll ans = LINF;
-    ll lo = 1, hi = LINF;
-    while(lo <= hi) {
-        ll mid = lo + (hi - lo) / 2ll;
-        int i=1;
-        int cnt = 0;
-        while(i < n) {
-            if(a[i] - a[i-1] <= mid) {
-                ++cnt;
-                ++i;
-            }
-            ++i;
-        }
+    int n,k;
+    cin>>n>>k;
+    pqg<pair<ll,int>> Q;
+    vl dist(n,LINF);
+    vector<bool> vis(n);
+    vi a(k),t(k);
+    rep(i,k) {
+        cin>>a[i];
+        --a[i];
+    }
+    rep(i,k) cin>>t[i];
+    rep(i,k) {
+        dist[a[i]] = t[i];
+        Q.push(mp(t[i],a[i]));
+    }
 
-        if(cnt >= n/2) {
-            ans = mid;
-            hi = mid-1;
-        } else {
-            lo = mid + 1;
+    while(!Q.empty()) {
+        auto u = Q.top().second;
+        Q.pop();
+
+        vis[u] = true;
+        int v=  u-1;
+        if(v >= 0 && !vis[v] && dist[u] + 1 < dist[v]) {
+            dist[v] = dist[u] + 1;
+            Q.push(mp(dist[v],v));
+        }
+        v = u+1;
+        if(v < n && !vis[v] && dist[u] + 1 < dist[v]) {
+            dist[v] = dist[u] + 1;
+            Q.push(mp(dist[v],v));
         }
     }
 
-    cout << ans << nl;
+    trav(x,dist) {
+        cout << x << " ";
+    }
+    cout << nl;
 }
 
-int main() {
+int main(){
    ios::sync_with_stdio(false);cin.tie(nullptr);
    int t = 1;
    cin>>t;

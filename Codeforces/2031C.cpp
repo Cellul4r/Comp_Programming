@@ -75,40 +75,82 @@ const int N =1e5+1;
 const int INF = 1e9+7;
 const long long LINF = 1e18+7;
 
+bool check(ll x) {
+
+    ll tmp = sqrt(x);
+    return (tmp * tmp == x);
+}
+void test(int n) {
+    for(int i=0;i<n;++i) {
+        for(int j=i+1;j<n;++j) {
+            if(i == j) continue;
+            for(int k=j+1;k<n;++k) {
+                if(k == i || k == j) continue;
+                if(check(abs(i-j)) && check(abs(i-k)) && check(abs(j-k))) {
+                    dbg(n);
+                    dbg(i,j,k);
+                    // return;
+                }
+                
+            }
+        } 
+    }
+}
 void solve(){
 
     int n;
     cin>>n;
-    vl a(n);
-    trav(x,a) cin>>x;
-    ll ans = LINF;
-    ll lo = 1, hi = LINF;
-    while(lo <= hi) {
-        ll mid = lo + (hi - lo) / 2ll;
-        int i=1;
-        int cnt = 0;
-        while(i < n) {
-            if(a[i] - a[i-1] <= mid) {
-                ++cnt;
-                ++i;
-            }
-            ++i;
-        }
-
-        if(cnt >= n/2) {
-            ans = mid;
-            hi = mid-1;
-        } else {
-            lo = mid + 1;
-        }
+    if(n == 1 || n == 3) {
+        cout << -1 << nl;
+        return;
     }
 
-    cout << ans << nl;
+    if(n % 2 == 0) {
+        vi a(n);
+        int i = 0,cnt=1;
+        while(i < n) {
+            a[i] = a[i+1] = cnt++;
+            i += 2;
+        }
+        // dbg(a);
+        trav(x,a) {
+            cout << x << " ";
+        }
+        cout << nl;
+    } else {
+        // test(n);
+        if(n < 27) {
+            cout << -1 << nl;
+            return;
+        }
+        vi a(n);
+        a[0] = a[9] = a[25] = 1;
+        a[22] = a[26] = 2;
+        int i = 1;
+        int cnt = 3;
+        while(i < n) {
+            // dbg(i);
+            if(a[i] == 0 && a[i+1] == 0) {
+                a[i] = a[i+1] = cnt++;
+                i += 2;
+            } else {
+                ++i;
+            }
+        }
+        trav(x,a) {
+                cout << x << " ";
+        }
+        cout << nl;
+    }
 }
 
-int main() {
+int main(){
    ios::sync_with_stdio(false);cin.tie(nullptr);
    int t = 1;
+   int k = 27;
+//    for(int i=k;i<=k;i+=2) {
+//         test(i);
+//    }
    cin>>t;
    while(t--)solve();
 }

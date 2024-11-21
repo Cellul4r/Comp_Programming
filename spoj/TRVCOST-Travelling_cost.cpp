@@ -75,40 +75,58 @@ const int N =1e5+1;
 const int INF = 1e9+7;
 const long long LINF = 1e18+7;
 
+vector<pi> adj[501];
+int dist[501];
+bool vis[501];
 void solve(){
 
     int n;
     cin>>n;
-    vl a(n);
-    trav(x,a) cin>>x;
-    ll ans = LINF;
-    ll lo = 1, hi = LINF;
-    while(lo <= hi) {
-        ll mid = lo + (hi - lo) / 2ll;
-        int i=1;
-        int cnt = 0;
-        while(i < n) {
-            if(a[i] - a[i-1] <= mid) {
-                ++cnt;
-                ++i;
-            }
-            ++i;
-        }
+    rep(i,501) {
+        dist[i] = INF;
+    }
+    rep(i,n) {
+        int u,v,w;
+        cin>>u>>v>>w;
+        adj[u].emplace_back(mp(v,w));
+        adj[v].emplace_back(mp(u,w));
+    }
+    pqg<pi> Q;
+    int s;
+    cin>>s;
+    dist[s] = 0;
+    Q.push(mp(dist[s],s));
+    while(!Q.empty()) {
+        int u = Q.top().second;
+        Q.pop();
+        if(vis[u]) continue;
+        vis[u] = true;
 
-        if(cnt >= n/2) {
-            ans = mid;
-            hi = mid-1;
-        } else {
-            lo = mid + 1;
+        for(auto vw:adj[u]) {
+            int v = vw.first, w = vw.second;
+            if(!vis[v] && dist[u] + w < dist[v]) {
+                dist[v] = dist[u] + w;
+                Q.push(mp(dist[v],v));
+            }
         }
     }
-
-    cout << ans << nl;
+    int q;
+    cin>>q;
+    rep(i,q) {
+        int v;
+        cin>>v;
+        if(dist[v] == INF) {
+            cout << "NO PATH";
+        } else {
+            cout << dist[v];
+        }
+        cout << nl;
+    }
 }
 
-int main() {
+int main(){
    ios::sync_with_stdio(false);cin.tie(nullptr);
    int t = 1;
-   cin>>t;
+//    cin>>t;
    while(t--)solve();
 }

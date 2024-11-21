@@ -75,40 +75,54 @@ const int N =1e5+1;
 const int INF = 1e9+7;
 const long long LINF = 1e18+7;
 
-void solve(){
+void bfs(int s, vi& level, vi& par, vector<vi>& mat, int n, bool k) {
 
-    int n;
-    cin>>n;
-    vl a(n);
-    trav(x,a) cin>>x;
-    ll ans = LINF;
-    ll lo = 1, hi = LINF;
-    while(lo <= hi) {
-        ll mid = lo + (hi - lo) / 2ll;
-        int i=1;
-        int cnt = 0;
-        while(i < n) {
-            if(a[i] - a[i-1] <= mid) {
-                ++cnt;
-                ++i;
+    queue<int> Q;
+    level[s] = 0;
+    Q.push(s);
+    while(!Q.empty()) {
+        auto u = Q.front();
+        Q.pop();
+        rep(i,n) {
+            // railways
+            if(k && mat[u][i] && level[i] == -1) {
+                level[i] = level[u] + 1;
+                par[i] = u;
+                Q.push(i);
+            } else if(!k && mat[u][i] == 0 && u != i && level[i] == -1) {
+                level[i] = level[u] + 1;
+                par[i] = u;
+                Q.push(i);
             }
-            ++i;
-        }
-
-        if(cnt >= n/2) {
-            ans = mid;
-            hi = mid-1;
-        } else {
-            lo = mid + 1;
         }
     }
+}
+void solve(){
 
-    cout << ans << nl;
+    int n,m;
+    cin>>n>>m;
+    vector<vi> mat(n,vi(n));
+    rep(i,m) {
+        int u,v;
+        cin>>u>>v;
+        --u,--v;
+        mat[u][v] = 1;
+        mat[v][u] = 1;
+    }
+    vi level1(n,-1), level2(n,-1), par1(n), par2(n);
+    bfs(0,level1,par1,mat,n,true);
+    bfs(0,level2,par2,mat,n,false);
+    int x = level1[n-1], y = level2[n-1];
+    if(x == -1 || y == -1) {
+        cout << -1;
+        return;
+    }
+    cout << max(x,y); 
 }
 
-int main() {
+int main(){
    ios::sync_with_stdio(false);cin.tie(nullptr);
    int t = 1;
-   cin>>t;
+//    cin>>t;
    while(t--)solve();
 }

@@ -75,38 +75,36 @@ const int N =1e5+1;
 const int INF = 1e9+7;
 const long long LINF = 1e18+7;
 
+ll ceil_(ll a, ll b) {
+
+    return (a+b-1ll) / b;
+}
 void solve(){
 
-    int n;
-    cin>>n;
-    vl a(n);
-    trav(x,a) cin>>x;
-    ll ans = LINF;
-    ll lo = 1, hi = LINF;
-    while(lo <= hi) {
-        ll mid = lo + (hi - lo) / 2ll;
-        int i=1;
-        int cnt = 0;
-        while(i < n) {
-            if(a[i] - a[i-1] <= mid) {
-                ++cnt;
-                ++i;
-            }
-            ++i;
-        }
-
-        if(cnt >= n/2) {
-            ans = mid;
-            hi = mid-1;
+    ll n,b,c;
+    cin>>n>>b>>c;
+    if(b == 0) {
+        if(n > c+2) {
+            cout << -1 << nl;
         } else {
-            lo = mid + 1;
+            if(c >= n) {
+                cout << n << nl;
+            } else {
+                cout << n-1 << nl;
+            }
         }
+        return;
     }
+    if(c >= n) {
+        cout << n << nl;
+        return;
+    }
+    cout << max(0ll,n - (n-c+b)/b) << nl;
+    
 
-    cout << ans << nl;
 }
 
-int main() {
+int main(){
    ios::sync_with_stdio(false);cin.tie(nullptr);
    int t = 1;
    cin>>t;

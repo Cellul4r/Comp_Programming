@@ -79,36 +79,42 @@ void solve(){
 
     int n;
     cin>>n;
-    vl a(n);
-    trav(x,a) cin>>x;
-    ll ans = LINF;
-    ll lo = 1, hi = LINF;
-    while(lo <= hi) {
-        ll mid = lo + (hi - lo) / 2ll;
-        int i=1;
-        int cnt = 0;
-        while(i < n) {
-            if(a[i] - a[i-1] <= mid) {
-                ++cnt;
-                ++i;
-            }
-            ++i;
+    ll s = 1ll*n*(n+1)/2ll;
+    if(s & 1) {
+        cout << "NO";
+        return;
+    }
+    cout << "YES" << nl;
+    s /= 2;
+    ll right = n, sum1 = 0;
+    vi set1,set2;
+    while(right > 0) {
+
+        ll remain = s - sum1;
+        if(remain >= right) {
+            set1.emplace_back(right);
+            sum1 += right;
+        } else {
+            set2.emplace_back(right);
         }
 
-        if(cnt >= n/2) {
-            ans = mid;
-            hi = mid-1;
-        } else {
-            lo = mid + 1;
-        }
+        --right;
     }
 
-    cout << ans << nl;
+    cout << sz(set1) << nl;
+    trav(x,set1) {
+        cout << x << " ";
+    }
+    cout << nl;
+    cout << sz(set2) << nl;
+    trav(x,set2) {
+        cout << x << " ";
+    }
 }
 
-int main() {
+int main(){
    ios::sync_with_stdio(false);cin.tie(nullptr);
    int t = 1;
-   cin>>t;
+//    cin>>t;
    while(t--)solve();
 }

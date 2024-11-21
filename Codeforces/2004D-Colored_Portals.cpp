@@ -72,41 +72,87 @@ mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
 const char nl = '\n';
 const int N =1e5+1;
-const int INF = 1e9+7;
+const int INF = 1e9;
 const long long LINF = 1e18+7;
 
+int idx(string s) {
+    if(s == "BG") return 0;
+    if(s == "BR") return 1;
+    if(s == "BY") return 2;
+    if(s == "GR") return 3;
+    if(s == "GY") return 4;
+    if(s == "RY") return 5;
+    return -1;
+}
 void solve(){
 
-    int n;
-    cin>>n;
-    vl a(n);
-    trav(x,a) cin>>x;
-    ll ans = LINF;
-    ll lo = 1, hi = LINF;
-    while(lo <= hi) {
-        ll mid = lo + (hi - lo) / 2ll;
-        int i=1;
-        int cnt = 0;
-        while(i < n) {
-            if(a[i] - a[i-1] <= mid) {
-                ++cnt;
-                ++i;
-            }
-            ++i;
+    int n,q;
+    cin>>n>>q;
+    vector<vi> pre(n+1, vi(6));
+    vector<string> a(n);
+    rep(i,n) {
+        string s;
+        cin>>s;
+        a[i] = s;
+        int k = idx(s);
+        rep(j,6) {
+            pre[i+1][j] = pre[i][j]; 
         }
-
-        if(cnt >= n/2) {
-            ans = mid;
-            hi = mid-1;
+        pre[i+1][k]++;
+        
+    }
+    // dbg(pre);
+    rep(i,q) {
+        int x,y;
+        cin>>x>>y;
+        if(x > y) swap(x,y);
+        if(x == y) {
+            cout << 0 << nl;
+        } else if(a[x-1][0] == a[y-1][0] || a[x-1][0] == a[y-1][1] || a[x-1][1] == a[y-1][0] || a[x-1][1] == a[y-1][1]){
+            cout << y-x << nl;
         } else {
-            lo = mid + 1;
+            int b = idx(a[x-1]);
+            int c = idx(a[y-1]);
+            int cnt = y-x+1- (pre[y][b] - pre[x-1][b]) - (pre[y][c] - pre[x-1][c]);
+            if(cnt > 0) {
+                cout << y-x << nl;
+            } else {
+                int ans = INF;
+                int lo = y+1, hi = n;
+                while(lo <= hi) {
+                    auto mid = lo + (hi - lo) / 2;
+                    int k = mid-y- (pre[mid][b] - pre[y][b]) - (pre[mid][c] - pre[y][c]);
+                    if(k > 0) {
+                        ckmin(ans, abs(x-mid) + abs(y-mid));
+                        hi = mid-1;
+                    } else {
+                        lo = mid+1;
+                    }
+                }
+                lo = 1,hi=x-1;
+                while(lo <= hi) {
+                    auto mid = lo + (hi - lo) / 2;
+                    int k = x-mid - (pre[x-1][b] - pre[mid-1][b]) - (pre[x-1][c] - pre[mid-1][c]);
+                    if(k > 0) {
+                        ckmin(ans, abs(x-mid) + abs(y-mid));
+                        lo = mid+1;
+                    } else {
+                        hi = mid-1;
+                    }
+                }
+                    // dbg(ans);
+                    // dbg(ans2);
+                if(ans != INF) {
+                    cout << ans << nl;
+                } else {
+                    cout << -1 << nl;
+                }
+            }
         }
     }
-
-    cout << ans << nl;
 }
 
-int main() {
+int main(){
    ios::sync_with_stdio(false);cin.tie(nullptr);
    int t = 1;
    cin>>t;

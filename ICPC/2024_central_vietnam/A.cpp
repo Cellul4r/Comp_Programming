@@ -75,40 +75,48 @@ const int N =1e5+1;
 const int INF = 1e9+7;
 const long long LINF = 1e18+7;
 
+int n,W,h;
+int c[101],w[101];
+int dp[101][100001];
 void solve(){
 
-    int n;
-    cin>>n;
-    vl a(n);
-    trav(x,a) cin>>x;
-    ll ans = LINF;
-    ll lo = 1, hi = LINF;
-    while(lo <= hi) {
-        ll mid = lo + (hi - lo) / 2ll;
-        int i=1;
-        int cnt = 0;
-        while(i < n) {
-            if(a[i] - a[i-1] <= mid) {
-                ++cnt;
-                ++i;
-            }
-            ++i;
-        }
-
-        if(cnt >= n/2) {
-            ans = mid;
-            hi = mid-1;
-        } else {
-            lo = mid + 1;
-        }
+    scanf(" %d %d %d", &n, &W, &h);
+    int sum = 0;
+    rep(i,n) {
+        scanf(" %d %d", &w[i],&c[i]);
+        sum += c[i];
     }
-
-    cout << ans << nl;
+    int ans = 0;
+    for(int j=0;j<=sum;++j){
+            dp[0][j] = W+1; 
+        }
+    dp[0][0] = 0;
+    for(int chose=0;chose<n;++chose){
+        int tmp = 0;
+        for(int i=0;i<n;++i){
+            for(int j=sum;j>=0;--j){
+                dp[i+1][j] = dp[i][j];
+                if(i == chose) continue;
+                if(c[i] <= j) {
+                    dp[i+1][j] = min(dp[i+1][j], dp[i][j-c[i]] + w[i]);
+                }
+                if(dp[i+1][j] <= W) {
+                    tmp = max(tmp,j);
+                }
+            }
+        }
+        if(w[chose] <= h) {
+            tmp += c[chose];
+        }
+        // dbg(tmp);
+        ans = max(ans,tmp);
+    }
+    printf("%d", ans);
 }
 
-int main() {
-   ios::sync_with_stdio(false);cin.tie(nullptr);
+int main(){
+//    ios::sync_with_stdio(false);cin.tie(nullptr);
    int t = 1;
-   cin>>t;
+//    cin>>t;
    while(t--)solve();
 }

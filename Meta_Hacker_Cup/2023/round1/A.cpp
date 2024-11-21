@@ -76,29 +76,41 @@ const int INF = 1e9+7;
 const long long LINF = 1e18+7;
 
 void solve(){
-    int n;
-    cin>>n;
-    vector<int> a(n);
-    for(int i=0;i<n;++i) {
-        cin>>a[i];
+
+    int n,a,b;
+    string s;
+    cin>>n>>a>>b;
+    cin>>s;
+    int x=0,y=0;
+    int cnt = 0;
+    while(cnt <= 30) {
+
+        trav(k,s) {
+            if(k == 'N') {
+                ++y;
+            } else if(k == 'E') {
+                ++x;
+            } else if(k == 'S') {
+                --y;
+            } else {
+                --x;
+            }
+        }
+        if(x == a && y == b) {
+            cout << "YES" << nl;
+            return;
+        }
+
     }
-    sort(all(a));
-    // dbg(a);
-    int len = sz(a);
-    double ans = 0.00;
-    if(n == 5) {
-        ans = max((a[len-1] + a[len-2] - (a[0] + a[2])) / 2.00, ((a[len-1] + a[len-3]) - (a[0]+a[1])) / 2.00);
-    } else {
-        double rightMost = a[len-1] + a[len-2];
-        double leftMost = a[0]+a[1];
-        ans = (rightMost - leftMost) / 2.00;
-    }
-    cout << fixed << setprecision(10) << ans << endl;
+    cout << "NO" << nl;
 }
 
 int main(){
 ios::sync_with_stdio(false);cin.tie(nullptr);
 int t = 1;
 cin>>t;
-   FOR(i,1,t+1) {cout << "Case #" << i << ": ";solve();}
+   while(t--) {
+        solve();
+   }
+   return 0;
 }

@@ -81,34 +81,28 @@ void solve(){
     cin>>n;
     vl a(n);
     trav(x,a) cin>>x;
-    ll ans = LINF;
-    ll lo = 1, hi = LINF;
-    while(lo <= hi) {
-        ll mid = lo + (hi - lo) / 2ll;
-        int i=1;
-        int cnt = 0;
-        while(i < n) {
-            if(a[i] - a[i-1] <= mid) {
-                ++cnt;
-                ++i;
+    vector<vl> dp(n, vl(n));
+    for(int l=n-1;l>=0;--l) {
+        for(int r=l;r<=n-1;++r) {
+            dp[l][r] = LINF;
+            if(l == r) dp[l][r] = 0;
+            ll sum = 0;
+            for(int x=l;x<=r;++x) {
+                sum += a[x];
             }
-            ++i;
-        }
-
-        if(cnt >= n/2) {
-            ans = mid;
-            hi = mid-1;
-        } else {
-            lo = mid + 1;
+            for(int x=l;x<=r-1;++x) {
+                ckmin(dp[l][r], sum + dp[l][x] + dp[x+1][r]);
+                // dbg(x,dp[l][r],(a[x]+a[x+1])*(1ll*r-l));
+            }
+            // dbg(l,r,dp[l][r]);
         }
     }
-
-    cout << ans << nl;
+    cout << dp[0][n-1];
 }
 
-int main() {
+int main(){
    ios::sync_with_stdio(false);cin.tie(nullptr);
    int t = 1;
-   cin>>t;
+//    cin>>t;
    while(t--)solve();
 }

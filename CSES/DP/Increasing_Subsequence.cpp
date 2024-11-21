@@ -79,36 +79,28 @@ void solve(){
 
     int n;
     cin>>n;
-    vl a(n);
-    trav(x,a) cin>>x;
-    ll ans = LINF;
-    ll lo = 1, hi = LINF;
-    while(lo <= hi) {
-        ll mid = lo + (hi - lo) / 2ll;
-        int i=1;
-        int cnt = 0;
-        while(i < n) {
-            if(a[i] - a[i-1] <= mid) {
-                ++cnt;
-                ++i;
-            }
-            ++i;
-        }
-
-        if(cnt >= n/2) {
-            ans = mid;
-            hi = mid-1;
+    vi a(n);
+    trav(x,a) {
+        cin>>x;
+    }
+    vi ans;
+    ans.emplace_back(a[0]);
+    FOR(i,1,n) {
+        if(a[i] > ans.back()) {
+            ans.emplace_back(a[i]);
         } else {
-            lo = mid + 1;
+
+            auto idx = lb(all(ans), a[i]) - ans.begin();
+            ans[idx] = a[i];
         }
     }
 
-    cout << ans << nl;
+    cout << sz(ans);
 }
 
-int main() {
+int main(){
    ios::sync_with_stdio(false);cin.tie(nullptr);
    int t = 1;
-   cin>>t;
+//    cin>>t;
    while(t--)solve();
 }

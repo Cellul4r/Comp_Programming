@@ -75,40 +75,42 @@ const int N =1e5+1;
 const int INF = 1e9+7;
 const long long LINF = 1e18+7;
 
-void solve(){
+set<string> ans;
+void recur(int i, vi alpha, string now, string s) {
 
-    int n;
-    cin>>n;
-    vl a(n);
-    trav(x,a) cin>>x;
-    ll ans = LINF;
-    ll lo = 1, hi = LINF;
-    while(lo <= hi) {
-        ll mid = lo + (hi - lo) / 2ll;
-        int i=1;
-        int cnt = 0;
-        while(i < n) {
-            if(a[i] - a[i-1] <= mid) {
-                ++cnt;
-                ++i;
-            }
-            ++i;
-        }
-
-        if(cnt >= n/2) {
-            ans = mid;
-            hi = mid-1;
-        } else {
-            lo = mid + 1;
+    if(i == sz(s)) {
+        ans.ins(now);
+        return;
+    }
+    rep(j,26) {
+        if(alpha[j] != 0) {
+            alpha[j] -= 1; 
+            string nnow = now;
+            nnow += (j + 'a');
+            recur(i+1, alpha, nnow, s);
+            alpha[j] += 1;
         }
     }
+}
+void solve(){
 
-    cout << ans << nl;
+    string s;
+    cin>>s;
+    vi alpha(26);
+    trav(x,s) {
+        alpha[x-'a']++;
+    }
+    recur(0,alpha,"",s);
+
+    cout << sz(ans) << nl;
+    trav(x,ans) {
+        cout << x << nl;
+    }
 }
 
-int main() {
+int main(){
    ios::sync_with_stdio(false);cin.tie(nullptr);
    int t = 1;
-   cin>>t;
+//    cin>>t;
    while(t--)solve();
 }

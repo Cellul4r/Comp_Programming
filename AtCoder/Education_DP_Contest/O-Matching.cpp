@@ -79,36 +79,37 @@ void solve(){
 
     int n;
     cin>>n;
-    vl a(n);
-    trav(x,a) cin>>x;
-    ll ans = LINF;
-    ll lo = 1, hi = LINF;
-    while(lo <= hi) {
-        ll mid = lo + (hi - lo) / 2ll;
-        int i=1;
-        int cnt = 0;
-        while(i < n) {
-            if(a[i] - a[i-1] <= mid) {
-                ++cnt;
-                ++i;
-            }
-            ++i;
-        }
-
-        if(cnt >= n/2) {
-            ans = mid;
-            hi = mid-1;
-        } else {
-            lo = mid + 1;
+    vector<vector<bool>> a(n,vector<bool>(n));
+    rep(i,n) {
+        rep(j,n) {
+            int x;
+            cin>>x;
+            a[i][j] = x;
         }
     }
-
-    cout << ans << nl;
+    // all subset that we choose woman 2^n possible ways usign bitmask
+    // the answer is the set the we choose all woman mask = 2^n-1 (111111....)
+    // we want to choose at ith man to match jth woman if it not merge in the mask yet
+    // just merge it!
+    vi dp(1 << n);
+    dp[0] = 1;
+    for(int mask=0;mask < (1 << n) - 1; ++mask) {
+        int i = __builtin_popcount(mask);
+        for(int j=0;j<n;++j) {
+            if(a[i][j] && !(mask & (1 << j))) {
+                int nmask = mask | (1 << j);
+                // dbg(mask,nmask);
+                dp[nmask] += dp[mask];
+                dp[nmask] %= INF;
+            }
+        }
+    }
+    cout << dp[(1<<n)-1];
 }
 
-int main() {
+int main(){
    ios::sync_with_stdio(false);cin.tie(nullptr);
    int t = 1;
-   cin>>t;
+//    cin>>t;
    while(t--)solve();
 }

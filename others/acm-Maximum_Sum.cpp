@@ -75,40 +75,48 @@ const int N =1e5+1;
 const int INF = 1e9+7;
 const long long LINF = 1e18+7;
 
+int kadane(vi& a, int n) {
+
+    int maxSum = a[0];
+    int currSum = a[0];
+    FOR(i,1,n) {
+        currSum = max(currSum + a[i], a[i]);
+        ckmax(maxSum,currSum);
+    }
+
+    return maxSum;
+}
 void solve(){
 
     int n;
     cin>>n;
-    vl a(n);
-    trav(x,a) cin>>x;
-    ll ans = LINF;
-    ll lo = 1, hi = LINF;
-    while(lo <= hi) {
-        ll mid = lo + (hi - lo) / 2ll;
-        int i=1;
-        int cnt = 0;
-        while(i < n) {
-            if(a[i] - a[i-1] <= mid) {
-                ++cnt;
-                ++i;
-            }
-            ++i;
+    int maxSum = -INF;
+    vector<vi> a(n,vi(n));
+    rep(i,n) {
+        rep(j,n) {
+            cin>>a[i][j];
         }
+    }
+    rep(left,n) {
+        vi tmp(n);
+        FOR(right,left,n) {
 
-        if(cnt >= n/2) {
-            ans = mid;
-            hi = mid-1;
-        } else {
-            lo = mid + 1;
+            rep(i,n) {
+                tmp[i] += a[i][right];
+            }
+
+            int sum = kadane(tmp,n);
+
+            ckmax(maxSum,sum);
         }
     }
 
-    cout << ans << nl;
+    cout << maxSum;
 }
 
-int main() {
+int main(){
    ios::sync_with_stdio(false);cin.tie(nullptr);
    int t = 1;
-   cin>>t;
+//    cin>>t;
    while(t--)solve();
 }

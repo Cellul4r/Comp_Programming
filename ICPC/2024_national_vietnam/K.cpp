@@ -75,38 +75,64 @@ const int N =1e5+1;
 const int INF = 1e9+7;
 const long long LINF = 1e18+7;
 
+bool dp[105];
+// bool check(int zero, int a, int b) {
+
+//     if(zero >= a && zero <= b) {
+//         return true;
+//     }
+//     if(zero < a) {
+//         return false;
+//     }
+// }
+int a,b;
+bool recur(int i) {
+
+    if(i == 0) return true;
+    if(dp[i]) return dp[i];
+    // dbg(i);
+    bool flag = false;
+    for(int j=a;j<=b;++j) {
+        if(j > i) break;
+        if(recur(i-j)) {
+            flag = true;
+            break;
+        }
+    }
+    return dp[i] = flag;
+}
 void solve(){
 
     int n;
-    cin>>n;
-    vl a(n);
-    trav(x,a) cin>>x;
-    ll ans = LINF;
-    ll lo = 1, hi = LINF;
-    while(lo <= hi) {
-        ll mid = lo + (hi - lo) / 2ll;
-        int i=1;
-        int cnt = 0;
-        while(i < n) {
-            if(a[i] - a[i-1] <= mid) {
-                ++cnt;
-                ++i;
+    cin>>n>>a>>b;
+    // recur(12);
+    // cout << dp[12];
+    // cout << dp[1];
+    string s;
+    cin>>s;
+    
+    int prefixSum = 0;
+    vi flip(n+1);
+    FOR(i,1,n+1) {
+        prefixSum += flip[i];
+        int x = (s[i-1] - '0' + prefixSum) % 2;
+
+        if(x == 0) {
+            if(i+a-1 > n) {
+                cout << "NO" << nl;
+                return;
             }
-            ++i;
+
+            flip[i] += 1;
+            int flipSize = min(b,n-i);
+            prefixSum += 1;
         }
 
-        if(cnt >= n/2) {
-            ans = mid;
-            hi = mid-1;
-        } else {
-            lo = mid + 1;
-        }
     }
-
-    cout << ans << nl;
+    cout << "YES" << nl;
 }
 
-int main() {
+int main(){
    ios::sync_with_stdio(false);cin.tie(nullptr);
    int t = 1;
    cin>>t;

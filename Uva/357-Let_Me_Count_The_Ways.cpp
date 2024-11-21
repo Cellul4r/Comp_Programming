@@ -75,40 +75,34 @@ const int N =1e5+1;
 const int INF = 1e9+7;
 const long long LINF = 1e18+7;
 
+const ll c[] = {1,5,10,25,50};
 void solve(){
 
     int n;
-    cin>>n;
-    vl a(n);
-    trav(x,a) cin>>x;
-    ll ans = LINF;
-    ll lo = 1, hi = LINF;
-    while(lo <= hi) {
-        ll mid = lo + (hi - lo) / 2ll;
-        int i=1;
-        int cnt = 0;
-        while(i < n) {
-            if(a[i] - a[i-1] <= mid) {
-                ++cnt;
-                ++i;
+    while(cin>>n) {
+        vl dp(n+1);
+        dp[0] = 1;
+        rep(j,5){
+            FOR(i,c[j],n+1){
+                dp[i] += dp[i-c[j]];
+                // dbg(i+c[j]);
             }
-            ++i;
         }
 
-        if(cnt >= n/2) {
-            ans = mid;
-            hi = mid-1;
+        if(dp[n] == 1) {
+            cout << "There is only 1 way to produce " << n << " cents change.";
         } else {
-            lo = mid + 1;
+            cout << "There are " << dp[n] << " ways to produce " << n << " cents change.";
         }
+        cout << nl;
     }
-
-    cout << ans << nl;
 }
 
-int main() {
+int main(){
+    // freopen("input.txt", "r", stdin);
+    // freopen("output.txt", "w", stdout);
    ios::sync_with_stdio(false);cin.tie(nullptr);
    int t = 1;
-   cin>>t;
+//    cin>>t;
    while(t--)solve();
 }

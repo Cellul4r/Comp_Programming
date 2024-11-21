@@ -75,40 +75,53 @@ const int N =1e5+1;
 const int INF = 1e9+7;
 const long long LINF = 1e18+7;
 
+int dx[] = {-1,0,1,0}, dy[] = {0,1,0,-1};
 void solve(){
 
-    int n;
-    cin>>n;
-    vl a(n);
-    trav(x,a) cin>>x;
-    ll ans = LINF;
-    ll lo = 1, hi = LINF;
-    while(lo <= hi) {
-        ll mid = lo + (hi - lo) / 2ll;
-        int i=1;
-        int cnt = 0;
-        while(i < n) {
-            if(a[i] - a[i-1] <= mid) {
-                ++cnt;
-                ++i;
+    int n,m;
+    cin>>n>>m;
+    int k;
+    cin>>k;
+    queue<pi> Q;
+    vector<vi> level(n, vi(m,-1));
+    int maxLevel = 0;
+    rep(i,k) {
+        int x,y;
+        cin>>x>>y;
+        --x,--y;
+        level[x][y] = 0;
+        Q.push(mp(x,y));
+    }
+    while(!Q.empty()) {
+        int ux = Q.front().first, uy = Q.front().second;
+        Q.pop();
+        // dbg(ux,uy,level[ux][uy]);
+        int vx,vy;
+        rep(i,4) {
+            vx = ux + dx[i], vy = uy + dy[i];
+            if(vx < 0 || vy < 0 || vx >= n || vy >= m || level[vx][vy] != -1) {
+                continue;
             }
-            ++i;
-        }
-
-        if(cnt >= n/2) {
-            ans = mid;
-            hi = mid-1;
-        } else {
-            lo = mid + 1;
+            level[vx][vy] = level[ux][uy] + 1;
+            ckmax(maxLevel, level[vx][vy]);
+            Q.push(mp(vx,vy));
         }
     }
-
-    cout << ans << nl;
+    rep(i,n) {
+        rep(j,m) {
+            if(level[i][j] == maxLevel) {
+                cout << i+1 << " " << j+1;
+                return;
+            }
+        }
+    }
 }
 
-int main() {
+int main(){
+    freopen("input.txt", "r", stdin);
+    freopen("output.txt", "w", stdout);
    ios::sync_with_stdio(false);cin.tie(nullptr);
    int t = 1;
-   cin>>t;
+//    cin>>t;
    while(t--)solve();
 }

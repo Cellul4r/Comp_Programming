@@ -71,44 +71,70 @@ template<class T> bool ckmax(T& a, const T& b) { return a < b ? a = b, 1 : 0; }
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
 const char nl = '\n';
-const int N =1e5+1;
+const int N =1005;
 const int INF = 1e9+7;
 const long long LINF = 1e18+7;
 
+struct edge {
+
+    int u,v,w;
+    
+    bool operator<(const edge& rhs) const{
+        return w < rhs.w;
+    }
+};
+
+//DSU
+ll parent[N], sz[N];
+ll find(ll a){ return a == parent[a] ? a : parent[a] = find(parent[a]); }
+void merge(ll u, ll v) {
+    u = find(u), v=find(v);
+    if (u!=v) {
+        if (sz[u]<sz[v]) swap(u, v);
+        sz[u] += sz[v];
+        parent[v] = u;
+    }
+}
 void solve(){
 
-    int n;
+    int n,m;
     cin>>n;
-    vl a(n);
+    vi a(n);
+    rep(i,n) {
+        parent[i] = i;
+        sz[i] = 1;
+    }
     trav(x,a) cin>>x;
-    ll ans = LINF;
-    ll lo = 1, hi = LINF;
-    while(lo <= hi) {
-        ll mid = lo + (hi - lo) / 2ll;
-        int i=1;
-        int cnt = 0;
-        while(i < n) {
-            if(a[i] - a[i-1] <= mid) {
-                ++cnt;
-                ++i;
-            }
-            ++i;
-        }
-
-        if(cnt >= n/2) {
-            ans = mid;
-            hi = mid-1;
-        } else {
-            lo = mid + 1;
+    cin>>m;
+    vector<edge> Edges;
+    rep(i,m) {
+        int u,v,c;
+        cin>>u>>v>>c;
+        --u,--v;
+        Edges.push_back({u,v,c});
+    }
+    sort(all(Edges));
+    // trav(x,Edges) {
+    //     cout << x.u << " " << x.v << " " << x.w << nl;
+    // }
+    int ans = 0,cnt = 1;
+    vector<bool> vis(n);
+    for(auto edge:Edges) {
+        auto u = edge.u,v = edge.v, w = edge.w;
+        if(a[u] > a[v] && !vis[v] && find(u) != find(v)) {
+            ++cnt;
+            vis[v] = true;
+            ans += w;
+            merge(u,v);
         }
     }
-
-    cout << ans << nl;
+    // dbg(cnt);
+    cout << (cnt == n ? ans : -1);
 }
 
-int main() {
+int main(){
    ios::sync_with_stdio(false);cin.tie(nullptr);
    int t = 1;
-   cin>>t;
+//    cin>>t;
    while(t--)solve();
 }

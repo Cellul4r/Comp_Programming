@@ -75,40 +75,44 @@ const int N =1e5+1;
 const int INF = 1e9+7;
 const long long LINF = 1e18+7;
 
+int n,m;
 void solve(){
 
-    int n;
-    cin>>n;
-    vl a(n);
-    trav(x,a) cin>>x;
-    ll ans = LINF;
-    ll lo = 1, hi = LINF;
-    while(lo <= hi) {
-        ll mid = lo + (hi - lo) / 2ll;
-        int i=1;
-        int cnt = 0;
-        while(i < n) {
-            if(a[i] - a[i-1] <= mid) {
-                ++cnt;
-                ++i;
-            }
-            ++i;
-        }
-
-        if(cnt >= n/2) {
-            ans = mid;
-            hi = mid-1;
-        } else {
-            lo = mid + 1;
+    vi p(n), f(n);
+    rep(i,n) {
+        cin>>p[i]>>f[i];
+    }
+    int u = m;
+    if(u > 1800) u += 200;
+    // dbg(u);
+    vi dp(u+1);
+    rep(i,n){
+        FORd(j,p[i],u+1){
+            if(dp[j-p[i]] > 0 || j == p[i]) dp[j] = max(dp[j],f[i] + dp[j-p[i]]);
+            // dbg(i+1,j,dp[i+1][j]);
         }
     }
-
+    int ans = 0;
+    if(m >= 1801 && m <= 2000) {
+        ans = *max_element(dp.begin(),dp.begin()+m);
+        // dbg(ans);
+        FOR(j,2001,u+1) {
+            // dbg(dp[n][j]);
+            ckmax(ans,dp[j]);
+        }
+    } else {
+        ans = *max_element(all(dp));
+    }
     cout << ans << nl;
 }
 
-int main() {
+int main(){
+    // freopen("input.txt", "r", stdin);
+    // freopen("output.txt", "w", stdout);
    ios::sync_with_stdio(false);cin.tie(nullptr);
    int t = 1;
-   cin>>t;
-   while(t--)solve();
+//    cin>>t;
+   while(cin>>m>>n){
+    solve();
+   }
 }

@@ -78,37 +78,36 @@ const long long LINF = 1e18+7;
 void solve(){
 
     int n;
-    cin>>n;
-    vl a(n);
-    trav(x,a) cin>>x;
-    ll ans = LINF;
-    ll lo = 1, hi = LINF;
-    while(lo <= hi) {
-        ll mid = lo + (hi - lo) / 2ll;
-        int i=1;
-        int cnt = 0;
-        while(i < n) {
-            if(a[i] - a[i-1] <= mid) {
-                ++cnt;
-                ++i;
-            }
-            ++i;
+    while(cin>>n) {
+        if(n == 0) {
+            break;
+        }
+        vi a(n);
+        rep(i,n) {
+            cin>>a[i];
+        }
+        // dbg(a);
+        int maxSum = a[0];
+        int now = a[0];
+        FOR(i,1,n) {
+            now = max(now + a[i], a[i]);
+            maxSum = max(maxSum,now);
         }
 
-        if(cnt >= n/2) {
-            ans = mid;
-            hi = mid-1;
+        if(maxSum <= 0) {
+            cout << "Losing streak.";
         } else {
-            lo = mid + 1;
+            cout << "The maximum winning streak is " << maxSum << ".";
         }
+        cout << nl;
     }
-
-    cout << ans << nl;
 }
 
-int main() {
+int main(){
+    //  freopen("input.txt", "r", stdin);
+    // freopen("output.txt", "w", stdout);
    ios::sync_with_stdio(false);cin.tie(nullptr);
    int t = 1;
-   cin>>t;
+//    cin>>t;
    while(t--)solve();
 }

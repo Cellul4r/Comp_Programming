@@ -75,40 +75,86 @@ const int N =1e5+1;
 const int INF = 1e9+7;
 const long long LINF = 1e18+7;
 
-void solve(){
+bool dfs(int i, int j, int n, int k, int water, vector<vector<bool>>& vis, vector<string>& a) {
 
-    int n;
-    cin>>n;
-    vl a(n);
-    trav(x,a) cin>>x;
-    ll ans = LINF;
-    ll lo = 1, hi = LINF;
-    while(lo <= hi) {
-        ll mid = lo + (hi - lo) / 2ll;
-        int i=1;
-        int cnt = 0;
-        while(i < n) {
-            if(a[i] - a[i-1] <= mid) {
-                ++cnt;
-                ++i;
-            }
-            ++i;
+    if(j >= n) {
+        return true;
+    }
+    if(i < 0 || j < 0 || i >= 2 || j <= water || a[i][j] == 'X' || vis[i][j]) {
+        return false;
+    }
+
+    vis[i][j] = true;
+    // dbg(i,j);
+    int ni,nj;
+    ni = i, nj = j;
+    if(dfs(ni,nj-1,n,k,water+1,vis,a)) {
+        vis[i][j] = false;
+        return true;
+    }
+    if(dfs(ni,nj+1,n,k,water+1,vis,a)) {
+        vis[i][j] = false;
+        return true;
+    }
+    if(dfs(ni == 0 ? 1 : 0, nj + k,n,k,water+1,vis,a)) {
+        vis[i][j] = false;
+        return true;
+    }
+    vis[i][j] = false;
+    return false;
+}
+
+bool isValid(int i, int j, int water) {
+
+    return !(i < 0 || j < 0 || i >= 2 || j <= water);
+}
+bool bfs(int n, int k, vector<string>& a) {
+
+    queue<pi> Q;
+    vector<vi> level(2, vi(n+k+1,-1));
+    Q.push(mp(0,0));
+    while(!Q.empty()) {
+        int ui = Q.front().first, uj = Q.front().second;
+        Q.pop();
+        if(uj >= n) {
+            return true;
         }
-
-        if(cnt >= n/2) {
-            ans = mid;
-            hi = mid-1;
-        } else {
-            lo = mid + 1;
+        if(a[ui][uj] == 'X') continue;
+        int vi = ui, vj = uj;
+        vj = uj-1;
+        if(uj > 0 && isValid(vi,vj, level[ui][uj]+1) && level[vi][vj] == -1) {
+            level[vi][vj] = level[ui][uj] + 1;
+            Q.push(mp(vi,vj));
+        }
+        vj = uj+1;
+        if(isValid(vi,vj, level[ui][uj]+1) && level[vi][vj] == -1) {
+            level[vi][vj] = level[ui][uj] + 1;
+            Q.push(mp(vi,vj));
+        }
+        vj = uj+k;
+        vi = (ui == 1 ? 0 : 1);
+        if(isValid(vi,vj, level[ui][uj]+1) && level[vi][vj] == -1) {
+            level[vi][vj] = level[ui][uj] + 1;
+            Q.push(mp(vi,vj));
         }
     }
 
-    cout << ans << nl;
+    return false;
+}
+void solve(){
+
+    int n,k;
+    cin>>n>>k;
+    vector<string> a(2);
+    trav(x,a) cin>>x;
+
+    vector<vector<bool>> vis(2,vector<bool>(n));
+    cout << (bfs(n,k,a) ? "YES" : "NO");
 }
 
-int main() {
+int main(){
    ios::sync_with_stdio(false);cin.tie(nullptr);
    int t = 1;
-   cin>>t;
+//    cin>>t;
    while(t--)solve();
 }

@@ -79,34 +79,34 @@ void solve(){
 
     int n;
     cin>>n;
-    vl a(n);
-    trav(x,a) cin>>x;
-    ll ans = LINF;
-    ll lo = 1, hi = LINF;
-    while(lo <= hi) {
-        ll mid = lo + (hi - lo) / 2ll;
-        int i=1;
-        int cnt = 0;
-        while(i < n) {
-            if(a[i] - a[i-1] <= mid) {
-                ++cnt;
-                ++i;
+    int level = -1;
+    vi a(n);
+    trav(x,a) {
+        cin>>x;
+    }
+    queue<pi> Q;
+    Q.push(mp(1,0));
+    int idx = 1;
+    while(!Q.empty()) {
+        int u = Q.front().first, depth = Q.front().second;
+        // dbg(u,depth);
+        Q.pop();
+        level = depth;
+        int prev = -1;
+        while(idx < n) {
+            if(prev < a[idx]) {
+                prev = a[idx];
+                Q.push(mp(a[idx],depth+1));
+                ++idx;
+            } else {
+                break;
             }
-            ++i;
-        }
-
-        if(cnt >= n/2) {
-            ans = mid;
-            hi = mid-1;
-        } else {
-            lo = mid + 1;
         }
     }
-
-    cout << ans << nl;
+    cout << level << nl;
 }
 
-int main() {
+int main(){
    ios::sync_with_stdio(false);cin.tie(nullptr);
    int t = 1;
    cin>>t;

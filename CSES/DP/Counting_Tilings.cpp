@@ -75,40 +75,54 @@ const int N =1e5+1;
 const int INF = 1e9+7;
 const long long LINF = 1e18+7;
 
-void solve(){
+int dp[1001][(1<<10)+1];
+void getNextMask(int j, int n, int mask, int nmask, vector<int>& newMask) {
 
-    int n;
-    cin>>n;
-    vl a(n);
-    trav(x,a) cin>>x;
-    ll ans = LINF;
-    ll lo = 1, hi = LINF;
-    while(lo <= hi) {
-        ll mid = lo + (hi - lo) / 2ll;
-        int i=1;
-        int cnt = 0;
-        while(i < n) {
-            if(a[i] - a[i-1] <= mid) {
-                ++cnt;
-                ++i;
-            }
-            ++i;
-        }
-
-        if(cnt >= n/2) {
-            ans = mid;
-            hi = mid-1;
-        } else {
-            lo = mid + 1;
-        }
+    if(j == n) {
+        newMask.emplace_back(nmask);
+        return;
     }
 
-    cout << ans << nl;
+    if(mask & (1 << j)) {
+        getNextMask(j+1,n,mask,nmask,newMask);
+        return;
+    }
+    if(j < n-1 && (mask & (1 << (j+1))) == 0) {
+        getNextMask(j+2,n,mask,nmask,newMask);
+    }
+
+    getNextMask(j+1,n,mask,nmask | (1 << j),newMask);
 }
 
-int main() {
+int recur(int i, int n, int m, int mask) {
+
+    if(i == m) {
+        return (mask == 0);
+    }
+    if(~dp[i][mask]) return dp[i][mask];
+
+    vi newMask;
+    getNextMask(0,n,mask,0,newMask);
+
+    int ans = 0;
+    trav(nmask, newMask) {
+        ans += recur(i+1, n, m, nmask) % INF;
+        ans %= INF;
+    }
+
+    return dp[i][mask] = ans;
+}
+void solve(){
+
+    int n,m;
+    cin>>n>>m;
+    memset(dp,-1,sizeof dp);
+    cout << recur(0,n,m,0);
+}
+
+int main(){
    ios::sync_with_stdio(false);cin.tie(nullptr);
    int t = 1;
-   cin>>t;
+//    cin>>t;
    while(t--)solve();
 }
