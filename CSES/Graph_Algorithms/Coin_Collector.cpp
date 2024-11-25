@@ -71,26 +71,102 @@ template<class T> bool ckmax(T& a, const T& b) { return a < b ? a = b, 1 : 0; }
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
 const char nl = '\n';
-const int N =1e5+1;
+const int N =1e5+2;
 const int INF = 1e9+7;
 const long long LINF = 1e18+7;
 
 int n,m;
 int coin[N];
-vi adj[N];
+vi adj[N], rev[N];
+set<int> rg[N];
+bool vis[N];
+int comp[N];
+ll sumComp[N],dp[N];
+int c = 1;
+vi order;
+
+void dfs1(int u) {
+
+    vis[u] = true;
+    trav(v, adj[u]) {
+        if(!vis[v]) {
+            dfs1(v);
+        }
+    }
+
+    order.pb(u);
+}
+
+void dfs2(int u, int c) {
+
+    comp[u] = c;
+    sumComp[c] += coin[u];
+    trav(v, rev[u]) {
+        if(comp[v] == 0) {
+            dfs2(v,c);
+        }
+    }
+}
+
+void kosaraju() {
+
+    rep(i,n) {
+        if(!vis[i]) {
+            dfs1(i);
+        }
+    }
+
+    reverse(all(order));
+
+    trav(i, order){
+        if(comp[i] == 0) {
+            dfs2(i,c);
+            ++c;
+        }
+    }
+
+}
 void solve(){
 
     cin>>n>>m;
     rep(i,n) {
         cin>>coin[i];
     }
-    
+
     rep(i,m) {
         int u,v;
         cin>>u>>v;
         --u,--v;
-        adj[u].push_back(v);
+        adj[u].pb(v);
+        rev[v].pb(u);
     }
+
+    kosaraju();
+
+    rep(u,n) {
+        int compU = comp[u];
+        trav(v,adj[u]) {
+            int compV = comp[v];
+            if(compU == compV) continue;
+            // dbg(compU,compV);
+            rg[compV].ins(compU);
+        }
+    }
+
+
+
+    // dbg(topo);
+    ll ans = 0;
+    FOR(v,1,c){
+        dp[v] = sumComp[v];
+        ckmax(ans,dp[v]);
+        trav(u, rg[v]) {
+            ckmax(dp[v], sumComp[v]+dp[u]);
+            ckmax(ans,dp[v]);
+        }
+    }
+
+    cout << ans;
 }
 
 int main(){
