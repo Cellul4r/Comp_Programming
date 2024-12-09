@@ -1,0 +1,166 @@
+#include<bits/stdc++.h>
+using namespace std;
+void __print(int x) {cerr << x;}
+void __print(long x) {cerr << x;}
+void __print(long long x) {cerr << x;}
+void __print(unsigned x) {cerr << x;}
+void __print(unsigned long x) {cerr << x;}
+void __print(unsigned long long x) {cerr << x;}
+void __print(float x) {cerr << x;}
+void __print(double x) {cerr << x;}
+void __print(long double x) {cerr << x;}
+void __print(char x) {cerr << '\'' << x << '\'';}
+void __print(const char *x) {cerr << '"' << x << '"';}
+void __print(const string &x) {cerr << '"' << x << '"';}
+void __print(bool x) {cerr << (x ? "true" : "false");}
+
+template<typename T, typename V>
+void __print(const pair<T, V> &x);
+template<typename T>
+void __print(const T &x) {int f = 0; cerr << '{'; for (auto &i: x) cerr << (f++ ? ", " : ""), __print(i); cerr << "}";}
+template<typename T, typename V>
+void __print(const pair<T, V> &x) {cerr << '{'; __print(x.first); cerr << ", "; __print(x.second); cerr << '}';}
+void _print() {cerr << "]\n";}
+template <typename T, typename... V>
+void _print(T t, V... v) {__print(t); if (sizeof...(v)) cerr << ", "; _print(v...);}
+//#ifdef DEBUG
+#define dbg(x...) cerr << "\e[91m"<<__func__<<":"<<__LINE__<<" [" << #x << "] = ["; _print(x); cerr << "\e[39m" << endl;
+//#else
+//#define dbg(x...)
+//#endif
+
+typedef long long ll;
+typedef long double ld;
+typedef complex<ld> cd;
+
+typedef pair<int, int> pi;
+typedef pair<ll,ll> pl;
+typedef pair<ld,ld> pd;
+
+typedef vector<int> vi;
+typedef vector<ld> vd;
+typedef vector<ll> vl;
+typedef vector<pi> vpi;
+typedef vector<pl> vpl;
+typedef vector<cd> vcd;
+
+template<class T> using pq = priority_queue<T>;
+template<class T> using pqg = priority_queue<T, vector<T>, greater<T>>;
+
+#define rep(i, a) for(int i=0;i<a;++i)
+#define FOR(i, a, b) for (int i=a; i<(b); i++)
+#define F0R(i, a) for (int i=0; i<(a); i++)
+#define FORd(i,a,b) for (int i = (b)-1; i >= a; i--)
+#define F0Rd(i,a) for (int i = (a)-1; i >= 0; i--)
+#define trav(a,x) for (auto& a : x)
+#define uid(a, b) uniform_int_distribution<int>(a, b)(rng)
+
+#define sz(x) (int)(x).size()
+#define mp make_pair
+#define pb push_back
+//#define f first
+//#define s second
+#define lb lower_bound
+#define ub upper_bound
+#define all(x) x.begin(), x.end()
+#define ins insert
+
+template<class T> bool ckmin(T& a, const T& b) { return b < a ? a = b, 1 : 0; }
+template<class T> bool ckmax(T& a, const T& b) { return a < b ? a = b, 1 : 0; }
+
+mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
+
+const char nl = '\n';
+const int N =1e5+1;
+const int INF = 1e9+7;
+const long long LINF = 1e18+7;
+
+ll calculate(vi &a) {
+
+    ll sum = 0;
+    rep(i,sz(a)) {
+        FOR(j,i,sz(a)) {
+            ll min_ = INF;
+            FOR(k,i,j+1) {
+                min_ = min(min_,1ll*a[k]);
+            }
+            // dbg(i,j,min_);
+            sum += min_;
+        }
+    }
+    return sum;
+}
+void check() {
+
+    vi a{1,2,3,4,5};
+    // n = 5
+    // k <= 2^4
+    // element 1 at index 1
+    // is k <= 2^3
+    // element 1 at index 5 (5 - 1 + 1)
+    // is k > 2^3
+    // now we want to fill element 2
+    // at index 2 k <= 2^2
+    // at index 5 k > 2^2 && k <= 2^3
+    // 1 at index 1 k <= 2^3
+    // -> 2 at index 2 k <= 2^2 (5-2-1)
+    // -> 3 at index 3 k <= 2^1 (5-3-1)
+    // -> 4 at index 4 k <= 2^0 (5-4-1)
+    // -> 5 at index 5 k <= ?
+    // -----
+    // -> 2 at index 5 k > 2^2 && k <= 2^3
+    // -> 3 at index 2 k > 2^2 && k <= 2^2+2
+    // -> 4 at index 3 k > 2^2 && k <= 2^2+1
+    int cnt = 0,val=35;
+    do{
+        if(false || calculate(a) == val) {
+            dbg(++cnt,a, calculate(a));
+        }
+        
+    }while(next_permutation(all(a)));
+    dbg(cnt);
+}
+void solve(){
+
+    int n;
+    ll k;
+    cin>>n>>k;
+    // check();
+    int cnt = 0;
+    ll p = 0;
+    while((1ll << p) < k) p++;
+    // dbg(p);
+    if(p >= n) {
+        cout << -1 << nl;
+        return;
+    }
+    vi ans(n);
+    int l = 0, r = n - 1;
+    FOR(i,1,n) {
+        // n - i - 1 can be much large
+        // then it is the most power that is p+1
+        ll cur = (1ll << min(1ll*n-i-1,p+1));
+        if(k > cur) {
+            k -= cur;
+            ans[r--] = i;
+        } else {
+            ans[l++] = i;
+        }
+    }
+    ans[l] = n;
+    trav(x,ans) {
+        cout << x << " ";
+    }
+    cout << nl;
+}
+
+int main(){
+    ios::sync_with_stdio(false);cin.tie(nullptr);
+    int t = 1;
+    //#ifndef ONLINE_JUDGE
+    //   freopen("input.txt", "r", stdin);
+    //    freopen("output.txt", "w", stdout);
+    //#endif
+    cin>>t;
+    while(t--)solve();
+}
