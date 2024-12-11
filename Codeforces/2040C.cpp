@@ -138,8 +138,8 @@ void solve(){
     int l = 0, r = n - 1;
     FOR(i,1,n) {
         // n - i - 1 can be much large
-        // then it is the most power that is p+1
-        ll cur = (1ll << min(1ll*n-i-1,p+1));
+        // then it is the most power that is p
+        ll cur = (1ll << min(1ll*n-i-1,p));
         if(k > cur) {
             k -= cur;
             ans[r--] = i;

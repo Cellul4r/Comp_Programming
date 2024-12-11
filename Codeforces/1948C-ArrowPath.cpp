@@ -71,65 +71,77 @@ template<class T> bool ckmax(T& a, const T& b) { return a < b ? a = b, 1 : 0; }
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
 const char nl = '\n';
-const int N =1e5+1;
+const int N = 4e5+1;
 const int INF = 1e9+7;
 const long long LINF = 1e18+7;
 
-int dr[] = {0,1}, dc[] = {1,0};
+const int dr[] = {-1,0,1,0}, dc[] = {0,1,0,-1};
 int n;
-vector<char> x;
-int conv(int i, int j) {
+vi adj[N];
 
-    return n*i + j;
+bool valid(int i, int j) {
+
+    if(i < 0 || j < 0 || i >= 2 || j >= n) {
+        return false;
+    }
+
+    return true;
 }
 
-bool dfs(int u, vector<bool>& vis, vi adj[], vector<string>& a) {
+int conv(int i, int j) {
 
-    dbg(u);
-    if(u == 2*n-1) {
-        return true;
-    }
-    vis[u] = true;
-    bool flag = false;
-    for(auto& v:adj[u]) {
-        if(!vis[v]) {
-            int w;
-            if(x[v] == '>') {
-                ++w;
-            } else {
-                --w;
-            }
-            flag |= dfs(w, vis, adj, a);
-        }
-    }
-    vis[u] = false;
-    return flag;
+    return n * i + j;
 }
 void solve(){
 
     cin>>n;
-    vi adj[2*n];
     vector<string> a(2);
     cin>>a[0]>>a[1];
     rep(i,2) {
         rep(j,n) {
-            auto id = conv(i,j);
-            x.emplace_back(a[i][j]);
-            rep(k,2) {
-                int ni = i + dr[k], nj = j + dc[k];
-                auto idx = conv(ni,nj);
-                if(ni < 0 || nj < 0 || ni >= 2 || nj >= n) continue;
-                adj[id].emplace_back(idx);
-               
+            adj[conv(i,j)].clear();
+            int u = conv(i,j);
+            int v;
+            if((i + j) & 1) {
+                if(a[i][j] == '>') {
+                    v = conv(i,j+1);
+                } else {
+                    v = conv(i,j-1);
+                }
+                adj[u].pb(v);
+            } else {
+                rep(k,4) {
+                    if(valid(i+dr[k],j+dc[k])) {
+                        adj[u].pb(conv(i+dr[k],j+dc[k]));
+                    }
+                }
             }
         }
     }
-    rep(i,2*n) {
-        dbg(i);
-        // dbg(adj[i]);
+    vi level(2*n+1,-1);
+    level[0] = 0;
+    queue<int> Q;
+    Q.push(0);
+    while(!Q.empty()) {
+        int u = Q.front();
+        // dbg(u);
+        Q.pop();
+        if(u == 2*n-1) {
+            break;
+        }
+        trav(v, adj[u]) {
+            // dbg(v);
+            if(level[v] == -1) {
+                level[v] = level[u] + 1;
+                Q.push(v);
+            }
+        }
     }
-    vector<bool> b(2*n,false);
-    cout << dfs(0, b, adj, a);
+    if(level[2*n-1] != -1) {
+        cout << "YES" << nl;
+    } else {
+        cout << "NO" << nl;
+    }
 }
 
 int main(){

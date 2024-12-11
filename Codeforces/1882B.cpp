@@ -75,29 +75,44 @@ const int N =1e5+1;
 const int INF = 1e9+7;
 const long long LINF = 1e18+7;
 
-bool comp(pi& a, pi& b) {
-
-    return a.first+a.second < b.first+b.second;
-}
 void solve(){
 
     int n;
     cin>>n;
-    vpi a(n);
-    trav(x,a) {
-        cin>>x.first>>x.second;
+    vector<set<int>> a(n);
+    set<int> save;
+    rep(i,n) {
+        int k;
+        cin>>k;
+        rep(j,k) {
+            int x;
+            cin>>x;
+            save.ins(x);
+            a[i].ins(x);
+        }
+    }
+    int ans = 0;
+    trav(i,save){
+        set<int> check;
+        rep(j,n) {
+            if(!a[j].count(i)) {
+                check.ins(all(a[j]));
+            }
+        }
+        // dbg(i,check);
+        ckmax(ans,sz(check));
     }
 
-    sort(all(a),comp);
-    trav(x,a) {
-        cout << x.first << " " << x.second << " ";
-    }
-    cout << nl;
+    cout << ans << nl;
 }
 
 int main(){
-   ios::sync_with_stdio(false);cin.tie(nullptr);
-   int t = 1;
-   cin>>t;
-   while(t--)solve();
+    ios::sync_with_stdio(false);cin.tie(nullptr);
+    int t = 1;
+    //#ifndef ONLINE_JUDGE
+    //   freopen("input.txt", "r", stdin);
+    //    freopen("output.txt", "w", stdout);
+    //#endif
+    cin>>t;
+    while(t--)solve();
 }
