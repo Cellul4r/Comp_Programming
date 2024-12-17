@@ -77,43 +77,34 @@ const long long LINF = 1e18+7;
 
 void solve(){
 
-    int n;
-    cin>>n;
-    string s;
-    cin>>s;
-    vpi alpha(26);
-    rep(i,26) alpha[i].second = i;
-    trav(x,s) {
-        alpha[x-'a'].first++;
+    int n,x,y;
+    cin>>n>>x>>y;
+    x--;
+    y--;
+    vi ans(n,1);
+    int e = -1;
+    F0Rd(i,y) {
+        ans[i] = e;
+        e *= -1;
     }
-    string ans;
-    sort(all(alpha), greater<pi>());
-    // dbg(alpha);
-    queue<pi> Q;
-    while(alpha[0].first > alpha[1].first) {
-        ans += alpha[0].second + 'a';
-        alpha[0].first--;
+    e = -1;
+    FOR(i,x+1,n) {
+        ans[i] = e;
+        e *= -1;
     }
-    rep(i,26) {
-        Q.push(alpha[i]);
+    trav(k,ans) {
+        cout << k << " ";
     }
-    
-    while(!Q.empty()) {
-        int u = Q.front().first, v = Q.front().second;
-        Q.pop();
-        if(u == 0) {
-            continue;
-        }
-        ans += v + 'a';
-        u--;
-        Q.push(mp(u,v));
-    }
-    cout << ans << nl;
+    cout << nl;
 }
 
 int main(){
-   ios::sync_with_stdio(false);cin.tie(nullptr);
-   int t = 1;
-   cin>>t;
-   while(t--)solve();
+    ios::sync_with_stdio(false);cin.tie(nullptr);
+    int t = 1;
+    //#ifndef ONLINE_JUDGE
+    //   freopen("input.txt", "r", stdin);
+    //    freopen("output.txt", "w", stdout);
+    //#endif
+    cin>>t;
+    while(t--)solve();
 }

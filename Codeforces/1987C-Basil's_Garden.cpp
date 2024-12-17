@@ -79,21 +79,16 @@ void solve(){
 
     int n;
     cin>>n;
-    vi h(n);
-    trav(x,h) {
+    vl a(n);
+    trav(x,a) {
         cin>>x;
     }
-    ll ans = 0;
-    int prev = 0;
-    FORd(i,0,n) {
-        if(h[i] > prev) {
-            ans += h[i] - prev;
-        } else{
-            ans += h[i];
-        }
-        dbg(ans);
-        prev = h[i];
+    ll ans = a[n-1];
+    F0Rd(i,n-1) {
+        ckmax(ans,max(ans+1,a[i]));
+
     }
+    
     cout << ans << nl;
 }
 
