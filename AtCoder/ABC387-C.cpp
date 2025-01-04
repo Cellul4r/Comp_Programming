@@ -75,32 +75,38 @@ const int N =1e5+1;
 const int INF = 1e9+7;
 const long long LINF = 1e18+7;
 
+ll dp[20][2][11];
+ll r[20];
+ll n;
+#define DP dp[pos][is_eq][digit] 
+ll recur(int pos, bool is_eq, int digit) {
+    if(~DP) return DP;
+    //dbg(pos,digit);
+    if(pos == n) return DP = 1;
+
+    DP = 0;
+    for(ll i=0;i<=(is_eq ? min(r[pos],1ll*digit-1) : digit-1); i++) {
+        DP += recur(pos+1, is_eq && i == r[pos], (digit == 10 && i != 0 ? i : digit));
+    }
+    return DP;
+}
+ll prepare(ll a) {
+    string s = to_string(a);
+    n = sz(s);
+    rep(i,n) r[i] = s[i] - '0';
+    memset(dp, -1, sizeof dp);
+    return recur(0,1,10);
+}
 void solve(){
     
-    int n,m;
-    cin>>n>>m;
-    vi a(n),b(m);
-    trav(x,a) {
-        cin>>x;
-    }
-    trav(x,b) {
-        cin>>x;
-    }
-    sort(all(a));
-    sort(all(b));
-    reverse(all(b));
+    ll a,b;
+    cin>>a>>b;
     ll ans = 0;
-    rep(i,n) {
-        ans += abs(a[i] - b[i]);
-    }
-    int j = m-1;
-    ll now = ans;
-    F0Rd(i,n) {
-        now -= abs(a[i] - b[i]);
-        now += abs(a[i] - b[j--]);
-        ckmax(ans,now);
-    }
-    cout << ans << nl;
+    ans += prepare(b);
+    //dbg(ans);
+    //dbg(prepare(a-1));
+    ans -= prepare(a-1);
+    cout << ans;
 }
 
 int main(){
@@ -110,7 +116,7 @@ int main(){
     //   freopen("input.txt", "r", stdin);
     //    freopen("output.txt", "w", stdout);
     //#endif
-    cin>>t;
+    //cin>>t;
     while(t--)solve();
 }
 

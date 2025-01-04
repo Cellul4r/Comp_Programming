@@ -77,30 +77,47 @@ const long long LINF = 1e18+7;
 
 void solve(){
     
-    int n,m;
-    cin>>n>>m;
-    vi a(n),b(m);
-    trav(x,a) {
-        cin>>x;
-    }
-    trav(x,b) {
-        cin>>x;
-    }
-    sort(all(a));
-    sort(all(b));
-    reverse(all(b));
-    ll ans = 0;
+    int n;
+    cin>>n;
+    vi cnt(2*n+1);
+    vpi a(n);
+    vi ans(n,1);
     rep(i,n) {
-        ans += abs(a[i] - b[i]);
+        int l,r;
+        cin>>l>>r;
+        a[i] = mp(l,r);
+        if(l == r) {
+            cnt[l]++;
+        }
     }
-    int j = m-1;
-    ll now = ans;
-    F0Rd(i,n) {
-        now -= abs(a[i] - b[i]);
-        now += abs(a[i] - b[j--]);
-        ckmax(ans,now);
+    rep(i,n) {
+        int l = a[i].first, r = a[i].second;
+        if(l == r) {
+            if(cnt[l] >= 2) {
+                ans[i] = 0;
+            }
+        }
     }
-    cout << ans << nl;
+    trav(x,cnt) {
+        if(x) {
+            x = 1;
+        }
+    }
+    FOR(i,1,2*n+2) {
+        cnt[i] += cnt[i-1];
+    }
+    rep(i,n) {
+        int l = a[i].first, r = a[i].second;
+        if(l == r) continue;
+        int now = cnt[r] - cnt[l-1];
+        if(now >= r - l + 1) {
+            ans[i] = 0;
+        }
+    }
+    trav(x,ans) {
+        cout << x;
+    }
+    cout << nl;
 }
 
 int main(){

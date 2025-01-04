@@ -71,36 +71,16 @@ template<class T> bool ckmax(T& a, const T& b) { return a < b ? a = b, 1 : 0; }
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
 const char nl = '\n';
-const int N =1e5+1;
+const int N =5e5+1;
 const int INF = 1e9+7;
-const long long LINF = 1e18+7;
+const long long LINF = 1573153713573157173;
 
+ll dp[N];
 void solve(){
     
-    int n,m;
-    cin>>n>>m;
-    vi a(n),b(m);
-    trav(x,a) {
-        cin>>x;
-    }
-    trav(x,b) {
-        cin>>x;
-    }
-    sort(all(a));
-    sort(all(b));
-    reverse(all(b));
-    ll ans = 0;
-    rep(i,n) {
-        ans += abs(a[i] - b[i]);
-    }
-    int j = m-1;
-    ll now = ans;
-    F0Rd(i,n) {
-        now -= abs(a[i] - b[i]);
-        now += abs(a[i] - b[j--]);
-        ckmax(ans,now);
-    }
-    cout << ans << nl;
+    ll s;
+    cin>>s;
+    cout << dp[s] << nl;
 }
 
 int main(){
@@ -110,6 +90,14 @@ int main(){
     //   freopen("input.txt", "r", stdin);
     //    freopen("output.txt", "w", stdout);
     //#endif
+    dp[0] = 1;
+    FOR(i,1,N) {
+        for(int j=1;j<=5;j++) {
+            if(i-j < 0) break;
+            dp[i] += dp[i-j];
+            dp[i] %= LINF;
+        }
+    }
     cin>>t;
     while(t--)solve();
 }

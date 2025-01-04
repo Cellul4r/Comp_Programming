@@ -75,32 +75,29 @@ const int N =1e5+1;
 const int INF = 1e9+7;
 const long long LINF = 1e18+7;
 
+bool check(int x, int y) {
+
+    if(2*x > y && 2*y > x) return true;
+    return false;
+}
 void solve(){
     
-    int n,m;
-    cin>>n>>m;
-    vi a(n),b(m);
+    int n;
+    cin>>n;
+    vi a(n);
     trav(x,a) {
         cin>>x;
     }
-    trav(x,b) {
-        cin>>x;
+
+    rep(i,n-1) {
+        // stick with i and i+1
+        if(check(a[i],a[i+1])) {
+            //dbg(i,i+1);
+            cout << "YES" << nl;
+            return;
+        }
     }
-    sort(all(a));
-    sort(all(b));
-    reverse(all(b));
-    ll ans = 0;
-    rep(i,n) {
-        ans += abs(a[i] - b[i]);
-    }
-    int j = m-1;
-    ll now = ans;
-    F0Rd(i,n) {
-        now -= abs(a[i] - b[i]);
-        now += abs(a[i] - b[j--]);
-        ckmax(ans,now);
-    }
-    cout << ans << nl;
+    cout << "NO" << nl;
 }
 
 int main(){

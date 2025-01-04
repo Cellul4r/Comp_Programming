@@ -71,36 +71,62 @@ template<class T> bool ckmax(T& a, const T& b) { return a < b ? a = b, 1 : 0; }
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
 const char nl = '\n';
-const int N =1e5+1;
+const int N =1e3+1;
 const int INF = 1e9+7;
 const long long LINF = 1e18+7;
 
+int r,c;
+int sr,sc,er,ec;
+int board[N][N];
+const int dr[] = {-1,0,1,0}, dc[] = {0,1,0,-1};
 void solve(){
     
-    int n,m;
-    cin>>n>>m;
-    vi a(n),b(m);
-    trav(x,a) {
-        cin>>x;
+    cin>>r>>c;
+    rep(i,r) {
+        string s;
+        cin>>s;
+        rep(j,c) {
+            if(s[j] != '#') board[i][j] = 1;
+            else board[i][j] = 0;
+            if(s[j] == 'S') {
+                sr = i, sc = j;
+            } else if(s[j] == 'G') {
+                er = i, ec = j;
+            }
+        }
     }
-    trav(x,b) {
-        cin>>x;
+    vector<vector<vi>> level(r, vector(c, vi(3, -1)));
+    queue<pair<int,pi>> Q;
+    level[sr][sc][1] = level[sr][sc][2] = 0;
+    Q.push(mp(0,mp(sr,sc)));
+    while(!Q.empty()) {
+        int ur = Q.front().second.first, uc = Q.front().second.second;
+        int type = Q.front().first;
+        //dbg(ur,uc,type);
+        Q.pop();
+        if(ur == er && uc == ec) {
+            cout << level[er][ec][type];
+            return;
+        }
+        if(type != 1) {
+            // can move verticaly
+            for(int k=0;k<4;k+=2) { 
+                int vr = ur + dr[k], vc = uc + dc[k];
+                if(vr < 0 || vc < 0 || vr >= r || vc >= c || !board[vr][vc] || level[vr][vc][1] != -1) continue;
+                level[vr][vc][1] = level[ur][uc][2] + 1;
+                Q.push(mp(1,mp(vr,vc)));
+            }
+        }
+        if(type != 2) {
+            for(int k=1;k<4;k+=2){
+                int vr = ur + dr[k], vc = uc + dc[k];
+                if(vr < 0 || vc < 0 || vr >= r || vc >= c || !board[vr][vc] || level[vr][vc][2] != -1) continue;
+                level[vr][vc][2] = level[ur][uc][1] + 1;
+                Q.push(mp(2,mp(vr,vc)));
+            }
+        }
     }
-    sort(all(a));
-    sort(all(b));
-    reverse(all(b));
-    ll ans = 0;
-    rep(i,n) {
-        ans += abs(a[i] - b[i]);
-    }
-    int j = m-1;
-    ll now = ans;
-    F0Rd(i,n) {
-        now -= abs(a[i] - b[i]);
-        now += abs(a[i] - b[j--]);
-        ckmax(ans,now);
-    }
-    cout << ans << nl;
+    cout << -1;
 }
 
 int main(){
@@ -110,7 +136,7 @@ int main(){
     //   freopen("input.txt", "r", stdin);
     //    freopen("output.txt", "w", stdout);
     //#endif
-    cin>>t;
+    //cin>>t;
     while(t--)solve();
 }
 

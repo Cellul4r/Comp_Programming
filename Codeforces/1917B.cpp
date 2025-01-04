@@ -77,28 +77,16 @@ const long long LINF = 1e18+7;
 
 void solve(){
     
-    int n,m;
-    cin>>n>>m;
-    vi a(n),b(m);
-    trav(x,a) {
-        cin>>x;
-    }
-    trav(x,b) {
-        cin>>x;
-    }
-    sort(all(a));
-    sort(all(b));
-    reverse(all(b));
-    ll ans = 0;
+    int n; cin>>n;
+    string s; cin>>s;
+    ll ans = 1ll*n*(n+1)/2ll;
+    vi alpha(26,-1);
     rep(i,n) {
-        ans += abs(a[i] - b[i]);
-    }
-    int j = m-1;
-    ll now = ans;
-    F0Rd(i,n) {
-        now -= abs(a[i] - b[i]);
-        now += abs(a[i] - b[j--]);
-        ckmax(ans,now);
+        if(alpha[s[i]-'a'] == -1) {
+            alpha[s[i]-'a'] = i;
+        } else {
+            ans -= n - i;
+        }
     }
     cout << ans << nl;
 }

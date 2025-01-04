@@ -77,30 +77,15 @@ const long long LINF = 1e18+7;
 
 void solve(){
     
-    int n,m;
-    cin>>n>>m;
-    vi a(n),b(m);
-    trav(x,a) {
-        cin>>x;
+    int x;
+    cin>>x;
+    int sum = 0;
+    rep(i,9) {
+        rep(j,9) {
+            if((i+1)*(j+1) != x) sum += (i+1)*(j+1);
+        }
     }
-    trav(x,b) {
-        cin>>x;
-    }
-    sort(all(a));
-    sort(all(b));
-    reverse(all(b));
-    ll ans = 0;
-    rep(i,n) {
-        ans += abs(a[i] - b[i]);
-    }
-    int j = m-1;
-    ll now = ans;
-    F0Rd(i,n) {
-        now -= abs(a[i] - b[i]);
-        now += abs(a[i] - b[j--]);
-        ckmax(ans,now);
-    }
-    cout << ans << nl;
+    cout << sum;
 }
 
 int main(){
@@ -110,7 +95,7 @@ int main(){
     //   freopen("input.txt", "r", stdin);
     //    freopen("output.txt", "w", stdout);
     //#endif
-    cin>>t;
+    //cin>>t;
     while(t--)solve();
 }
 

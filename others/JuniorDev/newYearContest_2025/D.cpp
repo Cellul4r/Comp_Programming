@@ -71,34 +71,40 @@ template<class T> bool ckmax(T& a, const T& b) { return a < b ? a = b, 1 : 0; }
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
 const char nl = '\n';
-const int N =1e5+1;
+const int N =1e2+1;
 const int INF = 1e9+7;
 const long long LINF = 1e18+7;
 
+int n,m;
+int ans = 0;
+int board[N][N];
+void dfs(int i, int j) {
+    if(i == n-1) {
+        ans++;
+        return;
+    }
+    if(board[i][j] == '\\') {
+        dfs(i+1,j+1);
+    } else if(board[i][j] == '/') {
+        dfs(i+1,j-1);
+    }
+}
 void solve(){
     
-    int n,m;
-    cin>>n>>m;
-    vi a(n),b(m);
-    trav(x,a) {
-        cin>>x;
-    }
-    trav(x,b) {
-        cin>>x;
-    }
-    sort(all(a));
-    sort(all(b));
-    reverse(all(b));
-    ll ans = 0;
+    cin>>m>>n;
     rep(i,n) {
-        ans += abs(a[i] - b[i]);
-    }
-    int j = m-1;
-    ll now = ans;
-    F0Rd(i,n) {
-        now -= abs(a[i] - b[i]);
-        now += abs(a[i] - b[j--]);
-        ckmax(ans,now);
+        string s;
+        rep(j,m) {
+            if(s[j] == '-') {
+                board[i][j] = 0;
+            } else if(s[j] == '\\') {
+                board[i][j] = 1;
+            } else if(s[j] == '/') {
+                board[i][j] = 2;
+            } else {
+                board[i][j] = 3;
+            }
+        }
     }
     cout << ans << nl;
 }
@@ -110,7 +116,7 @@ int main(){
     //   freopen("input.txt", "r", stdin);
     //    freopen("output.txt", "w", stdout);
     //#endif
-    cin>>t;
+    //cin>>t;
     while(t--)solve();
 }
 

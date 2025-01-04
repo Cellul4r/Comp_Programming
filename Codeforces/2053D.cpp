@@ -71,15 +71,26 @@ template<class T> bool ckmax(T& a, const T& b) { return a < b ? a = b, 1 : 0; }
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
 const char nl = '\n';
-const int N =1e5+1;
-const int INF = 1e9+7;
+const int N =2e5+1;
+const int INF = 998244353;
 const long long LINF = 1e18+7;
 
+ll calc(vi& a, vi& b) {
+
+    ll ans = 1;
+    rep(i,sz(a)) {
+        ans *= 1ll * min(a[i],b[i]);
+        ans %= INF;
+    }
+
+    return ans;
+
+}
 void solve(){
     
-    int n,m;
-    cin>>n>>m;
-    vi a(n),b(m);
+    int n,q;
+    cin>>n>>q;
+    vi a(n),b(n);
     trav(x,a) {
         cin>>x;
     }
@@ -88,19 +99,34 @@ void solve(){
     }
     sort(all(a));
     sort(all(b));
-    reverse(all(b));
-    ll ans = 0;
-    rep(i,n) {
-        ans += abs(a[i] - b[i]);
+    ll ans = calc(a,b);
+    cout << ans << " ";
+    rep(i,q) {
+        int type,idx;
+        cin>>type>>idx;
+        idx--;
+        if(type == 1) {
+            ans /= 1ll * min(a[idx],b[idx]);
+            ans %= INF;
+            a[idx]++;
+            ans *= 1ll * min(a[idx],b[idx]);
+            ans %= INF;
+        } else {
+            // increase b at b[idx] by 1
+            int x = (--lb(all(b), b[idx]+1)) - b.begin();
+            dbg(x);
+            ans /= 1ll * min(a[idx],b[x]);
+            ans %= INF;
+            b[x]++;
+            ans *= 1ll * min(a[idx],b[x]);
+            ans %= INF;
+        }
+        dbg(a);
+        dbg(b);
+        dbg(ans);
+        cout << ans << " ";
     }
-    int j = m-1;
-    ll now = ans;
-    F0Rd(i,n) {
-        now -= abs(a[i] - b[i]);
-        now += abs(a[i] - b[j--]);
-        ckmax(ans,now);
-    }
-    cout << ans << nl;
+    cout << nl;
 }
 
 int main(){

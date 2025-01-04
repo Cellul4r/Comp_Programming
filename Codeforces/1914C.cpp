@@ -77,28 +77,25 @@ const long long LINF = 1e18+7;
 
 void solve(){
     
-    int n,m;
-    cin>>n>>m;
-    vi a(n),b(m);
+    int n,k;
+    cin>>n>>k;
+    ll ans = 0;
+    vi a(n),b(n);
     trav(x,a) {
         cin>>x;
+    }
+    FOR(i,1,n) {
+        a[i] += a[i-1];
     }
     trav(x,b) {
         cin>>x;
     }
-    sort(all(a));
-    sort(all(b));
-    reverse(all(b));
-    ll ans = 0;
-    rep(i,n) {
-        ans += abs(a[i] - b[i]);
-    }
-    int j = m-1;
-    ll now = ans;
-    F0Rd(i,n) {
-        now -= abs(a[i] - b[i]);
-        now += abs(a[i] - b[j--]);
-        ckmax(ans,now);
+    int max_ = -1;
+    rep(i,min(n,k)) {
+        ckmax(max_,b[i]);
+        ll x = 1ll * a[i] + 1ll * max_ * max(0, k - i - 1);
+        //dbg(max_,k-i-1,x);
+        ckmax(ans,x);
     }
     cout << ans << nl;
 }

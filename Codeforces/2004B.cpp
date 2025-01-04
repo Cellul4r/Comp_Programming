@@ -77,28 +77,20 @@ const long long LINF = 1e18+7;
 
 void solve(){
     
-    int n,m;
-    cin>>n>>m;
-    vi a(n),b(m);
-    trav(x,a) {
-        cin>>x;
+    int a,b,c,d;
+    cin>>a>>b>>c>>d;
+    int ans = 0;
+    vector<bool> doors(101);
+    FOR(i,a,b+1) {
+        if(c <= i+1 && i+1 <= d) {
+            doors[i] = true;
+            ans++;
+        }
     }
-    trav(x,b) {
-        cin>>x;
-    }
-    sort(all(a));
-    sort(all(b));
-    reverse(all(b));
-    ll ans = 0;
-    rep(i,n) {
-        ans += abs(a[i] - b[i]);
-    }
-    int j = m-1;
-    ll now = ans;
-    F0Rd(i,n) {
-        now -= abs(a[i] - b[i]);
-        now += abs(a[i] - b[j--]);
-        ckmax(ans,now);
+    FOR(i,c,d+1) {
+        if(a <= i+1 && i+1 <= b && !doors[i]) {
+            ans++;
+        }
     }
     cout << ans << nl;
 }

@@ -75,32 +75,24 @@ const int N =1e5+1;
 const int INF = 1e9+7;
 const long long LINF = 1e18+7;
 
+ll ceil(ll a, ll b) {
+    return (a + b - 1) / b;
+}
 void solve(){
     
-    int n,m;
-    cin>>n>>m;
-    vi a(n),b(m);
-    trav(x,a) {
-        cin>>x;
-    }
-    trav(x,b) {
-        cin>>x;
-    }
-    sort(all(a));
-    sort(all(b));
-    reverse(all(b));
-    ll ans = 0;
-    rep(i,n) {
-        ans += abs(a[i] - b[i]);
-    }
-    int j = m-1;
-    ll now = ans;
-    F0Rd(i,n) {
-        now -= abs(a[i] - b[i]);
-        now += abs(a[i] - b[j--]);
-        ckmax(ans,now);
-    }
-    cout << ans << nl;
+    ll n,p,l,t;
+    cin>>n>>p>>l>>t;
+    ll ans = ceil(p,l);
+    ll k = ceil(ceil(p,t+l),2ll);
+    k = min(2ll*ceil(n,7ll),k);
+    ll now = k * (2*t + l);
+    //dbg(now,k);
+    p -= now;
+    p = max(0ll,p);
+    //dbg(ceil(p,l));
+    k += ceil(p,l);
+    ckmin(ans,k);
+    cout << max(0ll,n - ans) << nl;
 }
 
 int main(){

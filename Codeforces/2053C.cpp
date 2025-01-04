@@ -75,30 +75,64 @@ const int N =1e5+1;
 const int INF = 1e9+7;
 const long long LINF = 1e18+7;
 
+vl check;
+void force(ll l, ll r, ll k) {
+
+    if(r - l + 1 < k) return;
+    ll m = (l + r) / 2ll;
+    if((r-l+1) & 1) {
+        check.pb(m);
+        force(l,m-1,k);
+        force(m+1,r,k);
+    } else {
+        force(l,m,k);
+        force(m+1,r,k);
+    }
+}
 void solve(){
     
-    int n,m;
-    cin>>n>>m;
-    vi a(n),b(m);
-    trav(x,a) {
-        cin>>x;
+    ll n,k;
+    cin>>n>>k;
+    for(ll x=6;x<=6;x++){
+        check.clear();
+        force(1,n,x);
+        sort(all(check));
+        dbg(x,check);
     }
-    trav(x,b) {
-        cin>>x;
+    //dbg("HI");
+    // if k == 1 -> ans = n*(n+1)/2
+    // if it is power of two then if k >= 2 ans = 0
+    if(k == 1) {
+        cout << n * (n+1) / 2ll << nl;
+        return;
     }
-    sort(all(a));
-    sort(all(b));
-    reverse(all(b));
     ll ans = 0;
-    rep(i,n) {
-        ans += abs(a[i] - b[i]);
-    }
-    int j = m-1;
-    ll now = ans;
-    F0Rd(i,n) {
-        now -= abs(a[i] - b[i]);
-        now += abs(a[i] - b[j--]);
-        ckmax(ans,now);
+    //ll odd = 0;
+    vl half;
+    ll p = n; 
+    while(p >= k) {
+        ll now = (p + 1) / 2ll;
+        dbg(p,now,half);
+        if(p & 1) {
+            ans += now;
+            rep(i,sz(half)) {
+                ll bound;
+                if(i > 0) {
+                    bound = half[i-1];
+                } else {
+                    bound = n+1;
+                }
+                for(ll j = now+half[i]; j < bound; j += (i < sz(half)-1 ? half[i+1] : now)) {
+                    dbg(j);
+                    ans += j;
+                }
+            }
+            p = now-1;
+        } else {
+            p = now;
+        }
+        dbg(ans);
+        half.pb(now);
     }
     cout << ans << nl;
 }

@@ -29,6 +29,7 @@ void _print(T t, V... v) {__print(t); if (sizeof...(v)) cerr << ", "; _print(v..
 //#define dbg(x...)
 //#endif
 
+typedef unsigned long long ull;
 typedef long long ll;
 typedef long double ld;
 typedef complex<ld> cd;
@@ -75,42 +76,75 @@ const int N =1e5+1;
 const int INF = 1e9+7;
 const long long LINF = 1e18+7;
 
-void solve(){
-    
-    int n,m;
-    cin>>n>>m;
-    vi a(n),b(m);
-    trav(x,a) {
-        cin>>x;
+void check() {
+
+    int n = 9;
+    ll idx = 0;
+    vi a(n);
+    iota(all(a),1);
+    // dbg(a);
+    do {
+        int cnt = 0;
+        rep(i,n) {
+            int now = -1;
+            FOR(j,i,n) {
+                now = max(now,a[j]);
+                if(now <= j-i+1) {
+                    cnt++;
+                }
+            }
+        }
+        if(idx+1ll == (ll)1e18 && cnt == n) {
+            dbg(++idx,a);
+        }
+    } while(next_permutation(all(a)));
+}
+void solve(int n,ull k){
+
+    // check();
+    // int n;
+    // ull k;
+    // cin>>n>>k;
+    ll lg = 0;
+    while((1ll << lg) < k) lg++;
+
+    vi ans(n);
+    int l = 0, r = n - 1;
+    FORd(i,3,n+1){
+        ll x = (1ll << min(1ll*(i-2),lg+1));
+        // dbg(x,k);
+        // dbg(i,x,k);
+        if(k > x) {
+            k -= x;
+            ans[l++] = i;
+        } else {
+            ans[r--] = i;
+        }
     }
-    trav(x,b) {
-        cin>>x;
+    // dbg(l,r,k);
+    if(k & 1) {
+        ans[l] = 1;
+        ans[r] = 2;
+    } else {
+        ans[l] = 2;
+        ans[r] = 1;
     }
-    sort(all(a));
-    sort(all(b));
-    reverse(all(b));
-    ll ans = 0;
     rep(i,n) {
-        ans += abs(a[i] - b[i]);
+        cout << ans[i] << " ";
     }
-    int j = m-1;
-    ll now = ans;
-    F0Rd(i,n) {
-        now -= abs(a[i] - b[i]);
-        now += abs(a[i] - b[j--]);
-        ckmax(ans,now);
-    }
-    cout << ans << nl;
+    cout << nl;
 }
 
 int main(){
     ios::sync_with_stdio(false);cin.tie(nullptr);
     int t = 1;
-    //#ifndef ONLINE_JUDGE
+    // #ifndef ONLINE_JUDGE
     //   freopen("input.txt", "r", stdin);
     //    freopen("output.txt", "w", stdout);
-    //#endif
+    // #endif
     cin>>t;
-    while(t--)solve();
+    check();
+    while(t--) {
+        FOR(i,1,128) solve(100000,i);
+    }
 }
-

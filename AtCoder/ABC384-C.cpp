@@ -75,32 +75,46 @@ const int N =1e5+1;
 const int INF = 1e9+7;
 const long long LINF = 1e18+7;
 
+struct p {
+
+    string s;
+    int total = 0;
+
+    bool operator<(const p& rhs) {
+        if(total != rhs.total) {
+            return total > rhs.total;
+        }
+        return s < rhs.s;
+    }
+};
+
+vector<int> a(5);
+vector<p> k;
+void recur(int now, int score, string s) {
+
+    if(now == 5) {
+        if(s != "") {
+            k.pb({s,score});
+        }
+        return;
+    }
+
+    recur(now+1,score,s);
+    string S = s;
+    S += now+'A';
+    recur(now+1,score+a[now],S);
+}
 void solve(){
-    
-    int n,m;
-    cin>>n>>m;
-    vi a(n),b(m);
-    trav(x,a) {
-        cin>>x;
+
+    rep(i,5) {
+        cin>>a[i];
     }
-    trav(x,b) {
-        cin>>x;
+
+    recur(0,0,"");
+    sort(all(k));
+    trav(x,k) {
+        cout << x.s << nl;
     }
-    sort(all(a));
-    sort(all(b));
-    reverse(all(b));
-    ll ans = 0;
-    rep(i,n) {
-        ans += abs(a[i] - b[i]);
-    }
-    int j = m-1;
-    ll now = ans;
-    F0Rd(i,n) {
-        now -= abs(a[i] - b[i]);
-        now += abs(a[i] - b[j--]);
-        ckmax(ans,now);
-    }
-    cout << ans << nl;
 }
 
 int main(){
@@ -110,7 +124,6 @@ int main(){
     //   freopen("input.txt", "r", stdin);
     //    freopen("output.txt", "w", stdout);
     //#endif
-    cin>>t;
+    // cin>>t;
     while(t--)solve();
 }
-
