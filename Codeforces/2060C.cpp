@@ -77,19 +77,27 @@ const long long LINF = 1e18+7;
 
 void solve(){
     
-    int a,b,c,d;
-    cin>>a>>b>>c>>d;
+    int n,k;
+    cin>>n>>k;
+    int ans = 0;
 
-    int l = max(a,c), r = min(b,d);
-    if(l > r) {
-        cout << 1 << nl;
-        return;
+    multiset<int> cnt;
+    rep(i,n) {
+        int x;
+        cin>>x;
+        cnt.ins(x);
     }
-    // case l <= r
-    //dbg(l,r);
-    int ans = r - l;
-    if(a < l || c < l) ans++;
-    if(b > r || d > r) ans++;
+
+    //dbg(cnt);
+    while(sz(cnt) > 1) {
+        int u = *cnt.begin(); 
+        cnt.erase(cnt.begin());
+        if(cnt.find(k-u) != cnt.end()) {
+            //dbg(u,k-u);
+            ans++;
+            cnt.erase(cnt.find(k-u));
+        }
+    }
     cout << ans << nl;
 }
 

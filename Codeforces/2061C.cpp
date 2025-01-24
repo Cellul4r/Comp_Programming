@@ -71,26 +71,61 @@ template<class T> bool ckmax(T& a, const T& b) { return a < b ? a = b, 1 : 0; }
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
 const char nl = '\n';
-const int N =1e5+1;
-const int INF = 1e9+7;
+const int N = 2e5+1;
+const int INF = 998244353;
 const long long LINF = 1e18+7;
 
+int n;
+vi a;
+
+int dp[N][2];
+
+int recur(int i, int now, bool liar) {
+
+    if(i == n) return 1;
+    // if last person is a liar person
+    // then this guys has to be honest!
+    //dbg(i,now,liar);
+    if(liar) {
+        if(now != a[i]) {
+            return 0;
+        }
+        if(dp[i][1] == -1) {
+            dp[i][1] = recur(i+1, now, false) % INF;
+        }
+        return dp[i][1];
+    }
+    // this guys can be honest person or liar person
+    int ans = 0;
+    // this guys is liar person
+    if(dp[i][0] == -1) {
+        dp[i][0] = recur(i+1,now+1, true) % INF;
+    } 
+    ans += dp[i][0];
+    ans %= INF;
+    // this guys is honest person
+    if(a[i] == now) {
+        if(dp[i][1] == -1) {
+            dp[i][1] = recur(i+1, now, false) % INF;
+        }
+        ans += dp[i][1];
+        ans %= INF;
+    }
+
+    return ans;
+}
 void solve(){
     
-    int a,b,c,d;
-    cin>>a>>b>>c>>d;
-
-    int l = max(a,c), r = min(b,d);
-    if(l > r) {
-        cout << 1 << nl;
-        return;
+    cin>>n;
+    rep(i,n) {
+        dp[i][0] = dp[i][1] = -1;
+        int x;
+        cin>>x;
+        a.pb(x);
     }
-    // case l <= r
-    //dbg(l,r);
-    int ans = r - l;
-    if(a < l || c < l) ans++;
-    if(b > r || d > r) ans++;
-    cout << ans << nl;
+     
+    cout << recur(0,0,false) << nl;
+    a.clear();
 }
 
 int main(){

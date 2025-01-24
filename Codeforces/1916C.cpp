@@ -79,41 +79,25 @@ void solve(){
 
     int n;
     cin>>n;
-    vi a(n);
+    vl a(n);
     trav(x,a) {
         cin>>x;
     }
-    int now = (a[0] + a[1]) / 2 * 2;
-    cout << a[0] << " ";
-    if(n == 1) {
-        cout << nl;
-        return;
-    }
-    cout << now << " ";
-    int even = 0, odd = 0;
-    if(a[0] & 1) odd++;
-    else even++;
-    if(a[1] & 1) odd++;
-    else even++;
-    FOR(i,2,n) {
-        if(a[i] & 1) odd++;
-        else {
-            even++;
-            now += a[i];
-            cout << now << " ";
-            continue;
+    ll now = 0;
+    int odd = 0;
+    trav(x,a) {
+        now += x;
+        if(x & 1) odd++; 
+        // player 1 must choose parity odd as much as possible to remove the odd number
+        // player 2 must choose even, odd to decrease the sum
+        // we know that we have even number from previous player 1
+        // each 2 turn the odd numbers will decrease 3
+        // sum - floor(odd / 3)
+        ll ans = now - odd / 3;
+        if(odd % 3 == 1) {
+            if(now != x) ans--; 
         }
-        dbg(a[i],odd,even);
-        if((odd & 1) && (even & 1)) {
-            now += a[i] - 1;
-        } else if((odd & 1) && !(even & 1)) {
-            now += a[i] - 1;
-        } else if(!(odd & 1) && (even & 1)) {
-            now += a[i] + 1;
-        } else {
-            now += a[i] - 1;
-        }
-        cout << now << " ";
+        cout << ans << " ";
     }
     cout << nl;
 }

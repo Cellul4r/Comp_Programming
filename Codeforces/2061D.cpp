@@ -75,22 +75,50 @@ const int N =1e5+1;
 const int INF = 1e9+7;
 const long long LINF = 1e18+7;
 
+// ceil(a/2) = (a + 1) / 2
 void solve(){
     
-    int a,b,c,d;
-    cin>>a>>b>>c>>d;
-
-    int l = max(a,c), r = min(b,d);
-    if(l > r) {
-        cout << 1 << nl;
+    int n,m;
+    cin>>n>>m;
+    multiset<int> a,b;
+    ll sum = 0;
+    rep(i,n) {
+        int x;
+        cin>>x;
+        sum += x;
+        a.ins(x);
+    }
+    rep(i,m) {
+        int x;
+        cin>>x;
+        sum -= x;
+        b.ins(x);
+    }
+    if(sum) {
+        cout << "NO" << nl;
         return;
     }
-    // case l <= r
-    //dbg(l,r);
-    int ans = r - l;
-    if(a < l || c < l) ans++;
-    if(b > r || d > r) ans++;
-    cout << ans << nl;
+    while(!a.empty() && !b.empty()) {
+        int x = *a.rbegin(), y = *b.rbegin();
+        auto it1 = a.end(), it2 = b.end();
+        it1--,it2--;
+        //dbg(x,y);
+        if(x == y) {
+            a.erase(it1);
+            b.erase(it2);
+        } else if(x > y) {
+            break;
+        } else {
+            b.erase(it2);
+            b.ins((y+1)/2);
+            b.ins(y/2);
+        }
+    }
+    if(!a.empty() || !b.empty()) {
+        cout << "NO" << nl;
+        return;
+    }
+    cout << "YES" << nl;
 }
 
 int main(){

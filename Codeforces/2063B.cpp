@@ -77,19 +77,67 @@ const long long LINF = 1e18+7;
 
 void solve(){
     
-    int a,b,c,d;
-    cin>>a>>b>>c>>d;
-
-    int l = max(a,c), r = min(b,d);
-    if(l > r) {
-        cout << 1 << nl;
-        return;
+    int n;
+    cin>>n;
+    int l,r;
+    cin>>l>>r;
+    l--,r--;
+    ll ans = 0;
+    vi a(n);
+    rep(i,n) {
+        cin>>a[i];
+        if(i >= l && i <= r) ans += a[i];
     }
-    // case l <= r
-    //dbg(l,r);
-    int ans = r - l;
-    if(a < l || c < l) ans++;
-    if(b > r || d > r) ans++;
+
+    vi left,right,mid;
+    FOR(i,l,r+1) {
+        mid.pb(a[i]);
+    }
+    rep(i,l) {
+        left.pb(a[i]);
+    }
+    FOR(i,r+1,n) {
+        right.pb(a[i]);
+    }
+    sort(all(left));
+    sort(all(right));
+    sort(all(mid));
+    reverse(all(mid));
+    //dbg(left);
+    //dbg(right);
+    int i = 0, j = 0;
+    ll now = 0;
+    while(i < sz(right) && j < sz(mid)) {
+        if(right[i] < mid[j]) {
+            now += right[i];
+            i++;
+            j++;
+        } else {
+            now += mid[j];
+            j++;
+        }
+    }
+    while(j < sz(mid)) {
+        now += mid[j++];
+    }
+    ckmin(ans,now);
+
+    i = 0, j = 0;
+    now = 0;
+    while(i < sz(left) && j < sz(mid)) {
+        if(left[i] < mid[j]) {
+            now += left[i];
+            i++;
+            j++;
+        } else {
+            now += mid[j];
+            j++;
+        }
+    }
+    while(j < sz(mid)) {
+        now += mid[j++];
+    }
+    ckmin(ans,now);
     cout << ans << nl;
 }
 

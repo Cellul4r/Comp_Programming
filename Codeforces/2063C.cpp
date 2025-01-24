@@ -75,21 +75,77 @@ const int N =1e5+1;
 const int INF = 1e9+7;
 const long long LINF = 1e18+7;
 
+
+vi deg;
+bool comp(int i, int j) {
+
+    if(deg[i] != deg[j]) {
+        return deg[i] > deg[j];
+    }
+
+    return i < j;
+}
 void solve(){
     
-    int a,b,c,d;
-    cin>>a>>b>>c>>d;
-
-    int l = max(a,c), r = min(b,d);
-    if(l > r) {
-        cout << 1 << nl;
+    int n;
+    cin>>n;
+    vi deg(n);
+    vi adj[n];
+    rep(i,n-1) {
+        int u,v;
+        cin>>u>>v;
+        u--,v--;
+        adj[u].pb(v);
+        adj[v].pb(u);
+        deg[u]++;
+        deg[v]++;
+    }
+    if(n == 2) {
+        cout << 0 << nl;
         return;
     }
-    // case l <= r
-    //dbg(l,r);
-    int ans = r - l;
-    if(a < l || c < l) ans++;
-    if(b > r || d > r) ans++;
+    int ans = 1;
+    auto comp = [&](int i, int j) {
+        if(deg[i] != deg[j]) {
+            return deg[i] > deg[j];
+        }
+        return i < j;
+    };
+    vi a(n);
+    rep(i,n) a[i] = i;
+    sort(all(a),comp);
+    int u = a[0];
+    int now = deg[u];
+    trav(v,adj[u]) {
+        deg[v]--;
+        deg[u]--;
+    }
+
+    sort(all(a),comp);
+    now += deg[a[0]] - 1;
+    ckmax(ans,now);
+
+    deg.clear(); 
+    rep(i,n) {
+        deg[i] = sz(adj[i]);
+    }
+    sort(all(a),comp);
+
+    u = a[0];
+    int v = a[1];
+    if(deg[u] != deg[v]) {
+        cout << ans << nl;
+        return;
+    }
+    u = v;
+    now = deg[u];
+    trav(v,adj[u]) {
+        deg[v]--;
+        deg[u]--;
+    }
+    sort(all(a),comp); 
+    now += deg[a[0]] - 1; 
+    ckmax(ans,now);
     cout << ans << nl;
 }
 

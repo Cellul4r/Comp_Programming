@@ -71,26 +71,51 @@ template<class T> bool ckmax(T& a, const T& b) { return a < b ? a = b, 1 : 0; }
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
 const char nl = '\n';
-const int N =1e5+1;
+const int N =1e3+1;
 const int INF = 1e9+7;
 const long long LINF = 1e18+7;
 
 void solve(){
     
-    int a,b,c,d;
-    cin>>a>>b>>c>>d;
-
-    int l = max(a,c), r = min(b,d);
-    if(l > r) {
-        cout << 1 << nl;
-        return;
+    int n;
+    cin>>n;
+    vector<vi> mat(n,vi(n));
+    //vi deg(n);
+    rep(i,n) {
+        string s;
+        cin>>s;
+        rep(j,n) {
+            if(s[j] == '1') mat[i][j] = 1;
+            //if(mat[i][j]) deg[i]++;
+        }
     }
-    // case l <= r
-    //dbg(l,r);
-    int ans = r - l;
-    if(a < l || c < l) ans++;
-    if(b > r || d > r) ans++;
-    cout << ans << nl;
+    vi ans(n,-1);
+    rep(i,n) {
+        vi pre(n);
+        for(int j=0;j<n;j++) {
+            if(ans[j] == -1 || ans[j] > i) pre[j] = 1;
+        }
+        FOR(j,1,n) pre[j] += pre[j-1];
+        //dbg(pre);
+        int cnt = 0;
+        for(int j=i+1;j<n;j++) {
+            //cout << mat[i][j];
+            if(mat[i][j]) {
+                cnt++;
+            }
+        }
+        //dbg(i,cnt);
+        for(int j=0;j<n;j++) {
+            if(pre[n-1] - pre[j] == cnt) {
+                ans[j] = i;
+                break;
+            }
+        }
+    }
+    trav(x,ans) {
+        cout << x + 1 << " ";
+    }
+    cout << nl;
 }
 
 int main(){

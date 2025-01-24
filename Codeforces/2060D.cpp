@@ -77,20 +77,29 @@ const long long LINF = 1e18+7;
 
 void solve(){
     
-    int a,b,c,d;
-    cin>>a>>b>>c>>d;
+    int n;
+    cin>>n;
 
-    int l = max(a,c), r = min(b,d);
-    if(l > r) {
-        cout << 1 << nl;
-        return;
+    vi a(n);
+    trav(x,a) {
+        cin>>x;
     }
-    // case l <= r
-    //dbg(l,r);
-    int ans = r - l;
-    if(a < l || c < l) ans++;
-    if(b > r || d > r) ans++;
-    cout << ans << nl;
+
+    //int idx = -1; 
+    rep(i,n-1){
+        int k = min(a[i],a[i+1]);
+        a[i] -= k;
+        a[i+1] -= k;
+    }
+    
+    //dbg(a);
+    rep(i,n-1) {
+        if(a[i] > a[i+1]) {
+            cout << "NO" << nl;
+            return;
+        }
+    }
+    cout << "YES" << nl;
 }
 
 int main(){

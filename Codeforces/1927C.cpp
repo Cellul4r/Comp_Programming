@@ -77,20 +77,64 @@ const long long LINF = 1e18+7;
 
 void solve(){
     
-    int a,b,c,d;
-    cin>>a>>b>>c>>d;
-
-    int l = max(a,c), r = min(b,d);
-    if(l > r) {
-        cout << 1 << nl;
-        return;
+    int n,m;
+    cin>>n>>m;
+    int k;
+    cin>>k;
+    vector<bool> a(k), b(k);
+    int nowa = 0, nowb = 0;
+    rep(i,n) {
+        int x;
+        cin>>x;
+        x--;
+        if(x < k) a[x] = true;
     }
-    // case l <= r
-    //dbg(l,r);
-    int ans = r - l;
-    if(a < l || c < l) ans++;
-    if(b > r || d > r) ans++;
-    cout << ans << nl;
+    rep(i,m) {
+        int x;
+        cin>>x;
+        x--;
+        if(x < k) b[x] = true;
+    }
+
+    bool flag = true;
+    rep(i,k) {
+        if(a[i] && b[i]) continue;
+        if(!a[i] && !b[i]) {
+            flag = false;
+            break;
+        }
+        if(a[i]) {
+            if(nowa >= k/2) {
+                flag = false;
+                break;
+            } else {
+                a[i] = false;
+                nowa++;
+            }
+        } else if(nowb >= k/2){
+            flag = false;
+            break;
+        } else {
+            b[i] = false;
+            nowb++;
+        }
+    }
+    rep(i,k) {
+        if(a[i] && b[i]) {
+            int x = min(nowa, nowb);
+            if(x >= k/2) {
+                flag = false;
+                break;
+            } else if(x == nowa) {
+                a[i] = false;
+                nowa++;
+            } else {
+                b[i] = false;
+                nowb++;
+            }
+        }
+    }
+    cout << (flag ? "YES" : "NO") << nl;
 }
 
 int main(){

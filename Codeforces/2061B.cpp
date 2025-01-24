@@ -77,20 +77,61 @@ const long long LINF = 1e18+7;
 
 void solve(){
     
-    int a,b,c,d;
-    cin>>a>>b>>c>>d;
-
-    int l = max(a,c), r = min(b,d);
-    if(l > r) {
-        cout << 1 << nl;
+    int n;
+    cin>>n;
+    map<int,int> save;
+    rep(i,n) {
+        int x;
+        cin>>x;
+        save[x]++;
+    }
+    
+    //int cnt = 0;
+    vi equals;
+    trav(x, save) {
+        if(x.second >= 4) {
+            x.second -= 4;
+            equals.pb(x.first);
+            equals.pb(x.first);
+        } else if(x.second >= 2) {
+            x.second -= 2; 
+            equals.pb(x.first);
+        }
+    }
+    if(sz(equals) == 0) {
+        cout << -1 << nl;
         return;
     }
-    // case l <= r
-    //dbg(l,r);
-    int ans = r - l;
-    if(a < l || c < l) ans++;
-    if(b > r || d > r) ans++;
-    cout << ans << nl;
+
+    if(sz(equals) >= 2) {
+        cout << equals[0] << " " << equals[0] << " " << equals[1] << " " << equals[1] << nl;
+        return;
+    }
+
+    sort(all(equals));  
+    reverse(all(equals));
+    ll minDiff = LINF;
+    ll prev_ = -1;
+    ll now = 4ll * equals[0] * equals[0];
+    ll min_ = -1, max_ = -1;
+    trav(x,save) {
+        if(x.second == 0) continue;
+        if(prev_ == -1) {
+            prev_ = x.first;
+            continue;
+        }
+        if(x.first - prev_ < minDiff) {
+            minDiff = x.first - prev_;
+            min_ = x.first, max_ = prev_;
+        }
+        prev_ = x.first;
+    }
+
+    if(minDiff == LINF || now <= minDiff * minDiff) {
+        cout << -1 << nl;
+        return;
+    }
+    cout << equals[0] << " " << equals[0] << " " << min_ << " " << max_ << nl;
 }
 
 int main(){

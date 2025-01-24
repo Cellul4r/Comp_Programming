@@ -71,26 +71,118 @@ template<class T> bool ckmax(T& a, const T& b) { return a < b ? a = b, 1 : 0; }
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
 const char nl = '\n';
-const int N =1e5+1;
+const int N =2e5+2;
 const int INF = 1e9+7;
 const long long LINF = 1e18+7;
 
+const int NN = N;
+//DSU
+struct DSU {
+
+    ll parent[NN], sz[NN];
+    ll find(ll a){ return a == parent[a] ? a : parent[a] = find(parent[a]); }
+    void merge(ll u, ll v) {
+        u = find(u), v=find(v);
+        if (u!=v) {
+            if (sz[u]<sz[v]) swap(u, v);
+            sz[u] += sz[v];
+            parent[v] = u;
+        }
+    }
+};
+
+set<int> adj[N];
+vi bdj[N];
+bool vis[N],vis2[N];
+ll ans;
+void dfs(int u, DSU& g) {
+
+    vis[u] = true; 
+    //dbg(u);
+    vi del;
+    trav(v,adj[u]) {
+        if(!vis[v] && g.find(u) != g.find(v)) {
+            //dbg(u,v);
+            del.pb(v);
+            adj[v].erase(u);
+            ans++;
+        } else if(!vis[v]){
+            dfs(v,g);
+        }
+    }
+    trav(x,del) {
+        adj[u].erase(x);
+    }
+}
+void dfs2(int u, DSU& f) {
+
+    vis2[u] = true;
+    //dbg(u);
+    trav(v,bdj[u]) {
+        //dbg(v);
+        if(!vis2[v] && f.find(u) != f.find(v)) {
+            //dbg(u,v);
+            ans++;
+        }
+        if(!vis2[v]) {
+            dfs2(v,f);
+        }
+    }
+}
 void solve(){
     
-    int a,b,c,d;
-    cin>>a>>b>>c>>d;
-
-    int l = max(a,c), r = min(b,d);
-    if(l > r) {
-        cout << 1 << nl;
-        return;
+    ans = 0;
+    int n,f,g;
+    cin>>n>>f>>g;
+    DSU F,G;
+    rep(i,n) {
+        F.parent[i+1] = i+1;
+        F.sz[i+1] = 1;
+        G.parent[i+1] = i+1;
+        G.sz[i+1] = 1;
     }
-    // case l <= r
-    //dbg(l,r);
-    int ans = r - l;
-    if(a < l || c < l) ans++;
-    if(b > r || d > r) ans++;
+
+    rep(i,f) {
+        int u,v;
+        cin>>u>>v;
+        adj[u].ins(v);
+        adj[v].ins(u);
+    }
+
+    rep(i,g) {
+        int u,v;
+        cin>>u>>v;
+        bdj[u].pb(v);
+        bdj[v].pb(u);
+        G.merge(u,v);
+    }
+    
+    rep(i,n) {
+        if(!vis[i+1]) {
+            dfs(i+1,G);
+        }
+    }
+
+    rep(i,n) {
+        trav(v,adj[i+1]) {
+            //dbg(i+1,v);
+            F.merge(i+1,v);
+        }
+    }
+    
+    rep(i,n) {
+        if(!vis2[i+1]) {
+            dfs2(i+1,F);
+        }
+    }
     cout << ans << nl;
+
+    FOR(i,1,n+1){
+        adj[i].clear();
+        bdj[i].clear();
+        vis[i] = false;
+        vis2[i] = false;
+    }
 }
 
 int main(){

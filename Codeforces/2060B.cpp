@@ -75,22 +75,58 @@ const int N =1e5+1;
 const int INF = 1e9+7;
 const long long LINF = 1e18+7;
 
+struct p {
+
+    int c;
+    vi v;
+    
+    bool operator<(const p& rhs) {
+        if(v != rhs.v) {
+            return v < rhs.v;
+        }
+        return c < rhs.c;
+    }
+};
 void solve(){
     
-    int a,b,c,d;
-    cin>>a>>b>>c>>d;
+    int n,m;
+    cin>>n>>m;
+    vector<p> a(n);
+    rep(i,n) {
+        a[i].c = i;
+        rep(j,m) {
+            int x;
+            cin>>x;
+            a[i].v.pb(x); 
+        }
 
-    int l = max(a,c), r = min(b,d);
-    if(l > r) {
-        cout << 1 << nl;
-        return;
+        sort(all(a[i].v));
     }
-    // case l <= r
-    //dbg(l,r);
-    int ans = r - l;
-    if(a < l || c < l) ans++;
-    if(b > r || d > r) ans++;
-    cout << ans << nl;
+    sort(all(a));
+    /*rep(i,n) {
+        dbg(a[i].v);
+    }*/
+
+    vi ans(n);
+    rep(i,n) {
+        ans[i] = a[i].c;
+    }
+    
+    int now = -1;
+    rep(j,m) {
+        rep(i,n) {
+            if(a[i].v[j] <= now) {
+                cout << -1 << nl;
+                return;
+            }
+            now = a[i].v[j];
+        }
+    }
+    trav(x,ans) {
+        cout << x + 1 << " ";
+    }
+
+    cout << nl;
 }
 
 int main(){

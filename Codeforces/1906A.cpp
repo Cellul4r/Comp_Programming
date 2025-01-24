@@ -75,22 +75,42 @@ const int N =1e5+1;
 const int INF = 1e9+7;
 const long long LINF = 1e18+7;
 
-void solve(){
-    
-    int a,b,c,d;
-    cin>>a>>b>>c>>d;
+const int dr[] = {-1,-1,0,1,1,1,0,-1}, dc[] = {0,1,1,1,0,-1,-1,-1};
+char board[3][3];
+bool vis[3][3];
+set<string> save;
+void dfs(string now, int cnt, int i, int j) {
 
-    int l = max(a,c), r = min(b,d);
-    if(l > r) {
-        cout << 1 << nl;
+    if(cnt >= 3) {
+        save.ins(now);
         return;
     }
-    // case l <= r
-    //dbg(l,r);
-    int ans = r - l;
-    if(a < l || c < l) ans++;
-    if(b > r || d > r) ans++;
-    cout << ans << nl;
+    vis[i][j] = true;
+    rep(k,8) {
+        int ni = i + dr[k], nj = j + dc[k];
+        if(ni < 0 || nj < 0 || ni >= 3 || nj >= 3 || vis[ni][nj]) continue;
+        string s = now + board[ni][nj];
+        dfs(s, cnt+1, ni, nj);
+    }
+    vis[i][j] = false;
+}
+void solve(){
+    
+    save.clear();
+    rep(i,3) {
+        string s;
+        cin>>s;
+        rep(j,3) {
+            board[i][j] = s[j];
+        }
+    }
+    rep(i,3) {
+        rep(j,3) {
+            dfs("",0,i,j);
+        }
+    }
+    //dbg(save);
+    cout << *save.begin();
 }
 
 int main(){
@@ -100,7 +120,7 @@ int main(){
     //   freopen("input.txt", "r", stdin);
     //    freopen("output.txt", "w", stdout);
     //#endif
-    cin>>t;
+    //cin>>t;
     while(t--)solve();
 }
 

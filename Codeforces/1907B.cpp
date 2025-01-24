@@ -77,19 +77,40 @@ const long long LINF = 1e18+7;
 
 void solve(){
     
-    int a,b,c,d;
-    cin>>a>>b>>c>>d;
-
-    int l = max(a,c), r = min(b,d);
-    if(l > r) {
-        cout << 1 << nl;
-        return;
+    string s;
+    cin>>s;
+    int n = sz(s);
+    //pq<pair<int,char>> low,high;
+    stack<pair<int,char>> low,high;
+    string ans;
+    rep(i,n){
+        char x = s[i];
+        if(x == 'b') {
+            if(low.empty()) continue; 
+            low.pop();
+        } else if(x == 'B') {
+            if(high.empty()) continue;
+            high.pop();
+        } else if(x >= 'a' && x <= 'z'){
+            low.push(mp(i,x));
+        } else {
+            high.push(mp(i,x));
+        }
     }
-    // case l <= r
-    //dbg(l,r);
-    int ans = r - l;
-    if(a < l || c < l) ans++;
-    if(b > r || d > r) ans++;
+    vector<pair<int,char>> a;
+    while(!low.empty()) {
+        a.pb(low.top());
+        low.pop();
+    }
+    while(!high.empty()) {
+        a.pb(high.top());
+        high.pop();
+    }
+    sort(all(a));
+    //dbg(a);
+    trav(x,a) {
+        ans += x.second;
+    }
     cout << ans << nl;
 }
 
