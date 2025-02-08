@@ -67,27 +67,43 @@ const long long LINF = 1e18+7;
 
 void solve(){
     
-    int n,k,d,w;
-    cin>>n>>k>>d>>w;
-    vi a(n);
-    trav(x,a) {
-        cin>>x;
-    }
-    
-    int i = n-1;
-    int ans = 0;
-    while(i >= 0) {
-        ans++;
-        int now = a[i] - d,cnt = 1;
-        //dbg(i);
-        int j = i-1;
-        while(j >= 0 && cnt < k && a[j] + w >= now) {
-            j--;
-            cnt++;
+    int n;
+    cin>>n;
+    vector<vi> a(n);
+    vi cnt(50001);
+    vi ans(n);
+    rep(i,n) {
+        int m;
+        cin>>m;
+        rep(j,m) {
+            int x;
+            cin>>x;
+            cnt[x]++;
+            a[i].pb(x);
         }
-        i = j;
     }
-    cout << ans << nl;
+    //dbg(a);
+    rep(i,n) {
+        bool found = false;
+        trav(x,a[i]){
+            if(cnt[x] - 1 == 0) {
+                ans[i] = x;
+                found = true;
+                break;
+            }
+        }
+        if(!found) {
+            cout << -1 << nl;
+            return;
+        }
+        trav(x,a[i]) {
+            cnt[x]--;
+        }
+    }
+    trav(x,ans) {
+        cout << x << " ";
+    }
+    cout << nl;
 }
 
 int main(){

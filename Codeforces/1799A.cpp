@@ -65,29 +65,58 @@ const int N =1e5+1;
 const int INF = 1e9+7;
 const long long LINF = 1e18+7;
 
+int ceil(int a, int b) {
+    return (a + b - 1) / b;
+}
 void solve(){
     
-    int n,k,d,w;
-    cin>>n>>k>>d>>w;
+    int n;
+    cin>>n;
     vi a(n);
     trav(x,a) {
         cin>>x;
     }
-    
-    int i = n-1;
-    int ans = 0;
-    while(i >= 0) {
-        ans++;
-        int now = a[i] - d,cnt = 1;
-        //dbg(i);
-        int j = i-1;
-        while(j >= 0 && cnt < k && a[j] + w >= now) {
-            j--;
-            cnt++;
+
+    vpi q;
+    while(true) {
+        bool unequal = false;
+        int min_ = a[n-1];
+        int idx = n - 1;
+        rep(i,n-1) {
+            if(a[i] != a[n-1]) {
+                unequal = true;
+            }
+            if(min_ > a[i]) {
+                idx = i;
+                min_ = a[i];
+            }
         }
-        i = j;
+
+        if(!unequal) {
+            break;
+        }
+
+        if(min_ == 1) {
+            cout << -1 << nl;
+            return;
+        }
+
+        rep(i,n) { 
+            if(a[i] != min_) {
+                if(sz(q) + 1 > 30 * n) {
+                    cout << -1 << nl;
+                    return;
+                }
+                a[i] = ceil(a[i], min_);
+                q.pb(mp(i,idx));
+            }
+        }
     }
-    cout << ans << nl;
+
+    cout << sz(q) << nl;
+    trav(x,q) {
+        cout << x.first + 1 << " " << x.second + 1 << nl;
+    }
 }
 
 int main(){

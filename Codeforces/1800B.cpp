@@ -67,25 +67,25 @@ const long long LINF = 1e18+7;
 
 void solve(){
     
-    int n,k,d,w;
-    cin>>n>>k>>d>>w;
-    vi a(n);
-    trav(x,a) {
-        cin>>x;
+    int n,k;
+    cin>>n>>k;
+    string s;
+    cin>>s;
+    vi alpha1(26),alpha2(26);
+    trav(x,s) {
+        if(x >= 'a' && x <= 'z') {
+            alpha1[x - 'a']++;
+        } else {
+            alpha2[x - 'A']++;
+        }
     }
     
-    int i = n-1;
     int ans = 0;
-    while(i >= 0) {
-        ans++;
-        int now = a[i] - d,cnt = 1;
-        //dbg(i);
-        int j = i-1;
-        while(j >= 0 && cnt < k && a[j] + w >= now) {
-            j--;
-            cnt++;
-        }
-        i = j;
+    rep(i,26) {
+        ans += min(alpha1[i],alpha2[i]);
+        int diff = abs(alpha1[i] - alpha2[i]);
+        ans += min(k, diff / 2);
+        k -= min(k, diff / 2);
     }
     cout << ans << nl;
 }

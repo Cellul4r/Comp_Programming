@@ -67,25 +67,21 @@ const long long LINF = 1e18+7;
 
 void solve(){
     
-    int n,k,d,w;
-    cin>>n>>k>>d>>w;
-    vi a(n);
-    trav(x,a) {
+    int n;
+    cin>>n;
+    pq<int> save;
+    ll ans = 0;
+    rep(i,n) {
+        int x;
         cin>>x;
-    }
-    
-    int i = n-1;
-    int ans = 0;
-    while(i >= 0) {
-        ans++;
-        int now = a[i] - d,cnt = 1;
-        //dbg(i);
-        int j = i-1;
-        while(j >= 0 && cnt < k && a[j] + w >= now) {
-            j--;
-            cnt++;
+        if(x == 0) {
+            if(!save.empty()) {
+                ans += save.top();
+                save.pop();
+            }
+        } else {
+            save.push(x);
         }
-        i = j;
     }
     cout << ans << nl;
 }
