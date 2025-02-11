@@ -65,62 +65,37 @@ const int N =1e5+1;
 const int INF = 1e9+7;
 const long long LINF = 1e18+7;
 
+void test() {
+    
+    for(int i = 0; i <= 1000;i++) {
+        
+        int sum = 0;
+        int tmp = i;
+        while(tmp > 0) {
+            sum += tmp % 10;
+            tmp /= 10;
+        }
+        dbg(i,sum);
+    }
+}
 void solve(){
     
-    int n;
-    cin>>n;
-    vector<bool> vis(n);
-    vi a(n),b(n);   
-    trav(x,a) {
-        cin>>x;
+    int x,y;
+    cin>>x>>y;
+    //test();
+    if(x + 1 == y) {
+        cout << "YES" << nl;
+        return;
     }
-    trav(x,b) {
-        cin>>x;
+    if(x > y && ((x - y - 8) % 9 == 0)) {
+        cout << "YES" << nl;
+        return;
     }
-    int ans1=0,ans2=0;
-    rep(i,n) {
-        if(a[i] == 1 && b[i] <= 0) {
-            // (1,0) (1,-1)
-            vis[i] = true;
-            ans1++;
-        } else if(a[i] <= 0 && b[i] == 1) {
-            //(-1,1) (0,1)
-            vis[i] = true;
-            ans2++;
-        } else if(a[i] == 0 || b[i] == 0) {
-            // (0,0) (-1,0) (0,-1)
-            vis[i] = true;
-        }
+    if((x == 9 || x == 99 || x == 999) && y == 1) {
+        cout << "YES" << nl;
+        return;
     }
-
-    int neg=0,pos=0;
-    rep(i,n) {
-        if(!vis[i]) {
-            // (-1,-1) and (1,1)
-            neg += (a[i] == -1);
-            pos += (a[i] == 1);
-        }
-    }
-    while(pos > 0 || neg > 0) {
-        if(pos > 0) {
-            if(ans1 < ans2) {
-                ans1++;
-            } else {
-                ans2++;
-            }
-            pos--;
-        }
-        if(neg > 0) {
-            if(ans1 < ans2) {
-                ans2--;
-            } else {
-                ans1--;
-            }
-            neg--;
-        }
-    }
-    //dbg(k1,k2);
-    cout << min(ans1,ans2) << nl;
+    cout << "NO" << nl;
 }
 
 int main(){
@@ -135,5 +110,4 @@ int main(){
 
     return 0;
 }
-
 

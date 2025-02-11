@@ -67,60 +67,41 @@ const long long LINF = 1e18+7;
 
 void solve(){
     
-    int n;
+    ll n;
     cin>>n;
-    vector<bool> vis(n);
-    vi a(n),b(n);   
-    trav(x,a) {
-        cin>>x;
+    
+    int cnt=0, ans = INF;
+    int dig = 0; 
+    ll tmp = n;
+    ll k = 0;
+    while(tmp > 0) {
+        dig++;
+        tmp /= 10;
     }
-    trav(x,b) {
-        cin>>x;
-    }
-    int ans1=0,ans2=0;
-    rep(i,n) {
-        if(a[i] == 1 && b[i] <= 0) {
-            // (1,0) (1,-1)
-            vis[i] = true;
-            ans1++;
-        } else if(a[i] <= 0 && b[i] == 1) {
-            //(-1,1) (0,1)
-            vis[i] = true;
-            ans2++;
-        } else if(a[i] == 0 || b[i] == 0) {
-            // (0,0) (-1,0) (0,-1)
-            vis[i] = true;
-        }
-    }
-
-    int neg=0,pos=0;
-    rep(i,n) {
-        if(!vis[i]) {
-            // (-1,-1) and (1,1)
-            neg += (a[i] == -1);
-            pos += (a[i] == 1);
-        }
-    }
-    while(pos > 0 || neg > 0) {
-        if(pos > 0) {
-            if(ans1 < ans2) {
-                ans1++;
-            } else {
-                ans2++;
+    rep(i,dig) {
+        k = k * 10ll + 9;
+        bool flag = false;
+        cnt = 0;
+        tmp = n;
+        while(cnt < 100) {
+            //dbg(tmp);
+            ll tmp2 = tmp; 
+            while(tmp2 > 0) {
+                if(tmp2 % 10 == 7) {
+                    flag = true;
+                    break;
+                }
+                tmp2 /= 10;
             }
-            pos--;
+            if(flag) break;
+            cnt++;
+            tmp += k;
         }
-        if(neg > 0) {
-            if(ans1 < ans2) {
-                ans2--;
-            } else {
-                ans1--;
-            }
-            neg--;
+        if(flag) {
+            ckmin(ans,cnt);
         }
     }
-    //dbg(k1,k2);
-    cout << min(ans1,ans2) << nl;
+    cout << ans << nl;
 }
 
 int main(){
@@ -135,5 +116,4 @@ int main(){
 
     return 0;
 }
-
 

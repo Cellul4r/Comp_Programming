@@ -69,58 +69,55 @@ void solve(){
     
     int n;
     cin>>n;
-    vector<bool> vis(n);
-    vi a(n),b(n);   
-    trav(x,a) {
-        cin>>x;
-    }
-    trav(x,b) {
-        cin>>x;
-    }
-    int ans1=0,ans2=0;
+    vi a(n+1);
     rep(i,n) {
-        if(a[i] == 1 && b[i] <= 0) {
-            // (1,0) (1,-1)
-            vis[i] = true;
-            ans1++;
-        } else if(a[i] <= 0 && b[i] == 1) {
-            //(-1,1) (0,1)
-            vis[i] = true;
-            ans2++;
-        } else if(a[i] == 0 || b[i] == 0) {
-            // (0,0) (-1,0) (0,-1)
-            vis[i] = true;
+        int x;
+        cin>>x;
+        a[x]++;
+    }
+    bool flag = true;
+    rep(i,n+1) {
+        if(a[i] & 1) {
+            flag = false;
         }
+    }
+    if(flag) {
+        cout << "YES" << nl;
+        return;
+    }
+    vi b(n+1),c(n+1);
+    FOR(i,1,n+1){
+        //dbg(a);
+        if(a[i] >= 2) {
+            b[i]++;
+            c[i]++;
+            a[i] -= 2; 
+            if(i < n) {
+                rep(j,a[i]) {
+                    a[i+1]++;
+                }
+                a[i] = 0;
+            }
+        }
+        
     }
 
-    int neg=0,pos=0;
-    rep(i,n) {
-        if(!vis[i]) {
-            // (-1,-1) and (1,1)
-            neg += (a[i] == -1);
-            pos += (a[i] == 1);
+    rep(i,n+1) {
+        while(a[i] >= 2) {
+            b[i]++;
+            c[i]++;
+            a[i] -= 2;
+        }
+        if(a[i] == 1) b[i]++;
+    }
+    //dbg(b,c);
+    rep(i,n+1) {
+        if(c[i] != b[i]) {
+            cout << "NO" << nl;
+            return;
         }
     }
-    while(pos > 0 || neg > 0) {
-        if(pos > 0) {
-            if(ans1 < ans2) {
-                ans1++;
-            } else {
-                ans2++;
-            }
-            pos--;
-        }
-        if(neg > 0) {
-            if(ans1 < ans2) {
-                ans2--;
-            } else {
-                ans1--;
-            }
-            neg--;
-        }
-    }
-    //dbg(k1,k2);
-    cout << min(ans1,ans2) << nl;
+    cout << "YES" << nl;
 }
 
 int main(){
@@ -135,5 +132,4 @@ int main(){
 
     return 0;
 }
-
 
