@@ -13,7 +13,6 @@ void __print(char x) {cerr << '\'' << x << '\'';}
 void __print(const char *x) {cerr << '"' << x << '"';}
 void __print(const string &x) {cerr << '"' << x << '"';}
 void __print(bool x) {cerr << (x ? "true" : "false");}
-
 template<typename T, typename V>
 void __print(const pair<T, V> &x);
 template<typename T>
@@ -28,26 +27,20 @@ void _print(T t, V... v) {__print(t); if (sizeof...(v)) cerr << ", "; _print(v..
 //#else
 //#define dbg(x...)
 //#endif
-
-typedef unsigned long long ull;
 typedef long long ll;
 typedef long double ld;
 typedef complex<ld> cd;
-
 typedef pair<int, int> pi;
 typedef pair<ll,ll> pl;
 typedef pair<ld,ld> pd;
-
 typedef vector<int> vi;
 typedef vector<ld> vd;
 typedef vector<ll> vl;
 typedef vector<pi> vpi;
 typedef vector<pl> vpl;
 typedef vector<cd> vcd;
-
 template<class T> using pq = priority_queue<T>;
 template<class T> using pqg = priority_queue<T, vector<T>, greater<T>>;
-
 #define rep(i, a) for(int i=0;i<a;++i)
 #define FOR(i, a, b) for (int i=a; i<(b); i++)
 #define F0R(i, a) for (int i=0; i<(a); i++)
@@ -55,7 +48,6 @@ template<class T> using pqg = priority_queue<T, vector<T>, greater<T>>;
 #define F0Rd(i,a) for (int i = (a)-1; i >= 0; i--)
 #define trav(a,x) for (auto& a : x)
 #define uid(a, b) uniform_int_distribution<int>(a, b)(rng)
-
 #define sz(x) (int)(x).size()
 #define mp make_pair
 #define pb push_back
@@ -65,86 +57,62 @@ template<class T> using pqg = priority_queue<T, vector<T>, greater<T>>;
 #define ub upper_bound
 #define all(x) x.begin(), x.end()
 #define ins insert
-
 template<class T> bool ckmin(T& a, const T& b) { return b < a ? a = b, 1 : 0; }
 template<class T> bool ckmax(T& a, const T& b) { return a < b ? a = b, 1 : 0; }
-
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
-
 const char nl = '\n';
 const int N =1e5+1;
 const int INF = 1e9+7;
 const long long LINF = 1e18+7;
 
-void check() {
-
-    int n = 9;
-    vi a(n);
-    iota(all(a),1);
-    // dbg(a);
-    int seq = 0;
-    do {
-        int cnt = 0;
-        rep(i,n) {
-            FOR(j,i,n) {
-                vi tmp;
-                set<int> save;
-                FOR(k,1,j-i+2) {
-                    save.ins(k);
-                }
-                FOR(k,i,j+1) {
-                    if(save.count(a[k])) {
-                        save.erase(a[k]);
-                    }
-                }
-                if(sz(save) == 0) cnt++;
-            }
-        }
-        if(cnt == n) {
-            dbg(a,++seq);
-        }
-    } while(next_permutation(all(a)));
-}
 void solve(){
-
-    // int n;
-    // ull k;
-    // cin>>n>>k;
+    
     int n;
-    ll k;
-    cin>>n>>k;
-    int lg = 0;
-    while((1ll << lg) < k) lg++;
-    //dbg(lg);
-    vi ans(n);
-    int l = 0, r = n - 1;
-    FORd(i,1,n+1){
-        ll x = 1ll << min(i - 2,lg);
-        //dbg(i,k,x);
-        if(k > x) {
-            ans[l++] = i;
-            k -= x;
+    cin>>n;
+    string s;
+    cin>>s;
+    if(s == "fizz") {
+       if(n == 1) {
+           cout << 1 << " " << (int)1e9 << nl;
+       } else if(n == 2) {
+           cout << 2 << " " << 3 << nl;
+       } else {
+           cout << 1 << " " << n - 1 << nl;
+       }
+    } else if(s == "buzz") {
+        if(n == 1 || n == 2) {
+            cout << -1 << " " << -1 << nl;
         } else {
-            ans[r--] = i;
+            cout << n - 1 << " " << n << nl;
+        }
+    } else if(s == "fizzbuzz") {
+        if(n == 1) {
+            cout << -1 << " " << -1 << nl;
+        } else {
+            cout << 1 << " " << n << nl;
+        }
+        
+    } else {
+        if(n == 1 || n == 2) {
+            cout << 3 << " " << 4 << nl;
+        } else if(n < (int)1e9){
+            cout << n - 1 << " " << (int)1e9 << nl;  
+        } else {
+            cout << 3 << " " << 13 << nl;
         }
     }
-
-    trav(x,ans) {
-        cout << x << " ";
-    }
-    cout << nl;
 }
 
 int main(){
     ios::sync_with_stdio(false);cin.tie(nullptr);
     int t = 1;
-    // #ifndef ONLINE_JUDGE
+    //#ifndef ONLINE_JUDGE
     //   freopen("input.txt", "r", stdin);
     //    freopen("output.txt", "w", stdout);
-    // #endif
+    //#endif
     cin>>t;
-    //check();
-    while(t--) {
-        solve();
-    }
+    while(t--)solve();
+
+    return 0;
 }
+
