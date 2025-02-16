@@ -62,124 +62,26 @@ template<class T> bool ckmax(T& a, const T& b) { return a < b ? a = b, 1 : 0; }
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 const char nl = '\n';
 const int N =1e5+1;
-const int NN = 4*N;
-const long long INF = 1007050321;
+const int INF = 1e9+7;
 const long long LINF = 1e18+7;
 
-ll poww[N];
-struct node {
-
-    ll v = 0;
-    ll len = 0;
-    ll realLen = 0;
-};
-struct seg {
-    typedef node T;
-    T id;
-    T f(T a, T b) {
-        node k;
-        k.v = ((poww[b.len] * a.v) % INF + b.v) % INF;
-        k.len = b.len + a.len;
-        k.realLen = b.realLen + a.realLen;
-        return k;
-    }
-
-    vector<T> t;
-    void init() {
-        t.resize(4*N);
-    }
-    ll n=N;  // array size
-    
-    ll findPos(ll node, ll l, ll r, ll pos) {
-        if(l == r) {
-            return l;
-        }
-
-        ll mid = (l + r) >> 1;
-        if(pos < t[node<<1].realLen) {
-            return findPos(node<<1,l,mid,pos);
-        } else {
-            return findPos(node<<1|1,mid+1,r,pos - t[node<<1].realLen);
-        }
-    }
-
-    void modify(ll node, ll l, ll r, ll i, T v) {  // set value at position p
-        if(l == r) {
-            t[node] = v;
-            return;
-        }
-        ll mid = (l + r) >> 1;
-        if(i <= mid) {
-            modify(node<<1,l,mid,i,v);
-        } else {
-            modify(node<<1|1,mid+1,r,i,v);
-        }
-        t[node] = f(t[node<<1],t[node<<1|1]);
-    }
-    
-    void update(ll node, ll l, ll r, ll pos) {
-        t[node].len--;
-        if(l == r) {
-            t[node].v = t[node].realLen = 0;
-            return;
-        }
-        ll mid = (l + r) >> 1;
-        if(pos <= mid) {
-            update(node<<1,l,mid,pos);
-        } else {
-            update(node<<1|1,mid+1,r,pos);
-        }
-        t[node] = f(t[node<<1],t[node<<1|1]);
-    }
-
-    T query(ll node, ll l, ll r, ll L, ll R) { // fold f on interval [l, r)
-      if(l > R || r < L) return id;
-      if(l >= L && r <= R) {
-          return t[node];
-      }
-      ll mid = (l + r) >> 1;
-      return f(query(node<<1,l,mid,L,R), query(node<<1|1,mid+1,r,L,R));
-    }
-};
+int ceil(int a, int b) {
+    return (a + b - 1) / b;
+}
 void solve(){
     
-    poww[0] = 1;
-    FOR(i,1,N) {
-        poww[i] = (poww[i-1] << 1) % INF;
-    }
-
-    string s;
-    cin>>s;
-    int n = sz(s),m;
-    seg sg;
-    sg.init();
-    rep(i,n) {
-        node k;
-        k.v = (s[i] == '1' ? poww[0] : 0);
-        k.len = 1;
-        k.realLen = 1;
-        sg.modify(1,0,n-1,i,k);
-    }
-    cin>>m;
-    rep(i,m) {
-        char type;
-        cin>>type;
-        if(type == '-') {
-            int pos;
-            cin>>pos;
-            pos--;
-            pos = sg.findPos(1,0,n-1,pos);
-            sg.update(1,0,n-1,pos);
-        } else {
-            int l,r;
-            cin>>l>>r;
-            l--,r--;
-            l = sg.findPos(1,0,n-1,l);
-            r = sg.findPos(1,0,n-1,r);
-            //dbg(l,r);
-            cout << sg.query(1,0,n-1,l,r).v % INF << nl;
+    ll k,x,n;
+    cin>>k>>x>>n;
+    ll cur = 0, bet = 0; 
+    rep(i,x+1) {
+        cur = bet / (k - 1) + 1;
+        bet += cur;
+        if(bet > n) {
+            cout << "NO" << nl;
+            return;
         }
     }
+    cout << "YES" << nl;
 }
 
 int main(){
@@ -189,7 +91,7 @@ int main(){
     //   freopen("input.txt", "r", stdin);
     //    freopen("output.txt", "w", stdout);
     //#endif
-    //cin>>t;
+    cin>>t;
     while(t--)solve();
 
     return 0;

@@ -62,124 +62,64 @@ template<class T> bool ckmax(T& a, const T& b) { return a < b ? a = b, 1 : 0; }
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 const char nl = '\n';
 const int N =1e5+1;
-const int NN = 4*N;
-const long long INF = 1007050321;
+const int INF = 1e9+7;
 const long long LINF = 1e18+7;
 
-ll poww[N];
-struct node {
-
-    ll v = 0;
-    ll len = 0;
-    ll realLen = 0;
-};
-struct seg {
-    typedef node T;
-    T id;
-    T f(T a, T b) {
-        node k;
-        k.v = ((poww[b.len] * a.v) % INF + b.v) % INF;
-        k.len = b.len + a.len;
-        k.realLen = b.realLen + a.realLen;
-        return k;
-    }
-
-    vector<T> t;
-    void init() {
-        t.resize(4*N);
-    }
-    ll n=N;  // array size
-    
-    ll findPos(ll node, ll l, ll r, ll pos) {
-        if(l == r) {
-            return l;
-        }
-
-        ll mid = (l + r) >> 1;
-        if(pos < t[node<<1].realLen) {
-            return findPos(node<<1,l,mid,pos);
-        } else {
-            return findPos(node<<1|1,mid+1,r,pos - t[node<<1].realLen);
-        }
-    }
-
-    void modify(ll node, ll l, ll r, ll i, T v) {  // set value at position p
-        if(l == r) {
-            t[node] = v;
-            return;
-        }
-        ll mid = (l + r) >> 1;
-        if(i <= mid) {
-            modify(node<<1,l,mid,i,v);
-        } else {
-            modify(node<<1|1,mid+1,r,i,v);
-        }
-        t[node] = f(t[node<<1],t[node<<1|1]);
-    }
-    
-    void update(ll node, ll l, ll r, ll pos) {
-        t[node].len--;
-        if(l == r) {
-            t[node].v = t[node].realLen = 0;
-            return;
-        }
-        ll mid = (l + r) >> 1;
-        if(pos <= mid) {
-            update(node<<1,l,mid,pos);
-        } else {
-            update(node<<1|1,mid+1,r,pos);
-        }
-        t[node] = f(t[node<<1],t[node<<1|1]);
-    }
-
-    T query(ll node, ll l, ll r, ll L, ll R) { // fold f on interval [l, r)
-      if(l > R || r < L) return id;
-      if(l >= L && r <= R) {
-          return t[node];
-      }
-      ll mid = (l + r) >> 1;
-      return f(query(node<<1,l,mid,L,R), query(node<<1|1,mid+1,r,L,R));
-    }
-};
 void solve(){
     
-    poww[0] = 1;
-    FOR(i,1,N) {
-        poww[i] = (poww[i-1] << 1) % INF;
+    int n,m;
+    cin>>n>>m;
+    vector<string> a(n);
+    vi cnt(n);
+    vi cnt2(n);
+    deque<int> now;
+    rep(i,n) {
+        now.pb(i);
+        cin>>a[i];
+        F0Rd(j,sz(a[i])) {
+            if(a[i][j] != '0') break;
+            cnt[i]++;
+        }
+        cnt2[i] = sz(a[i]);
     }
 
-    string s;
-    cin>>s;
-    int n = sz(s),m;
-    seg sg;
-    sg.init();
-    rep(i,n) {
-        node k;
-        k.v = (s[i] == '1' ? poww[0] : 0);
-        k.len = 1;
-        k.realLen = 1;
-        sg.modify(1,0,n-1,i,k);
-    }
-    cin>>m;
-    rep(i,m) {
-        char type;
-        cin>>type;
-        if(type == '-') {
-            int pos;
-            cin>>pos;
-            pos--;
-            pos = sg.findPos(1,0,n-1,pos);
-            sg.update(1,0,n-1,pos);
-        } else {
-            int l,r;
-            cin>>l>>r;
-            l--,r--;
-            l = sg.findPos(1,0,n-1,l);
-            r = sg.findPos(1,0,n-1,r);
-            //dbg(l,r);
-            cout << sg.query(1,0,n-1,l,r).v % INF << nl;
+    auto comp = [&](int i, int j) {
+        if(cnt[i] != cnt[j]) {
+            return cnt[i] > cnt[j];    
         }
+        return cnt2[i] - i > cnt2[j] - j;
+    };
+    sort(all(now), comp);
+    int anna = 1;
+    bool flag = true;
+    while(flag || sz(now) > 1) {
+        //dbg(now);
+        flag = false;
+        if(anna) {
+            int v = now.front();
+            //dbg(v, cnt2[v], cnt[v]);
+            cnt2[v] -= cnt[v];
+            cnt[v] = 0;
+            now.pop_front();
+            now.pb(v);
+        } else {
+            int u = now.front();
+            int v = now.back();
+            //dbg(u,v,cnt[u],cnt2[u],cnt[v],cnt2[v]);
+            now.pop_front();
+            now.pop_back();
+            cnt2[u] += cnt2[v];
+            cnt[u] = cnt[v];
+            now.pb(u);
+        }
+        anna ^= 1;
     }
+
+    //dbg(now);
+    int k = now.front();
+    //dbg(cnt2[k]);
+    k = cnt2[k];
+    cout << (k-1 < m ? "Anna" : "Sasha") << nl;
 }
 
 int main(){
@@ -189,7 +129,7 @@ int main(){
     //   freopen("input.txt", "r", stdin);
     //    freopen("output.txt", "w", stdout);
     //#endif
-    //cin>>t;
+    cin>>t;
     while(t--)solve();
 
     return 0;
