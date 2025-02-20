@@ -75,12 +75,15 @@ const int N =1e5+1;
 const int INF = 1e9+7;
 const long long LINF = 1e18+7;
 
+void addS(int& a, int b) {
+    a += b;
+    if(a >= INF) a -= INF;
+}
 void solve(){
 
     int n,m;
     cin>>n>>m;
     vector<vi> board(n, vi(m));
-    vi dp(m);
     rep(i,n) {
         string s;
         cin>>s;
@@ -88,24 +91,21 @@ void solve(){
             board[i][j] = (s[j] == '#' ? -1 : 0);
         }
     }
-
-    rep(i,m) {
-        if(board[0][i] == -1) break;
-        dp[i] = 1;
-    }
-
-    FOR(i,1,n){
-        FOR(j, 0, m){
+    
+    // dp[i][j] = dp[i-1][j] + dp[i][j-1]
+    vi dp(m);
+    dp[0] = 1;
+    rep(i,n) {
+        rep(j,m) {
             if(board[i][j] == -1) {
-                 dp[j] = 0;
-                 continue;
+                dp[j] = 0;
+                continue;
             }
-            // if(i > 0 && board[i-1][j] != -1) board[i][j] += board[i-1][j];
-            // board[i][j] %= INF;
-            if(j > 0) dp[j] += dp[j-1];
-            dp[j] %= INF;
+            addS(dp[j], dp[j-1]);
         }
+        //dbg(dp);
     }
+
     cout << dp[m-1];
 }
 

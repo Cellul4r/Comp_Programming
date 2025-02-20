@@ -82,20 +82,18 @@ void solve(){
     vi h(n);
     trav(x,h) cin>>x;
 
-    vi dp(n,INF);
+    vi dp(n+1,INF);
 
-    dp[n-1] = 0;
-    F0Rd(i, n-1) {
-        FOR(j, 1, k+1) {
-            if(i + j < n) {
-                ckmin(dp[i], dp[i+j] + abs(h[i] - h[i+j]));
-            } else {
-                break;
-            }
+    dp[0] = dp[1] = 0;
+
+    for(int i=2;i<=n;i++) {
+        for(int j=1;j<=k;j++) {
+            if(i - j <= 0) continue;
+            ckmin(dp[i], dp[i-j] + abs(h[i-1]-h[i-j-1]));
         }
     }
 
-    cout << dp[0];
+    cout << dp[n];
 }
 
 int main(){

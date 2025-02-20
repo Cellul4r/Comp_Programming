@@ -71,7 +71,7 @@ template<class T> bool ckmax(T& a, const T& b) { return a < b ? a = b, 1 : 0; }
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
 const char nl = '\n';
-const int N =1e5+1;
+const int N =3e3+1;
 const int INF = 1e9+7;
 const long long LINF = 1e18+7;
 
@@ -86,47 +86,55 @@ const long long LINF = 1e18+7;
 //         string k = s[i] + recur(i+1, j+1, n, m, s, t, dp);
 //     }
 // }
+
+int dp[N][N];
+pi par[N][N];
+char save[N][N];
 void solve(){
 
     string s,t;
     cin>>s>>t;
     int n = sz(s), m = sz(t);
-    vector<vi> dp(n+1, vi(m+1));
-    vector<vpi> par(n+1, vpi(m+1,mp(-1,-1)));
-    for(int i=n-1;i>=0;--i) {
-        for(int j=m-1;j>=0;--j) {
-            if(s[i] == t[j]) {
-                dp[i][j] = 1 + dp[i+1][j+1];
-                par[i][j] = mp(i+1,j+1);
-            } else if(dp[i+1][j] > dp[i][j+1]){
-                dp[i][j] = dp[i+1][j];
-                par[i][j] = mp(i+1,j);
-            } else {
-                dp[i][j] = dp[i][j+1];
-                par[i][j] = mp(i,j+1);
+    
+    // dp[i][j] = ?
+    // if(s[i] == t[j]) dp[i][j] = dp[i-1][j-1] + 1
+    // dp[i][j] = 
+    for(int i=1;i<=n;i++) {
+        for(int j=1;j<=m;j++) {
+            dp[i][j] = dp[i-1][j-1];
+            par[i][j] = mp(i-1,j-1);
+            if(s[i-1] == t[j-1]) {
+                ckmax(dp[i][j], dp[i-1][j-1] + 1);
+                save[i][j] = s[i-1];
             }
-            // dbg(ans);
+            if(dp[i-1][j] > dp[i][j]) {
+                dp[i][j] = dp[i-1][j];
+                par[i][j] = mp(i-1,j);
+            }
+            if(dp[i][j-1] > dp[i][j]) {
+                dp[i][j] = dp[i][j-1];
+                par[i][j] = mp(i,j-1);
+            }
         }
     }
-    // rep(i,n+1) {
-    //     rep(j,m+1) {
-    //         cout << "{" << par[i][j].first << " " << par[i][j].second << "}";
-    //     }
-    //     cout << nl;
-    // }
+
     string ans;
-    int i=0,j=0;
-    while(i < n && j < m) {
-        // cout << s[i] << " " << t[j] << nl;
-        if(s[i] == t[j]) ans += s[i];
-        // cout << i << " " << j << nl;
-        int tmp = i;
-        i = par[i][j].first;
-        j = par[tmp][j].second;
-        // cout << i << " " << j << nl;
-        // break;
+    /*rep(i,n+1) {
+        rep(j,m+1) {
+            cout << par[i][j].first << "-" << par[i][j].second << " ";
+        }
+        cout << nl;
+    }*/
+    
+    int x = n, y = m;
+    while(x != 0 && y != 0) {
+        if(save[x][y] != '\0') ans += save[x][y];
+        pi k = par[x][y];
+        x = k.first;
+        y = k.second;
     }
-    // cout << dp[0][0];
+    
+    reverse(all(ans));
     cout << ans;
 }
 

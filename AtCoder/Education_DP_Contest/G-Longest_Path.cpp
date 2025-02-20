@@ -80,16 +80,16 @@ bool vis[N];
 int memo[N];
 int dfs(int u) {
 
-    if(~memo[u]) return memo[u];
+    if(memo[u] != -1) return memo[u];
     vis[u] = true;
+    //dbg(u);
     int ans = 0;
-    for(auto v:adj[u]) {
+    trav(v, adj[u]) {
         if(!vis[v]) {
-            ckmax(ans,1 + dfs(v));
+            ckmax(ans, 1 + dfs(v));
         }
+        ckmax(ans, 1 + memo[v]);
     }
-
-    vis[u] = false;
     return memo[u] = ans;
 }
 void solve(){
@@ -102,15 +102,14 @@ void solve(){
         --x,--y;
         adj[x].push_back(y);
     }
-    memset(memo,-1,sizeof(memo));
+    rep(i,n) memo[i] = -1; 
     int ans = 0;
     rep(i,n) {
         if(!vis[i]) {
-            dfs(i);
-            ckmax(ans, memo[i]);
+            ckmax(ans,dfs(i));
         }
     }
-
+    //rep(i,n) cout << memo[i] << " ";
     cout << ans;
 }
 

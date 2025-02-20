@@ -84,12 +84,20 @@ void solve(){
         cin>>w[i]>>v[i];
     }
 
-    vector<ll> dp(W+1, 0);
-    rep(i, N){
-        // dbg(dp);
-        F0Rd(j, W+2){
-            if(j >= w[i]) ckmax(dp[j], 1ll * v[i] + dp[j-w[i]]);
+    vl dp(W+1,0);
+    dp[0] = 0;
+
+    // dp[i][W] = v[i] + dp[i-1][W-w[i]]
+    for(int j=0;j<N;j++) {
+        vl dp2(W+1, 0);
+        for(int i=1;i<=W;i++) {
+            dp2[i] = dp[i];
+            if(i - w[j] < 0) continue;
+            ckmax(dp2[i], dp[i-w[j]] + v[j]);
+            //dbg(dp2[i-w[j]], v[j]);
         }
+        dp = dp2;
+        //dbg(dp2/);
     }
 
     cout << dp[W];

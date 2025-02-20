@@ -75,6 +75,7 @@ const int N =1e5+1;
 const int INF = 1e9+7;
 const long long LINF = 1e18+7;
 
+const int M = 1e5+1;
 void solve(){
 
     int N,W;
@@ -84,16 +85,16 @@ void solve(){
         cin>>w[i]>>v[i];
     }
     
-    // vector<vl> dp(N+1, vl(100001,LINF));
-    vl dp(100001,LINF);
+    // dp[i][V], dp[i][V] = min(dp[i][V], dp[i-1], w + dp[V-v[i]])
+    vl dp(M+1, LINF);
     dp[0] = 0;
-    FOR(i, 0, N){
-        F0Rd(j, 100001){
-            if(j >= v[i]) ckmin(dp[j], 1ll * w[i] + dp[j-v[i]]);
-            else break;
+    for(int i=0;i<N;i++) { 
+        for(int j=M;j>=v[i];j--) {
+            ckmin(dp[j], w[i] + dp[j-v[i]]);
         }
     }
-    F0Rd(i, 100001){
+
+    for(int i=M;i>=0;i--) {
         if(dp[i] <= W) {
             cout << i;
             return;

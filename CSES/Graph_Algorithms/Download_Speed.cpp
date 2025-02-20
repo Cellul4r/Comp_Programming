@@ -71,86 +71,64 @@ template<class T> bool ckmax(T& a, const T& b) { return a < b ? a = b, 1 : 0; }
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
 const char nl = '\n';
-const int N =1e5+1;
+const int N =501;
 const int INF = 1e9+7;
 const long long LINF = 1e18+7;
 
-const int S = 500;
-
-struct dinic {
-
-	struct edge {ll b, cap, flow, flip;};
-	vector<edge> g[S+2];
-    bool vis[S+2];
-	ll ans=0, d[S+2], ptr[S+2];
-	void add_edge (ll a, ll b, ll cap) {
-		g[a].push_back({b, cap, 0, g[b].size()});
-		g[b].push_back({a, 0, 0, g[a].size()-1});
-	}
-	ll dfs (ll u, ll flow=LLONG_MAX) {
-		if (u==S+1 || !flow) return flow;
-		while (++ptr[u] < g[u].size()) {
-			edge &e = g[u][ptr[u]];
-			if (d[e.b] != d[u]+1) continue;
-			if (ll pushed = dfs(e.b, min(flow, e.cap-e.flow))) {
-				e.flow += pushed;
-				g[e.b][e.flip].flow -= pushed;
-				return pushed;
-			}
-		}
-		return 0;
-    }
-
-    void dfs2(int u) {
-        vis[u] = true;
-        trav(vw, g[u]) {
-            int v = vw.b;
-            if(vw.cap > vw.flow && !vis[v]) {
-                dfs2(v);
-            } 
-        }
-    }
-	void calc() {
-		do {
-			vector<ll> q {S};
-			memset(d, 0, sizeof d);
-			ll i = -(d[S] = 1);
-			while (++i<q.size() && !d[S+1])
-				for (auto e: g[q[i]])
-					if (!d[e.b] && e.flow<e.cap) {
-						q.push_back(e.b);
-						d[e.b] = d[q[i]]+1;
-					}
-			memset(ptr, -1, sizeof ptr);
-			while(ll pushed=dfs(S)) ans+=pushed;
-		} while (d[S+1]);
-	}
-};
-
+ll graph[N][N];
+vi adj[N];
 void solve(){
 
+    memset(graph, 0, sizeof graph);
     int n,m;
     cin>>n>>m;
-    dinic di;
     rep(i,m) {
         int u,v,w;
         cin>>u>>v>>w;
-        if(u == 1) {
-            u = S;
-        } else if(u == n) {
-            u = S+1;
-        }
-        if(v == 1) {
-            v = S;
-        } else if(v == n) {
-            v = S+1;
+        u--,v--;
+        adj[u].pb(v);
+        adj[v].pb(u);
+        graph[u][v] += w;
+    }
+    int s = 0, t = n-1;
+    vi parent(n,-1);
+    auto reachable = [&]() -> bool {
+        queue<int> q;
+        q.push(s);
+        while(!q.empty()) {
+            int u = q.front();
+            q.pop();
+            trav(i, adj[u]) {
+                if(parent[i] != -1 || graph[u][i] <= 0) continue;
+                q.push(i);
+                parent[i] = u;
+            }
         }
 
-        di.add_edge(u,v,w);
+        return parent[t] != -1;
+    };
+
+    ll flow = 0;
+    while(reachable()) {
+        ll maxFlow = LINF;
+        int u = t;
+        while(u != s) {
+            maxFlow = min(maxFlow, 1ll * graph[parent[u]][u]);
+            u = parent[u];
+        }
+
+        u = t;
+        while(u != s) {
+            graph[parent[u]][u] -= maxFlow;
+            graph[u][parent[u]] += maxFlow;
+            u = parent[u];
+        }
+
+        flow += maxFlow;
+        fill(all(parent), -1); 
     }
 
-    di.calc();
-    cout << di.ans;
+    cout << flow;
 }
 
 int main(){

@@ -72,17 +72,55 @@ mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
 const char nl = '\n';
 const int N =1e5+1;
-const int INF = 1e9+7;
+const ll INF = 1e9+7;
 const long long LINF = 1e18+7;
 
+vi adj[N];
+// c -1 black, 2-white
+ll dp[N][3];
+ll dfs(int u, int p, int pc) {
+    
+    if(dp[u][pc] != -1) {
+        return dp[u][pc];
+    }
+    //dbg(u,p,pc);
+    ll black = (pc == 1 ? 0 : 1), white = 1;
+    trav(v, adj[u]) {
+        if(v == p) continue;
+        if(pc == 2) {
+            black *= dfs(v,u,1);
+            black %= INF;
+        }
+        white *= dfs(v,u,2);
+        white %= INF;
+    }
+
+    return dp[u][pc] = (black + white) % INF;
+}
 void solve(){
 
-    
+    int n;            
+    cin>>n;
+    rep(i,n) {
+        rep(j,3) {
+            dp[i][j] = -1;
+        }
+    }
+    rep(i,n-1) {
+        int x,y;
+        cin>>x>>y;
+        x--,y--;
+        adj[x].pb(y);
+        adj[y].pb(x);
+    }
+    int ans = dfs(0,-1,2);
+    //dbg(ans);
+    cout << ans;
 }
 
 int main(){
    ios::sync_with_stdio(false);cin.tie(nullptr);
    int t = 1;
-   cin>>t;
+   //cin>>t;
    while(t--)solve();
 }

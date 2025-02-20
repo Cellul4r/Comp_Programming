@@ -76,45 +76,54 @@ const int INF = 1e9+7;
 const long long LINF = 1e18+7;
 
 double dp[N][N][N];
+//bool vis[N][N][N];
+int n,a=0,b=0,c=0;
+// top down dp
+/*double recur(int i, int j, int k) {
+    if(i == 0 && j == 0 && k == 0) return 0;
+    //dbg(i,j,k);
+    if(vis[i][j][k]) return dp[i][j][k];
+    double ans = n; 
+
+    if(i > 0) ans += i * recur(i-1,j,k);
+    if(j > 0) ans += j * recur(i+1,j-1,k);
+    if(k > 0) ans += k * recur(i,j+1,k-1);
+    int l = (a + b + c) - (i + j + k);
+    ans /= (double)(n - l);
+    //dbg(i,j,k,ans);
+    vis[i][j][k] = true;
+    return dp[i][j][k] = ans;
+}*/
 void solve(){
 
-    int n;
     cin>>n;
-    int c1=0,c2=0,c3=0;
     rep(i,n) {
         int x;
         cin>>x;
-        if(x == 1) ++c1;
-        else if(x == 2) ++c2;
-        else ++c3;
+        a += x == 1;
+        b += x == 2;
+        c += x == 3;
     }
 
-    rep(k,n+1){
-        rep(j,n+1){
-            rep(i,n+1){
-                if(i+j+k == 0 || i+j+k > n) {
+    //double ans = recur(a,b,c);
+    //dbg(ans);
+    for(int k=0;k<=n;k++) {
+        for(int j=0;j<=n;j++) {
+            for(int i=0;i<=n;i++) {
+                if(i == 0 && j == 0 && k == 0) {
                     continue;
                 }
-                int c0 = n - i - j - k;
-                dp[i][j][k] = 1;
-                double p1 = 1.0 * i / n;
-                double p2 = 1.0 * j / n;
-                double p3 = 1.0 * k / n;
-                if(i) {
-                    dp[i][j][k] += dp[i-1][j][k] * p1;
-                }
-                if(j) {
-                    dp[i][j][k] += dp[i+1][j-1][k] * p2;
-                }
-                if(k) {
-                    dp[i][j][k] += dp[i][j+1][k-1] * p3;
-                }
-                dp[i][j][k] *= (double)n / (i+j+k);
+                if(i + j + k > n) continue;
+                int l = a + b + c - i - j - k;
+                dp[i][j][k] = n;
+                if(i > 0) dp[i][j][k] += (double)i * dp[i-1][j][k];
+                if(j > 0) dp[i][j][k] += (double)j * dp[i+1][j-1][k];
+                if(k > 0) dp[i][j][k] += (double)k * dp[i][j+1][k-1];
+                dp[i][j][k] /= (n - l);
             }
         }
     }
-
-    cout << fixed << setprecision(10) << dp[c1][c2][c3];
+    cout << fixed << setprecision(10) << dp[a][b][c];
 }
 
 int main(){

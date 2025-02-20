@@ -13,7 +13,6 @@ void __print(char x) {cerr << '\'' << x << '\'';}
 void __print(const char *x) {cerr << '"' << x << '"';}
 void __print(const string &x) {cerr << '"' << x << '"';}
 void __print(bool x) {cerr << (x ? "true" : "false");}
-
 template<typename T, typename V>
 void __print(const pair<T, V> &x);
 template<typename T>
@@ -28,25 +27,20 @@ void _print(T t, V... v) {__print(t); if (sizeof...(v)) cerr << ", "; _print(v..
 //#else
 //#define dbg(x...)
 //#endif
-
 typedef long long ll;
 typedef long double ld;
 typedef complex<ld> cd;
-
 typedef pair<int, int> pi;
 typedef pair<ll,ll> pl;
 typedef pair<ld,ld> pd;
-
 typedef vector<int> vi;
 typedef vector<ld> vd;
 typedef vector<ll> vl;
 typedef vector<pi> vpi;
 typedef vector<pl> vpl;
 typedef vector<cd> vcd;
-
 template<class T> using pq = priority_queue<T>;
 template<class T> using pqg = priority_queue<T, vector<T>, greater<T>>;
-
 #define rep(i, a) for(int i=0;i<a;++i)
 #define FOR(i, a, b) for (int i=a; i<(b); i++)
 #define F0R(i, a) for (int i=0; i<(a); i++)
@@ -54,7 +48,6 @@ template<class T> using pqg = priority_queue<T, vector<T>, greater<T>>;
 #define F0Rd(i,a) for (int i = (a)-1; i >= 0; i--)
 #define trav(a,x) for (auto& a : x)
 #define uid(a, b) uniform_int_distribution<int>(a, b)(rng)
-
 #define sz(x) (int)(x).size()
 #define mp make_pair
 #define pb push_back
@@ -64,43 +57,50 @@ template<class T> using pqg = priority_queue<T, vector<T>, greater<T>>;
 #define ub upper_bound
 #define all(x) x.begin(), x.end()
 #define ins insert
-
 template<class T> bool ckmin(T& a, const T& b) { return b < a ? a = b, 1 : 0; }
 template<class T> bool ckmax(T& a, const T& b) { return a < b ? a = b, 1 : 0; }
-
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
-
 const char nl = '\n';
 const int N =1e5+1;
 const int INF = 1e9+7;
 const long long LINF = 1e18+7;
 
-int dp[3],dp2[3];
 void solve(){
-
+    
+    auto comp = [&](pi& i, pi& j) -> bool {
+        if(i.second != j.second) {
+            return i.second < j.second;
+        }
+        return i.first < j.first;
+    };
     int n;
     cin>>n;
-    vi a(n), b(n), c(n);
-    rep(i,n) {
-        cin>> a[i] >> b[i] >> c[i];
+    vpi a(n);
+    trav(x,a) {
+        cin>>x.first>>x.second;
     }
-    
-    rep(i,n) {
-        // day i+1
-        // choose A(0) : dp[1][0][0] = max(a[i] + max(dp[0][1][0], dp[0][0][1])
-        dp2[0] = a[i] + max(dp[1], dp[2]);
-        dp2[1] = b[i] + max(dp[0], dp[2]);
-        dp2[2] = c[i] + max(dp[0], dp[1]);
-
-        rep(j,3) dp[j] = dp2[j];
+    sort(all(a), comp);
+    int ans = 0, prev_ = 0;
+    trav(x,a) {
+        if(x.first >= prev_) {
+            ans++;
+            prev_ = x.second;
+        }
     }
 
-    cout << max({dp[0], dp[1], dp[2]});
+    cout << ans;
 }
 
 int main(){
-   ios::sync_with_stdio(false);cin.tie(nullptr);
-   int t = 1;
-//    cin>>t;
-   while(t--)solve();
+    ios::sync_with_stdio(false);cin.tie(nullptr);
+    int t = 1;
+    //#ifndef ONLINE_JUDGE
+    //   freopen("input.txt", "r", stdin);
+    //    freopen("output.txt", "w", stdout);
+    //#endif
+    //cin>>t;
+    while(t--)solve();
+
+    return 0;
 }
+
