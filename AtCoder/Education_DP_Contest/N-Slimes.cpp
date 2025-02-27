@@ -71,33 +71,38 @@ template<class T> bool ckmax(T& a, const T& b) { return a < b ? a = b, 1 : 0; }
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
 const char nl = '\n';
-const int N =1e5+1;
+const int N =401;
 const int INF = 1e9+7;
 const long long LINF = 1e18+7;
 
+int n;
+ll a[N];
+ll S[N];
+ll dp[N][N];
+ll recur(int l, int r) {
+    // only 1 slimes
+    if(l == r) {
+        return 0ll;
+    }
+    if(~dp[l][r]) return dp[l][r];
+    //dbg(l,r);
+    ll ans = LINF;
+    for(int k = l; k <= r-1; k++) {
+        ckmin(ans, S[r] - S[l-1] + recur(l,k) + recur(k+1,r));
+    }
+
+    return dp[l][r] = ans;
+}
 void solve(){
 
-    int n;
     cin>>n;
-    vl a(n);
-    trav(x,a) cin>>x;
-    vector<vl> dp(n, vl(n));
-    for(int l=n-1;l>=0;--l) {
-        for(int r=l;r<=n-1;++r) {
-            dp[l][r] = LINF;
-            if(l == r) dp[l][r] = 0;
-            ll sum = 0;
-            for(int x=l;x<=r;++x) {
-                sum += a[x];
-            }
-            for(int x=l;x<=r-1;++x) {
-                ckmin(dp[l][r], sum + dp[l][x] + dp[x+1][r]);
-                // dbg(x,dp[l][r],(a[x]+a[x+1])*(1ll*r-l));
-            }
-            // dbg(l,r,dp[l][r]);
-        }
-    }
-    cout << dp[0][n-1];
+    rep(i,n) cin>>a[i+1];    
+
+    FOR(i,1,n+1) S[i] = S[i-1] + a[i];
+    for(int l=1;l<=n;l++) {for(int r=1;r<=n;r++) dp[l][r] = -1;}
+    ll ans = recur(1,n);
+
+    cout << ans;
 }
 
 int main(){

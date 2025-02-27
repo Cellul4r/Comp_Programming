@@ -71,52 +71,42 @@ template<class T> bool ckmax(T& a, const T& b) { return a < b ? a = b, 1 : 0; }
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
 const char nl = '\n';
-const int N =22;
+const int N =1e5+1;
 const int INF = 1e9+7;
 const long long LINF = 1e18+7;
 
-int a[N][N];
-int n;
-int dp[N][1<<21];
-
-void addS(int& a, int b) {
-    a += b;
-    if(a >= INF) a -= INF;
-}
-
-int recur(int i, int mask) {
-    if(i == n) {
-        return 1;
-    }
-    
-    if(~dp[i][mask]) return dp[i][mask];
-    int ans = 0;
-    for(int j = 0; j < n; j++) {
-        if(!(mask & (1 << j)) && a[i][j]) {
-            int nmask = mask ^ (1 << j);
-            addS(ans, recur(i+1, nmask));
-        }
-    }
-
-    return dp[i][mask] = ans;
-}
-
+int n,k;
+int a[N];
+int b[101];
+// game state
+// if 1 -> Taro
+// if 2 -> Jiro
+int dp[N];
 void solve(){
 
-    memset(dp, -1, sizeof dp);
-    cin>>n;
+    cin>>n>>k;
     rep(i,n) {
-        rep(j,n) {
-            cin>>a[i][j];
+        int x;
+        cin>>x;
+        a[x] = 1;
+        b[i] = x;
+    }
+    // 0 stones taro can't play
+    dp[0] = 2;
+    for(int i=1;i<=k;i++) {
+        for(int j=0;j<n;j++) {
+            //dbg(i,b[j]);
+            if(i - b[j] < 0) continue; 
+            if(dp[i] == 1) continue;
+            int x = dp[i - b[j]];
+            // if prev state is taro then dp[i] is taro to win
+            if(x == 1) dp[i] = 2;
+            else dp[i] = 1;
+            //dbg(i,dp[i]);
         }
     }
-    // all subset that we choose woman 2^n possible ways usign bitmask
-    // the answer is the set the we choose all woman mask = 2^n-1 (111111....)
-    // we want to choose at ith man to match jth woman if it not merge in the mask yet
-    // just merge it!
-    int ans = recur(0,0); 
 
-    cout << ans;
+    cout << (dp[k] == 1 ? "First" : "Second");
 }
 
 int main(){

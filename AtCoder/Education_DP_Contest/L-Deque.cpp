@@ -75,47 +75,28 @@ const int N =3001;
 const int INF = 1e9+7;
 const long long LINF = 1e18+7;
 
+ll a[N];
+int n;
 ll dp[N][N];
-// ll recur(int i, int j, int n, vl& a) {
-
-//     if(i == j) {
-//         return a[i];
-//     }
-//     if(i+1 == j) {
-//         return max(a[i],a[j]);
-//     }
-//     if(~dp[i][j]) return dp[i][j];
-//     ll ans = -INF;
-//     ckmax(ans,a[i] + min(recur(i+2,j,n,a), recur(i+1,j-1,n,a)));
-//     ckmax(ans,a[j] + min(recur(i+1,j-1,n,a), recur(i,j-2,n,a)));
-//     return dp[i][j] = ans;
-// }
+ll recur(int l, int r) {
+    //dbg(l,r);
+    if(l == r) return a[l];
+    if(~dp[l][r]) return dp[l][r];
+    // x + y = sum
+    // x - y = z
+    // 2x = sum + z
+    // z = 2x - sum
+    ll ans = 0;
+    ans = max(a[l] - recur(l+1, r), a[r] - recur(l,r-1));
+    //dbg(l,r,ans);
+    return dp[l][r] = ans;
+}
 void solve(){
 
-    int n;
     cin>>n;
-    vl a(n);
-    // ll sum = 0;
-    trav(x,a) {
-        cin>>x;
-        // sum += x;
-    }
-    // memset(dp,-1,sizeof(dp));
-    // cout << 2ll*recur(0,n-1,n,a) - sum;
-    
-    // bottom-up approach dp[l][r] the score that player can get (with maximal value)
-    // the answer is on dp[0][n-1] that is the interval from 0 to n-1
-    // so iterate from small interval to big interval!
-    for(int l=n-1;l>=0;--l) {
-        for(int r=l;r<n;++r) {
-            if(l == r) {
-                dp[l][r] = a[l];
-            } else {
-                dp[l][r] = max(a[l] - dp[l+1][r], a[r] - dp[l][r-1]);
-            }
-        }
-    }
-    cout << dp[0][n-1];
+    rep(i,n) cin>>a[i];
+    memset(dp, -1, sizeof dp);
+    cout << recur(0,n-1);
 }
 
 int main(){

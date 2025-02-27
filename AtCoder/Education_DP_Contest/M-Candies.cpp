@@ -71,42 +71,47 @@ template<class T> bool ckmax(T& a, const T& b) { return a < b ? a = b, 1 : 0; }
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
 const char nl = '\n';
-const int N =1e5+1;
+const int N =101;
 const int INF = 1e9+7;
 const long long LINF = 1e18+7;
 
+int n,k;
+int a[N];
+int dp[N][(int)1e5+1];
+void addSelf(int& a, int b) {
+    a += b;
+    if(a >= INF) a -= INF;
+    if(a < 0) a += INF;
+}
 void solve(){
 
-    int n,k;
     cin>>n>>k;
-    vi a(n);
-    trav(x,a) {
-        cin>>x;
-    }
-    vector<vi> dp(n+1, vi(k+1));
-    rep(i,n+1) {
-        dp[i][0] = 1; 
-    }
-    rep(i,k+1) {
-        dp[0][i] += dp[0][i-1];
-    }
-    // sort(all(a));
-    int now = 0;
-    FOR(i,1,n+1) {
-        now += a[i-1];
-        // dbg(dp[i-1]);
-        FOR(j,1,k+1) {
+    rep(i,n) cin>>a[i];
+    // dp[i][j] state of number of ways such that i child sum of j candies
+    dp[0][0] = 1;
+    for(int i = 1; i <= n; i++) {
+        /*for(int j = 0; j <= k; j++) cout << dp[i-1][j] << " ";
+        cout << nl;*/
+        for(int j = 1; j <= k; j++) {
+            dp[i-1][j] += dp[i-1][j-1];
+            dp[i-1][j] %= INF;
+        }
+
+        for(int j = 0; j <= k; j++) {
+            // dp[i][j] = dp[i][j] + dp[i-1][j-0] + dp[i-1][j-1] + dp[i-1][j-2] + .... + dp[i-1][j-a[i]]
             int l = j - a[i-1] - 1;
-            // dbg(j,l);
             dp[i][j] = (dp[i-1][j] - (l >= 0 ? dp[i-1][l] : 0) + INF) % INF;
-        }
-        rep(j,k+1) {
-            dp[i][j] += dp[i][j-1];
             dp[i][j] %= INF;
+            //dp[i][j] = dp[i-1][j] - (j - a[i-1] - 1 >= 0 ? dp[i-1][j-a[i-1]-1] : 0);
         }
     }
-    // dbg(dp[n]);
-    cout << (dp[n][k] - (k-1 >= 0 ? dp[n][k-1] : 0) + INF) % INF;
+    /*for(int i=1;i<=n;i++) {
+        for(int j=0;j<=k;j++) cout << dp[i][j] << " ";
+        cout << nl;
+    }*/
+    //dbg((dp[n][k])); 
+
+    cout << dp[n][k] % INF;
 }
 
 int main(){

@@ -73,20 +73,19 @@ void solve(){
     rep(i,n) {
         int x;
         cin>>x;
+        x--;
         a[x] = i;
     }
-    int ans = 1;
-    set<int> now;
-    now.ins(a[1]);
-    FOR(i,2,n+1) {
-        //dbg(now,a[i]);
-        if(*now.begin() < a[i]) {
-            now.erase(now.begin());
-        } else {
+    int ans = 0;
+    int prev_ = n;
+    rep(i,n) {
+        //dbg(prev_, a[i])
+        if(a[i] < prev_) {
             ans++;
         }
-        now.ins(a[i]);
+        prev_ = a[i];
     }
+
     cout << ans;
 }
 

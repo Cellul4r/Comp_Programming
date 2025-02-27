@@ -79,19 +79,19 @@ void solve(){
 
     int n,d,h;
     cin>>n>>d>>h;
-    vi a(n), dp(n,INF);
-    trav(x,a) {
-        cin>>x;
-    }
+    vi a(n);
+    rep(i,n) cin>>a[i];
 
+    vi dp(n,INF);
     dp[0] = a[0];
-    FOR(i,1,n) {
-        for(int j=max(0,i-d); j < i; j++) {
-            if(abs(a[i] - a[j]) > h) continue;
-            dp[i] = min(dp[i], dp[j] + a[i]);
+
+    for(int i=1;i<n;i++) {
+        for(int j=max(0,i-d); j<i; j++) {
+            if(abs(a[i]-a[j]) <= h) ckmin(dp[i], a[i] + dp[j]); 
         }
     }
-    cout << (dp[n-1] >= INF ? -1 : dp[n-1]);
+
+    cout << (dp[n-1] == INF ? -1 : dp[n-1]);
 }
 
 int main(){
