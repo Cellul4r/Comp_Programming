@@ -72,25 +72,7 @@ void solve(){
     int ans = 1;
     vi a(n);
     rep(i,n) cin>>a[i];
-    map<int, vi> save;
-    rep(i,n) {
-        save[a[i]].pb(i);
-    }
-    trav(x, save) {
-        int prev_ = -1;
-        sort(all(x.second));
-        trav(y, x.second) {
-            if(prev_ == -1) {
-                prev_ = y;
-                ckmax(ans, prev_ + 1);
-                continue;
-            }
-            dbg(y,prev_);
-            ckmax(ans, y - prev_);
-            prev_ = y;
-        }
-        ckmax(ans, n - prev_);
-    }
+    
     cout << ans;
 }
 
