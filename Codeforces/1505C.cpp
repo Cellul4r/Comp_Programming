@@ -18,24 +18,17 @@ const ll LINF = 1e18+7;
 void setIO(string);
 void solve(){
     
-    int n,k;
-    cin>>n>>k;
-    int ones = 0;
     string s;
     cin>>s;
-    for(auto &x : s) {
-        if(x == '1') ones++;
+    for(int i = 2; i < (int)s.size(); i++) {
+        int val = ((s[i-2] - 'A') + (s[i-1] - 'A')) % 26;
+        if(val != s[i] - 'A') {
+            cout << "NO";
+            return;
+        }
     }
-    if(k >= ones) {
-        cout << "Alice" << nl;
-        return;
-    }
-    if(k == 1) {
-        cout << "Bob" << nl;
-        return;
-    }
-    
-    cout << (k > n / 2 ? "Alice" : "Bob") << nl;
+
+    cout << "YES";
 }
 
 int main(){
@@ -44,7 +37,7 @@ int main(){
     int t = 1;
 
     //setIO("");
-    cin>>t;
+    //cin>>t;
     while(t--)solve();
 
     return 0;

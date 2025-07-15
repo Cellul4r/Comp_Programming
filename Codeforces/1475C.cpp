@@ -18,24 +18,28 @@ const ll LINF = 1e18+7;
 void setIO(string);
 void solve(){
     
-    int n,k;
-    cin>>n>>k;
-    int ones = 0;
-    string s;
-    cin>>s;
-    for(auto &x : s) {
-        if(x == '1') ones++;
+    int n,m,k;
+    cin>>n>>m>>k;
+    vector<int> a(k), b(k);
+    vector<int> cntA(n+1), cntB(m+1);
+    map<pi,int> cnt;
+    for(int i = 0; i < k; i++) {
+        cin>>a[i];
+        cntA[a[i]]++;
     }
-    if(k >= ones) {
-        cout << "Alice" << nl;
-        return;
+    for(int i = 0; i < k; i++) {
+        cin>>b[i];
+        cntB[b[i]]++;
+        cnt[make_pair(a[i],b[i])]++;
     }
-    if(k == 1) {
-        cout << "Bob" << nl;
-        return;
+
+    ll ans = 0;
+    for(int i = 0; i < k; i++) {
+        ll x = cntA[a[i]] + cntB[b[i]] - cnt[make_pair(a[i],b[i])];
+        //cerr << x << nl;
+        ans += k - x;
     }
-    
-    cout << (k > n / 2 ? "Alice" : "Bob") << nl;
+    cout << ans / 2ll << nl;
 }
 
 int main(){
