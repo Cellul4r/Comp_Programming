@@ -1,8 +1,3 @@
-/*
-ID: serious6
-TASK: 
-LANG: C++
-*/
 #include<bits/stdc++.h>
 using namespace std;
 void __print(int x) {cerr << x;}
@@ -18,7 +13,6 @@ void __print(char x) {cerr << '\'' << x << '\'';}
 void __print(const char *x) {cerr << '"' << x << '"';}
 void __print(const string &x) {cerr << '"' << x << '"';}
 void __print(bool x) {cerr << (x ? "true" : "false");}
-
 template<typename T, typename V>
 void __print(const pair<T, V> &x);
 template<typename T>
@@ -33,25 +27,20 @@ void _print(T t, V... v) {__print(t); if (sizeof...(v)) cerr << ", "; _print(v..
 //#else
 //#define dbg(x...)
 //#endif
-
 typedef long long ll;
 typedef long double ld;
 typedef complex<ld> cd;
-
 typedef pair<int, int> pi;
 typedef pair<ll,ll> pl;
 typedef pair<ld,ld> pd;
-
 typedef vector<int> vi;
 typedef vector<ld> vd;
 typedef vector<ll> vl;
 typedef vector<pi> vpi;
 typedef vector<pl> vpl;
 typedef vector<cd> vcd;
-
 template<class T> using pq = priority_queue<T>;
 template<class T> using pqg = priority_queue<T, vector<T>, greater<T>>;
-
 #define rep(i, a) for(int i=0;i<a;++i)
 #define FOR(i, a, b) for (int i=a; i<(b); i++)
 #define F0R(i, a) for (int i=0; i<(a); i++)
@@ -59,7 +48,6 @@ template<class T> using pqg = priority_queue<T, vector<T>, greater<T>>;
 #define F0Rd(i,a) for (int i = (a)-1; i >= 0; i--)
 #define trav(a,x) for (auto& a : x)
 #define uid(a, b) uniform_int_distribution<int>(a, b)(rng)
-
 #define sz(x) (int)(x).size()
 #define mp make_pair
 #define pb push_back
@@ -69,43 +57,52 @@ template<class T> using pqg = priority_queue<T, vector<T>, greater<T>>;
 #define ub upper_bound
 #define all(x) x.begin(), x.end()
 #define ins insert
-
 template<class T> bool ckmin(T& a, const T& b) { return b < a ? a = b, 1 : 0; }
 template<class T> bool ckmax(T& a, const T& b) { return a < b ? a = b, 1 : 0; }
-
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
-
 const char nl = '\n';
-const int N =1e5+1;
+const int N =2e3+1;
 const int INF = 1e9+7;
 const long long LINF = 1e18+7;
-const string file = "herding";
 
+int board[N][N];
 void solve(){
-
-    vi a(3);
-    trav(x,a) {
-        cin>>x;
+    
+    int n,m,q;
+    cin>>n>>m>>q;
+    rep(i,n) {
+        rep(j,m) {
+            cin>>board[i][j];
+        }
     }
     
-    if(a[1] - a[0] == 1 && a[2] - a[1] == 1) {
-        cout << 0;
-    } else if(a[1] - a[0] == 2 || a[2] - a[1] == 2) {
-        cout << 1;
-    } else {
-        cout << 2;
+    ll ans = 0, k = 0;
+    rep(i,q) {
+        int x,y;
+        char d;
+        cin>>x>>y>>d;
+        if(d == 'U') x--;
+        else if(d == 'D') x++;
+        else if(d == 'L') y--;
+        else if(d == 'R') y++;
+        if(x < 0 || y < 0 || x >= n || y >= m) k++;
+        else {
+            ans += board[x][y];
+        }
     }
-    cout << nl;
-    cout << max(a[1]- a[0], a[2] - a[1]) - 1;
-}   
+    cout << ans << " " << k << nl;
+}
 
 int main(){
     ios::sync_with_stdio(false);cin.tie(nullptr);
-    #ifndef ONLINE_JUDGE
-        freopen((file + ".in").c_str(), "r", stdin);
-        freopen((file + ".out").c_str(), "w", stdout);
-    #endif
     int t = 1;
+    //#ifndef ONLINE_JUDGE
+    //   freopen("input.txt", "r", stdin);
+    //    freopen("output.txt", "w", stdout);
+    //#endif
     //cin>>t;
     while(t--)solve();
+
+    return 0;
 }
+

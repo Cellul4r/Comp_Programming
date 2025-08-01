@@ -27,76 +27,53 @@ void solve(){
         cin>>x;
     }
 
-    vector<ll> pre(n+1), suff(n+1);
-
     for(int i = 0; i < n; i++) {
-        pre[i+1] = pre[i] + a[i];
-        //pre[i+1] = max(pre[i+1], a[i]);
         if(s[i] == '0') {
-            pre[i+1] = 0;
-        } else {
-            if(pre[i+1] > k) {
-                cout << "NO" << nl;
-                return;
-            }
+            a[i] = -1e13;
         }
     }
+    vector<ll> pre(n+1), suff(n+2);
+    
+    ll maxSum = 0;
+    for(int i = 1; i <= n; i++) {
+        pre[i] = max(a[i-1], pre[i-1] + a[i-1]);
+        maxSum = max(maxSum, pre[i]);
+    }
 
-    for(int i = n - 1; i >= 0; i--) {
-        suff[i] = suff[i+1] + a[i];
-        //suff[i] = max(suff[i], a[i]);
-        if(s[i] == '0') {
-            suff[i] = 0;
-        } else if(suff[i] > k) {
-            cout << "NO" << nl;
-            return;
-        }
+    for(int i = n; i >= 1; i--) {
+        suff[i] = max(a[i-1], suff[i+1] + a[i-1]);
     }
 
     
-    int idx = -1;
-    for(int i = 0; i < n; i++) {
-        if(s[i] == '1') continue;
-        idx = i;
-        break;
+    if(maxSum == k) {
+        cout << "YES" << nl;
+        for(auto &x : a) {
+            cout << x << " ";
+        }
+        cout << nl;
+        return; 
+
     }
     
-    if(idx != -1) {
-        ll left = 0, right = 0;
-        for(int i = 0; i < idx; i++) {
-            if(s[i] == '0') break;
-            left = max(left, pre[idx] - pre[i]);
-        }
-        for(int i = idx + 1; i < n; i++) {
-            if(s[i] == '0') break;
-            //cerr << suff[idx + 1] - suff[i] << nl;
-            right = max(right, suff[idx + 1] - suff[i+1]);
-        }
-
-        cerr << left << " " << right << nl;
-        a[idx] = k - (left + right);
-        for(int i = 0; i < n; i++) {
-            if(s[i] == '0' && a[i] == 0) {
-                a[i] = -LINF;
-            }
-        }
-    }
-
-    ll maxSum = a[0], now = a[0]; 
-    for(int i = 1; i < n; i++) {
-        now = max(now + a[i], a[i]);
-
-        maxSum = max(maxSum, now);
-    }
-    if(maxSum != k) {
+    if(maxSum > k) {
         cout << "NO" << nl;
         return;
     }
-    cout << "YES" << nl;
-    for(auto &x : a) {
-        cout << x << " ";
+    for(int i = 0; i < n; i++) {
+        if(s[i] == '1') continue;
+        ll l = pre[i], r = suff[i+2];
+        if(l < 0) l = 0;
+        if(r < 0) r = 0;
+        cout << "YES" << nl;
+        a[i] = k - (l + r);
+        for(auto &x : a) {
+            cout << x << " ";
+        }
+        cout << nl;
+        return; 
     }
-    cout << nl;
+
+    cout << "NO" << nl;
 }
 
 int main(){

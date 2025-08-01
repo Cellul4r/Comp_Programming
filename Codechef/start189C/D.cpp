@@ -1,0 +1,63 @@
+/*
+ *   author : cellul4r
+ */
+#include<bits/stdc++.h>
+using namespace std;
+
+typedef long long ll;
+typedef long double ld;
+typedef pair<int, int> pi;
+typedef pair<ll,ll> pl;
+typedef pair<ld,ld> pd;
+#define all(x) x.begin(), x.end()
+const char nl = '\n';
+const int N =1e5+1;
+const int INF = 1e9+7;
+const ll LINF = 1e18+7;
+
+void setIO(string);
+void solve(){
+    
+    int n;
+    cin>>n;
+    assert(n <= 50);
+    vector<int> a(n);
+    for(auto &x : a) cin>>x;
+    ll cnt = 0;
+    for(int l = 0; l < n; l++) {
+        int r = l;
+        int now = 0;
+        int prev_ = -1;
+        while(r < n && (a[r] > prev_ || (now < a[r] && a[r] % (a[r] - now) == now))) {
+            //cerr << r << a[r] << " " << now << nl;
+            if(now < a[r] && a[r] % (a[r] - now) == now) {
+                prev_ = a[r] % (a[r] - now);
+            } else {
+                prev_ = a[r];
+            }
+            r++;
+            now++;
+        }
+        cnt += 1ll * r - l;
+        //cerr << l << " " << r << nl;
+    }
+    cout << cnt << nl;
+}
+
+int main(){
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    int t = 1;
+
+    //setIO("");
+    cin>>t;
+    while(t--)solve();
+
+    return 0;
+}
+
+void setIO(string s) {
+    (void)!freopen((s + ".in").c_str(), "r", stdin);
+    (void)!freopen((s + ".out").c_str(), "w", stdout);
+}
+

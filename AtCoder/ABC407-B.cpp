@@ -16,27 +16,22 @@ const int INF = 1e9+7;
 const ll LINF = 1e18+7;
 
 void solve(){
-    
-    int n;
-    string s;
-    cin>>n>>s;
-    ll ans = 0;
-    for(int i = 0; i < n; i++) {
-        vector<int> cnt(10);
-        for(int j = 0; j < 100 && i + j < n; j++) {
-            cnt[s[i+j]-'0']++; 
-            ll distinct = 0;
-            for(int i = 0; i < 10; i++) {
-                distinct += (cnt[i] > 0);
+
+    int x,y;
+    cin>>x>>y;
+
+    double prob = 0;
+    for(int i = 1; i <= 6; i++) {
+        for(int j = 1; j <= 6; j++) {
+            if(i + j >= x || abs(i - j) >= y) {
+                prob++;
             }
-            bool ok = true;
-            for(int i = 0; i < 10; i++) {
-                if(cnt[i] > distinct) ok = false;              
-            }
-            if(ok) ans++;
         }
     }
-    cout << ans << nl;
+
+    cerr << prob << nl;
+    prob /= 36.0;
+    cout << fixed << setprecision(13) << prob;
 }
 
 int main(){
@@ -49,7 +44,7 @@ int main(){
     freopen((s + ".out").c_str(), "w", stdout);
     */
 
-    cin>>t;
+    //cin>>t;
     while(t--)solve();
 
     return 0;

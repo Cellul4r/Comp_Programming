@@ -77,52 +77,63 @@ const long long LINF = 1e18+7;
 
 double dist[N][N][N];
 int par[N][N][N];
-void printPath(int i, int j, int d) {
+int n;
 
-    if(d == 0) {
-        cout << i+1 << " " << j+1;
+void recur(int i, int j, int s) {
+    if(s == 0) {
+        cout << i;
         return;
     }
-    printPath(i, par[i][j][d], d-1);
-    cout << " " << j+1;
+
+    recur(i, par[i][j][s], s-1);
+    cout << " " << j;
 }
-void solve(){
-
-    int n;
-    while(cin>>n) {
-        memset(dist,0.0,sizeof(dist));
-        memset(par,0,sizeof(par));
-        rep(i,n) {
-            rep(j,n) {
-                if(i == j) {
-                    dist[i][j][0] = 1.0;
-                } else {
-                    cin>>dist[i][j][0];
-                }
-            }
-        }
-
-        FOR(d,1,n) {
-            rep(k,n) {
-                rep(i,n) {
-                    rep(j,n) {
-                        double x = dist[i][k][d-1] * dist[k][j][0];
-                        if(x > dist[i][j][d]) {
-                            dist[i][j][d] = x;
-                            par[i][j][d] = k;
-                            if(i == j && x > 1.01) {
-                                // cout << x << " " << i << nl;
-                                printPath(i,j,d);
-                                cout << nl;
-                                goto e;
-                            }
-                        }
+void floyd() {
+    bool found = false;
+    for(int d = 2; d <= n; d++) {
+        for(int k = 1; k <= n; k++) {
+            for(int i = 1; i <= n; i++) {
+                for(int j = 1; j <= n; j++) {
+                    double x = dist[i][k][d-1] * dist[k][j][1];
+                    if(x > dist[i][j][d]) {
+                        dist[i][j][d] = x;
+                        par[i][j][d] = k;
                     }
                 }
             }
         }
+
+        for(int i = 1; i <= n; i++) {
+            if(dist[i][i][d] > 1.01) {
+                found = true;
+                recur(i,i,d);
+                cout << nl;
+                break;
+            }
+        }
+        if(found) break;
+    }
+    
+    if(!found) {
         cout << "no arbitrage sequence exists" << nl;
-        e:;
+    }
+}
+void solve(){
+
+    while(cin>>n) {
+        memset(dist, 0, sizeof dist);
+        memset(par, 0, sizeof par);
+
+        for(int i = 1; i <= n; i++) {
+            for(int j = 1; j <= n; j++) {
+                if(i == j) {
+                    dist[i][j][1] = 1.0;
+                } else {
+                    cin>>dist[i][j][1];
+                }
+            }
+        }
+        floyd();
     }
 }
 

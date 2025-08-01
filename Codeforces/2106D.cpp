@@ -29,24 +29,30 @@ void solve(){
         cin>>b[i];
     }
 
-    int j = 0;
-    for(int i = 0; i < n; i++) {
-        if(a[i] >= b[j]) {
-            j++;
+
+    auto f = [&](int k) {
+        vector<vector<int>> dp(n+1, vector<int>(2));
+        for(int i = 1; i <= n; i++) {
+            dp[i][0] = dp[i-1][0];
+            dp[i][1] = dp[i-1][1];
+            if(dp[i][0] < m && b[dp[i][0]] <= k) dp[i][1] = max(dp[i][1], dp[i][0] + 1);
+            if(dp[i][0] < m && b[dp[i][0]] <= a[i-1]) dp[i][0]++;
+            if(dp[i][1] < m && b[dp[i][1]] <= a[i-1]) dp[i][1]++;
+        }
+        if(dp[n][0] < m && k >= b[dp[n][0]]) dp[n][1] = max(dp[n][1], dp[n][0] + 1);
+        return dp[n][1] == m;
+    };
+
+    int l = 0, r = 1e9;
+    while(l < r) {
+        int mid = l + (r - l) / 2;
+        if(f(mid)) {
+            r = mid;
+        } else {
+            l = mid + 1;
         }
     }
-
-    if(j == m) {
-        cout << 0 << nl;
-        return;
-    }
-    if(j == m - 1) {
-        cout << b[j] << nl;
-        return;
-    }
-
-    int ans = -1;
-
+    int ans = (f(l) ? l : -1);
     cout << ans << nl;
 }
 
