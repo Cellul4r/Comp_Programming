@@ -1,0 +1,77 @@
+/*
+ *   author : cellul4r
+ */
+#include<bits/stdc++.h>
+using namespace std;
+
+typedef long long ll;
+typedef long double ld;
+typedef pair<int, int> pi;
+typedef pair<ll,ll> pl;
+typedef pair<ld,ld> pd;
+#define all(x) x.begin(), x.end()
+const char nl = '\n';
+const int N =1e5+1;
+const int INF = 1e9+7;
+const ll LINF = 1e18+7;
+
+void setIO(string);
+void solve(){
+    int n;
+    cin>>n;
+    vector<int> a(n);
+    for(auto &x : a) cin>>x;
+
+    bool ok = false;
+    for(int i = 0; i <= 100; i++) {
+        bool found = true;
+        for(int j = 0; j < n - 2; j++) {
+            int x = a[j], y = a[j+1], z = a[j+2];
+            if(a[j] == -1) a[j] = i;
+            if(a[j+1] == -1) a[j+1] = i;
+            if(a[j+2] == -1) a[j+2] = i;
+            int mn = INF, mx = -1;
+            int mex = 0;
+            vector<bool> has(101+1);
+            int cnt = 0;
+            for(int x = 0; x < 3; x++) {
+                if(a[j+x] != -1) {
+                    has[a[j+x]] = 1; 
+                    mn = min(mn, a[j+x]);
+                    mx = max(mx, a[j+x]);
+                } else {
+                    cnt++;
+                }
+            }
+            while(has[mex]) {
+                mex++;
+            }
+
+            if(mex != mx - mn) {
+                found = false;
+            }
+
+            a[j] = x, a[j+1] = y, a[j+2] = z;
+        }
+        if(found) ok = true;
+    }
+    cout << (ok ? "YES" : "NO") << nl;
+}
+
+int main(){
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    int t = 1;
+
+    //setIO("");
+    cin>>t;
+    while(t--)solve();
+
+    return 0;
+}
+
+void setIO(string s) {
+    (void)!freopen((s + ".in").c_str(), "r", stdin);
+    (void)!freopen((s + ".out").c_str(), "w", stdout);
+}
+
