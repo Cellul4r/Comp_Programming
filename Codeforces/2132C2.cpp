@@ -16,6 +16,7 @@ const int INF = 1e9+7;
 const ll LINF = 1e18+7;
 
 void setIO(string);
+ll cost[21];
 void solve(){
     
     // x = 0 -> 3 coins 3 times = 9 coins
@@ -23,52 +24,46 @@ void solve(){
     // n = 8 -> 3 + 6
     ll n,k;
     cin>>n>>k;
-    ll tmp = n;
-    int op = 0;
+
+    // cal cost of the watermelons for each x (3^x water melons)
+    // 3^x watermelons -> 3^(x+1) + x * 3^(x-1)
+    int minK = 0;
+    // change n watermelons base10 to base 3 format
+    vector<ll> a; // number of deal to use for each 3^x watermelons range 0..2
+                  // it is easy to see that if we do 3 deal of 3^x watermelons then just use 
+                  // 3^(x+1) watermelons with only 1 deal!
+    // minimum deal to get n watermelons
     while(n > 0) {
-        // 3^x water melons
-        op++;
-        ll cur = 1ll;
-        int cnt = 0;
-        while(cur * 3ll <= n) {
-            cur *= 3;
-            cnt++;
-        }
-        n -= cur;
+        a.push_back(n % 3);
+        minK += n % 3;
+        n /= 3;
     }
-    if(k < op) {
+
+    if(minK > k) {
         cout << -1 << nl;
         return;
     }
-    // 1 wat -> 3 coins
-    // 3 wat -> 10 coins (1 + 1 + 1 better = 9 coins)
-    // 9 wat -> 33 coins (3 + 3 + 3 better = 30 coins, 1 * 9 = 27 coins)
-    // 27 wat -> 189 coins (9 + 9 + 9 better = 99 coins, 3 * 9 = 90 coins, 1 * 27 = 81 )
-    n = tmp;
-    ll diff = k - op;
+
+    k -= minK; // decrease minimum deal
+    k /= 2;
+    // the leftover deals we can split 1 deal of 3^(x+1) to 3 deal of 3^x (2 deal increase)
+    // which from the coins cal formula it is much better
+    // and we need to split large deal first!
+    for(int i = a.size() - 1; i > 0; i--) {
+        if(a[i] <= k) {
+            a[i-1] += 3ll * a[i];
+            k -= a[i];
+            a[i] = 0;
+        } else {
+            a[i-1] += 3ll * k;
+            a[i] -= k;
+            k = 0;
+        }
+    }
+
     ll ans = 0;
-    while(n > 0) {
-        ll cur = 1ll;
-        int cnt = 0;
-        while(cur * 3ll <= n) {
-            cur *= 3;
-            cnt++;
-        }
-        ll a = 1ll,b = 0;
-        for(int i = cnt; i >= 0; i--) {
-            if(i != cnt) {
-                a *= 3ll;
-                b++;
-            }
-            ll k = cur / a - 1;
-            if(k > diff) continue;
-            diff -= k;
-            break;
-        }
-        
-        //cout << a << " " << b << nl;
-        ans += (cur / a) * ((3ll * a) + b * (a / 3ll));     
-        n -= a * (cur / a);
+    for(int i = 0; i < (int)a.size(); i++) {
+        ans += cost[i] * a[i];
     }
     cout << ans << nl;
 }
@@ -78,10 +73,14 @@ int main(){
     cin.tie(nullptr);
     int t = 1;
 
+    ll cur = 1;
+    for(int i = 0, x = 0; i < 21; i++, cur *= 3, x++) {
+        cost[i] = cur * (x + 9ll) / 3ll;
+    }
+    
     //setIO("");
     cin>>t;
     while(t--)solve();
-
     return 0;
 }
 

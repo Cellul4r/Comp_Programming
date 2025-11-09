@@ -43,80 +43,19 @@ void solve(){
     }
 
     // odd matching
-    bool ok = false;
     int x=-1,y=-1;
-    if(a[0] == 1) {
-        ok = true;
-        x = a[0];
-        y = a[1];
-    } else {
-        for(auto &k : a) {
-            if(k & 1) {
-                x = k;
-                break;
-            }
-        }
-        for(auto &k : a) {
-            if(k > x && (k % x) % 2 == 0) {
-                ok = true;
-                y = k;
-                break;
-            }
-        }
 
-
-    }
-
-    if(!ok) {
-        for(auto &k : a) {
-            if((k & 1) && x != k) {
-                x = k;
-                break;
-            }
-        }
-        for(auto &k : a) {
-            if(k > x && (k % x) % 2 == 0) {
-                ok = true;
-                y = k;
+    for(int i = 0; i < n && x == -1; i++) {
+        for(int j = i+1; j < n; j++) {
+            if((a[j] % a[i]) % 2 == 0) {
+                x = a[i];
+                y = a[j];
                 break;
             }
         }
     }
 
-    if(!ok) {
-        for(auto &k : a) {
-            if(k % 2 == 0) {
-                y = k;
-                break;
-            }
-        }
-        for(auto &k : a) {
-            if(k % 2 == 1 && y > k && (y % k) % 2 == 0) {
-                ok = true;
-                x = k;
-                break;
-            }
-        }
-    }
-
-    if(!ok) {
-        int prv = -1;
-        for(auto &k : a) {
-            if(k % 2 == 0) continue;
-            if(prv == -1) {
-                prv = k;
-                continue;
-            }
-            if(k % prv % 2 == 0) {
-                ok = true;
-                y = k;
-                x = prv;
-                break;
-            }
-            prv = k;
-        }
-    }
-    if(!ok) {
+    if(x == -1) {
         cout << -1 << nl;
         return;
     }

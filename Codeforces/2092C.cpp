@@ -21,34 +21,62 @@ void solve(){
     int n;
     cin>>n;
     vector<ll> a(n);
-    vector<ll> even, odd;
+    priority_queue<ll> even, odd;
     for(auto &x : a) {
         cin>>x;
         if(x & 1) {
-            odd.push_back(x);
+            odd.push(x);
         } else {
-            even.push_back(x);
+            even.push(x);
         }
     }
-    sort(all(odd));
-    sort(all(even));
-    int k = odd.size(), m = even.size();
-    ll ans1 = 0, ans2 = 0;
-    if(!odd.empty()) {
-        ans1 = odd[k-1];
-        for(int i = 0; i < m; i++) {
-            ans1 += even[i];
-            if(ans1 % 2 == 0) break;
+
+    if(odd.empty()) {
+        cout << even.top() << nl;
+        return;
+    }
+
+    if(even.empty()) {
+        cout << odd.top() << nl;
+        return;
+    }
+
+    ll ans = 0;
+    ans += odd.top();
+    odd.pop();
+
+    while(!even.empty() && !odd.empty()) {
+        ll k = even.top() + odd.top() - 1;
+        even.pop();
+        odd.pop();
+        even.push(k);
+    }
+
+    while(!even.empty()) {
+        ans += even.top();
+        even.pop();
+    }
+
+    ll ans2 = 0;
+    for(auto &x : a) {
+        if(x & 1) {
+            odd.push(x);
+        } else {
+            even.push(x);
         }
     }
-    if(!even.empty()) {
-        ans2 = even[m-1];
-        for(int i = 0; i < k; i++) {
-            ans2 += odd[i];
-            if(ans2 % 2 == 1) break;
-        }
+
+    ans2 += even.top();
+    ans2 += odd.top();
+    even.pop();
+    odd.pop();
+
+    while(!even.empty()) {
+        ans2 += even.top();
+        even.pop();
     }
-    cout << max(ans1,ans2) << nl;
+
+    cout << max(ans,ans2) << nl;
 }
 
 int main(){
