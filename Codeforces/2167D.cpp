@@ -39,14 +39,12 @@ void solve(){
     // x = a[i] - 1 or a[i]+1
     // ans is odd
     ll ans = LINF;
+    vector<ll> primes{2,3,5,7,11,13,17,19,23,29,31,37,41,43,47,53};
     for(auto &x : a) {
-        ans = min(ans, x - 1ll);
-        ll tmp = x;
-        while(tmp % 2 == 0) {
-            tmp /= 2ll;
-        }
-        if(tmp > 1) {
-            ans = min(ans, tmp - 1);
+        for(auto &y : primes) {
+            if(x % y != 0) {
+                ans = min(ans, y); 
+            }
         }
     }
     cout << ans << nl;
