@@ -19,22 +19,38 @@ void setIO(string);
 void solve(){
     
     int n;
-    cin>>n;
-    vector<int> a(n);
-    for(auto &x : a) {
-        cin>>x;
+    ll x;
+    cin>>n>>x;
+    vector<ll> a(n);
+    for(int i = 0; i < n; i++) {
+        cin>>a[i];
     }
-     
-    for(int i = n % 2; i < n - 1; i += 2) {
-        if(a[i] > a[i+1]) swap(a[i],a[i+1]);
-    }
-    bool ok = true;
-    for(int i = 1; i < n; i++) {
-        if(a[i-1] > a[i]) {
-            ok = false;
+
+    sort(all(a));
+    ll mx = 0;
+    vector<int> ans;
+    int cur = -1;
+    ll now = 0;
+    for(int i = n - 1; i > cur; i--) {
+        now += a[i];
+        while(now < x && cur + 1 < i) {
+            now += a[cur+1];
+            ans.push_back(a[cur+1]);
+            cur++;
         }
+
+        if(now >= x) {
+            mx += a[i];
+            now -= x;
+        }
+        ans.push_back(a[i]);
     }
-    cout << (ok ? "YES" : "NO") << nl;
+
+    cout << mx << nl;
+    for(auto &x : ans) {
+        cout << x << " ";
+    }
+    cout << nl;
 }
 
 int main(){

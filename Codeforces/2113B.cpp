@@ -18,23 +18,21 @@ const ll LINF = 1e18+7;
 void setIO(string);
 void solve(){
     
-    int n;
-    cin>>n;
-    vector<int> a(n);
-    for(auto &x : a) {
-        cin>>x;
+    int w,h,a,b;
+    int x1,y1,x2,y2;
+    cin>>w>>h>>a>>b>>x1>>y1>>x2>>y2;
+
+    if(x1 == x2) {
+        cout << ((abs(y1 - y2) % b == 0) ? "YES" : "NO") << nl;
+        return;
     }
-     
-    for(int i = n % 2; i < n - 1; i += 2) {
-        if(a[i] > a[i+1]) swap(a[i],a[i+1]);
+
+    if(y1 == y2) {
+        cout << ((abs(x1 -x2) % a == 0) ? "YES" : "NO") << nl;
+        return;
     }
-    bool ok = true;
-    for(int i = 1; i < n; i++) {
-        if(a[i-1] > a[i]) {
-            ok = false;
-        }
-    }
-    cout << (ok ? "YES" : "NO") << nl;
+
+    cout << ((abs(x1-x2) % a == 0 || abs(y1-y2) % b == 0) ? "YES" : "NO") << nl;
 }
 
 int main(){
