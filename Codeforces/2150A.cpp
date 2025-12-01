@@ -17,36 +17,7 @@ const ll LINF = 1e18+7;
 
 void setIO(string);
 void solve(){
-    
-    int n,x;
-    string s; 
-    cin>>n>>x>>s;
 
-    x--;
-    if(x == 0 || x == n - 1) {
-        cout << 1 << nl;
-        return;
-    }
-
-    int left = -INF, right = INF;
-    for(int i = 0; i < x; i++) {
-        if(s[i] == '#') {
-            left = i;
-        }
-    }
-    for(int i = n - 1; i > x; i--) {
-        if(s[i] == '#') {
-            right = i;
-        }
-    }
-    // 3 4 (5)
-    if(left == -INF && right == INF) {
-        cout << 1 << nl;
-        return;
-    }
-
-    int ans = max(min(x+1,n - right + 1), min(left+2, n - x));
-    cout << ans << nl;
 }
 
 int main(){

@@ -20,32 +20,34 @@ void solve(){
     
     int n,m; cin>>n>>m;
     string s; cin>>s;
-    vector<int> a(m);
-    for(auto &x : a) cin>>x;
-    int cur = 0;
-    int j = 1;
-    while(cur < m && a[cur] == j) {
-        cur++;
-        j++;
+    set<int> a; 
+    for(int i = 0; i < m; i++) {
+        int x; cin>>x;
+        a.insert(x);
     }
-    vector<int> ans;
-    if(a[0] == 1) {
-        ans.push_back(1);
-    }
+    
+    int cur = 1;
+    bool b = false;
     for(auto &x : s) {
-        now++;
-        if(x == 'A') {
-        } else {
-            while(cur < m && a[cur] == now) {
-                ans.push_back(now);
+        if(b) {
+            while(a.count(cur)) {
                 cur++;
-                now++;
             }
-            ans.push_back(now);
+        }
+        b = false;
+        if(x == 'A') {
+            cur++;
+        } else {
+            while(a.count(++cur)) {
+            }
+        }
+        a.insert(cur);
+        if(x == 'B') {
+            b = true;
         }
     }
-    cout << ans.size() << nl;
-    for(auto &x : ans) {
+    cout << a.size() << nl;
+    for(auto &x : a) {
         cout << x << " ";
     }
     cout << nl;

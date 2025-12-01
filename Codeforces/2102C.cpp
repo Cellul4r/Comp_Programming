@@ -16,50 +16,38 @@ const int INF = 1e9+7;
 const ll LINF = 1e18+7;
 
 int cnt[N][N];
+const int dr[] = {0,1,0,-1}, dc[] = {1,0,-1,0};
 void solve(){
     
     int n;
     cin>>n;
 
-    int count = 0;
+    int mid = (n + 1) / 2;
     for(int i = 1; i <= n; i++) {
-        for(int j = i; j <= n; j++) {
-            for(int k = 1; k <= n; k++) {
-                for(int l = k; l <= n; l++) {
-                    count++;
-                    for(int x = i; x <= j; x++) {
-                        for(int y = k; y <= l; y++) {
-                            cnt[x][y]++;
-                        }
-                    }
-                }
-            }
+        for(int j = 1; j <= n; j++) {
+            cnt[i][j] = -1;
         }
     }
 
-    for(int i = 1; i <= n; i++) {
-        for(int j = 1; j <= n; j++) {
-            cerr << cnt[i][j] << " ";
-            cnt[i][j] = 0;
-        }
-        cerr << nl;
-    }
-    int mid = (n + 1) / 2;
-    if(true) {
-        for(int level = 1, now = 1; level < mid; level++) {
-            for(int i = 0; i <= level; i++) {
-                cerr << now << " " << mid - level << " " << i << nl;
-                cnt[mid - i][mid - level]  = now++;
-                if(mid - level != n - (mid - level) + 1) cnt[mid - i][n - (mid - level) + 1] = now++;
-                if(mid - i != n - (mid - i) + 1) {
-                    cnt[n - (mid - i) + 1][mid - level] = now++;
-                    if(mid - level != n - (mid - level) + 1) cnt[n - (mid - level) + 1][n - (mid - i) + 1] = now++;
+    int now = 0, r = mid, c = mid;
+
+    int cur = 1;
+    // step increase by 1 every 2 moves for spiral shape
+    cnt[r][c] = now++;
+    while(now <= n * n - 1) {
+        for(int k = 0; k < 4; k++) {
+            int step = cur;
+
+            cur += k % 2;
+
+            for(int i = 0; i < step; i++) {
+                r += dr[k];
+                c += dc[k];
+                //cerr << r << " " << c << nl;
+                if(r >= 1 && r <= n && c >= 1 && c <= n && cnt[r][c] == -1) {
+                    cnt[r][c] = now++;    
                 }
-                //if(i != n - i + 1) cnt[mid + level][n - i + 1] = now++; 
-                //cnt[i][mid - level] = now++;
-                //if(i != n - i + 1) cnt[n - i + 1][mid - level] = now++;
-                //cnt[i][mid + level] = now++;
-                //if(i != n - i + 1) cnt[n - i + 1][mid + level] = now++;
+                if(now >= n * n) break;
             }
         }
     }
