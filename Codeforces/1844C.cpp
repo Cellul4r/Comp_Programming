@@ -17,33 +17,25 @@ const ll LINF = 1e18+7;
 
 void setIO(string);
 void solve(){
-
-    string s;
-    cin>>s;
-    int n = s.length();
-    int ans = INF;
-    for(char a = 'a'; a <= 'z'; a++) {
-        vector<int> block;
-        block.push_back(-1);
-        for(int i = 0; i < n; i++) {
-            if(s[i] == a) {
-                block.push_back(i);
-            }
+    
+    int n; cin>>n;
+    bool neg = true;
+    vector<ll> a(n+1);
+    ll even = 0, odd = 0;
+    for(int i = 1; i <= n; i++) {
+        cin>>a[i];
+        if(i & 1) {
+            odd += max(0ll, a[i]);
+        } else {
+            even += max(0ll, a[i]);
         }
-        block.push_back(n);
-        int mx = 0;
-        for(int i = 1; i < (int)block.size(); i++) {
-            mx = max(mx, block[i] - block[i-1] - 1);
-        }
-
-        int op = 0;
-        while(mx) {
-            op++;
-            mx >>= 1;
-        }
-        ans = min(ans, op);
+        if(a[i] >= 0) neg = false;
     }
-    cout << ans << nl;
+    if(neg) {
+        cout << *max_element(a.begin()+1,a.end()) << nl;
+        return;
+    }
+    cout << max(odd,even) << nl;
 }
 
 int main(){
