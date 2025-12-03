@@ -18,28 +18,9 @@ const ll LINF = 1e18+7;
 void setIO(string);
 void solve(){
     
-    int n;
-    cin>>n;
-    if(n % 2 == 0) {
-        cout << "NO" << nl;
-        return;
-    }
-
-    cout << "YES" << nl;
-    int x = 1, y = 2 * n;
-    cout << 1 << " " << 2 * n << nl;
-    for(int i = 1; i <= (n - 1) / 2; i++) {
-        x += 2;
-        y--;
-        cout << x << " " << y << nl;
-    }
-    x = 2;
-    y--;
-    for(int i = 1; i <= (n - 1) / 2; i++) {
-        cout << x << " " << y << nl;
-        x += 2;
-        y--;
-    }
+    int n; cin>>n;
+    vector<int> a(n);
+    for(auto &x : a) cin>>x;
 }
 
 int main(){

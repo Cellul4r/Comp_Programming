@@ -20,26 +20,25 @@ void solve(){
     
     int n;
     cin>>n;
-    if(n % 2 == 0) {
-        cout << "NO" << nl;
-        return;
+    vector<int> a(n+1), b(n);
+    for(int i = 0; i < n; i++) {
+        int x; cin>>x;
+        a[x] = i;
     }
-
-    cout << "YES" << nl;
-    int x = 1, y = 2 * n;
-    cout << 1 << " " << 2 * n << nl;
-    for(int i = 1; i <= (n - 1) / 2; i++) {
-        x += 2;
-        y--;
-        cout << x << " " << y << nl;
+    for(int i = 0; i < n; i++) {
+        int x; cin>>x;
+        b[i] = a[x];
     }
-    x = 2;
-    y--;
-    for(int i = 1; i <= (n - 1) / 2; i++) {
-        cout << x << " " << y << nl;
-        x += 2;
-        y--;
+    int ans = n + 1, now = INF;
+    for(int i = n - 1; i >= 0; i--) {
+        if(b[i] > now) {
+            ans = i;
+            break;
+        }
+        now = b[i];
     }
+    if(ans == n + 1) ans = -1; 
+    cout << ans + 1 << nl;
 }
 
 int main(){

@@ -18,28 +18,26 @@ const ll LINF = 1e18+7;
 void setIO(string);
 void solve(){
     
-    int n;
-    cin>>n;
-    if(n % 2 == 0) {
+    int n,w,h; cin>>n>>w>>h;
+    vector<int> a(n),b(n);
+    for(auto &x : a) {
+        cin>>x;
+    }
+    for(auto &x : b) {
+        cin>>x;
+    }
+    int l = -INF, r = INF;
+    for(int i = 0; i < n; i++) {
+        l = max(l, a[i] - (b[i] - h + w));
+        r = min(r, a[i] - (b[i] + h - w));
+        //cerr << l << " " << r << nl;
+    }
+
+    if(l > r) {
         cout << "NO" << nl;
         return;
     }
-
     cout << "YES" << nl;
-    int x = 1, y = 2 * n;
-    cout << 1 << " " << 2 * n << nl;
-    for(int i = 1; i <= (n - 1) / 2; i++) {
-        x += 2;
-        y--;
-        cout << x << " " << y << nl;
-    }
-    x = 2;
-    y--;
-    for(int i = 1; i <= (n - 1) / 2; i++) {
-        cout << x << " " << y << nl;
-        x += 2;
-        y--;
-    }
 }
 
 int main(){
