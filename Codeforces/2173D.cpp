@@ -40,6 +40,10 @@ int recur(int i, int cur, int k) {
         check = (cur+op+one == 0 ? 0 : 1);
         if(k - check >= op) ans = max(ans, cur + one + op + recur(i+1, 0, k - op - check));
         ans = max(ans, recur(i+1, cur + one + op, k - op));
+    } else {
+        check = (cur+k+one == 0 ? 0 : 1);
+        if(k - check >= k) ans = max(ans, cur + one + k + recur(i+1, 0, k - k - check));
+        ans = max(ans, recur(i+1, cur + one + op, k - k));
     }
     return dp[i][cur][k] = ans;
 }
@@ -49,8 +53,12 @@ void solve(){
     cin>>n>>k;
     // if k >= 30 we can make all bit from 0 -> 29 (1)!
     // now if k < 30?
+    int bits = 0;
+    for(int i = 0; i < 30; i++) {
+        if((1 << i) & n) bits++;
+    }
     if(k >= 30) {
-        cout << k << nl;
+        cout << k + bits - 1 << nl;
         return;
     }
     a.clear();
