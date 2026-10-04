@@ -19,8 +19,12 @@ void setIO(string);
 void solve(){
     
     ll n,r; cin>>n>>r;
-    ll w = min(n,r);
-    ll ans = max(0ll, r - n) + w * (w + 1) / 2ll;
+    ll y = min(n-1ll, r);
+    if(n == 1) {
+        cout << 1 << nl;
+        return;
+    }
+    ll ans = min(n,r) + (y + 1ll) * (y - 1ll) - (y * (y + 1ll) / 2ll) + 1ll;
     cout << ans << nl;
 }
 

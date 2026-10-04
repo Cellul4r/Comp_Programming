@@ -20,10 +20,34 @@ void solve(){
     
     int n,m;
     cin>>n>>m;
-    vector<int> a(n);
-    for(auto &x : a) {
-        cin>>x;
+    vector<int> a(n+1);
+    for(int i = 1; i <= n; i++) {
+        cin>>a[i];
     }
+    int ans = INF;
+    vector<array<int,2>> b;
+    vector<int> deg(n+1);
+    for(int i = 1; i <= m; i++) {
+        int u,v; cin>>u>>v;
+        b.push_back({u,v});
+        deg[u]++;
+        deg[v]++;
+    }
+    if(m % 2 == 0) {
+        cout << 0 << nl;
+        return;
+    }
+    for(int i = 1; i <= n; i++) {
+        if(deg[i] % 2 == 1) {
+            ans = min(ans, a[i]);
+        }
+    }
+    for(auto &x : b) {
+        if(deg[x[0]] % 2 == 0 && deg[x[1]] % 2 == 0) {
+            ans = min(ans, a[x[0]] + a[x[1]]);
+        }
+    }
+    cout << ans << nl;
 }
 
 int main(){

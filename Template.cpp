@@ -5,10 +5,6 @@
 using namespace std;
 
 typedef long long ll;
-typedef long double ld;
-typedef pair<int, int> pi;
-typedef pair<ll,ll> pl;
-typedef pair<ld,ld> pd;
 #define all(x) x.begin(), x.end()
 const char nl = '\n';
 const int N =1e5+1;

@@ -20,36 +20,32 @@ void solve(){
     
     int n,q;
     cin>>n>>q;
-    vector<int> a(n);
-    for(auto &x : a) cin>>x;
-    sort(all(a));
-    int idx = n - 1;
-    vector<pi> ans(n+1);
+    vector<ll> a(n+1);
     for(int i = 1; i <= n; i++) {
-        ans[i] = make_pair(0,i);
+        cin>>a[i];
     }
 
-    for(int i = 0; i < q; i++) {
-        int l,r;
-        cin>>l>>r;
-        ans[l].first++;
-        if(r < n) ans[r+1].first--;
+    // difference array
+    vector<ll> d(n+1);
+    for(int i = 1; i <= q; i++) {
+        int l, r; cin>>l>>r;
+        d[l]++;
+        if(r+1 <= n) {
+            d[r+1]--;
+        }
     }
-
+    // prefix sum to get each element
     for(int i = 1; i <= n; i++) {
-        ans[i].first += ans[i-1].first;
+        d[i] += d[i-1];
     }
-
-    sort(ans.begin()+1,ans.end());
-    reverse(ans.begin()+1,ans.end());
-    ll res = 0;
+    // sort in decreasing order (large -> small)
+    sort(a.begin()+1,a.end(), greater<ll>());
+    sort(d.begin()+1,d.end(), greater<ll>());
+    ll ans = 0;
     for(int i = 1; i <= n; i++) {
-        //cerr << ans[i].first << nl;
-        res += 1ll * a[idx--] * ans[i].first;
+        ans += a[i] * d[i];
     }
-
-
-    cout << res;
+    cout << ans << nl;
 }
 
 int main(){

@@ -19,15 +19,22 @@ void solve(){
     
     int n,m;
     cin>>n>>m;
-    vector<int> a(m);
+    vector<ll> a(m);
     for(auto &x : a) cin>>x;
     sort(all(a));
     ll ans = 0;
-    for(int i = 0; i < m; i++) {
-        ll k = n - a[i];
-        ll cnt = m - (lower_bound(all(a), k) - a.begin());
-        if(a[i] >= k) cnt--;
-        cerr << k << " " << cnt << nl;
+    for(int i = 1; i < n; i++) {
+        ll l = (lower_bound(all(a), i) - a.begin());
+        ll k = n - i;            
+        ll r = (lower_bound(all(a), k) - a.begin());
+        ll left = m - l, right = m - r;
+        if(left == 0 || right == 0) continue;
+        if(left > right) {
+            ans += (left - 1ll) * right;
+        } else {
+            ans += left * (right - 1ll);
+        }
+        //cerr << i << " WITH: " << k << " -> " << " POS: " << l << " " << r << " -> " << left << " " << right << nl;
     }
 
     cout << ans << nl;

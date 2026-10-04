@@ -75,48 +75,49 @@ const int N =2e5+1;
 const int INF = 1e9+7;
 const long long LINF = 1e18+7;
 
+const int LOG = 31;
 int n,q;
-// int node[N];
-const int d = 30;
-int succ[N][d];
-// 2^kth
+int pow2[N][LOG];
+int par[N];
 void pre() {
-    FOR(pow,1,d) {
-        rep(i,n) {
-            // at node i parent of 2^powth
-            // succ(i,2^pow) = succ(succ(i,2^(pow-1)), 2^(pow-1))
-            // that is take the step divide by 2!
-            succ[i][pow] = succ[succ[i][pow-1]][pow-1];
+    for(int i = 0; i < n; i++) {
+        pow2[i][0] = par[i];
+    }
+
+    for(int p = 1; p < LOG; p++) {
+        for(int i = 0; i < n; i++) {
+            pow2[i][p] = pow2[pow2[i][p-1]][p-1];
         }
     }
 }
 
-int successPath(int u, int k) {
-    
-    int ans = u;
-    rep(i,d) {
-        if(k & (1 << i)) ans = succ[ans][i];
-    }
+int kth(int u, int k) {
 
-    return ans;
+    for(int i = 0; i < LOG; i++) {
+        if(k & (1 << i)) {
+            u = pow2[u][i];
+        }
+    }
+    return u;
 }
 void solve(){
 
     cin>>n>>q;
-    rep(i,n) {
-        int x;
-        cin>>x;
-        --x;
-        succ[i][0] = x;
+    
+    memset(par, -1, sizeof par);
+    for(int i = 0; i < n; i++) {
+        int a;
+        cin>>a;
+        a--;
+        par[i] = a;
     }
 
     pre();
-    rep(i,q) {
+    for(int i = 0; i < q; i++) {
         int x,k;
         cin>>x>>k;
-        --x;
-        int ans = successPath(x, k);
-        cout << ans+1 << nl;
+        x--;
+        cout << kth(x,k) + 1 << nl;
     }
 }
 

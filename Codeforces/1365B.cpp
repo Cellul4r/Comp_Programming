@@ -77,30 +77,36 @@ const long long LINF = 1e18+7;
 
 void solve(){
 
-    int n;
-    cin>>n;
-    vi a(n),b(n);
-    int zero = 0, one = 0;
-    rep(i,n) {
-        cin>>a[i];
+    bool found = false;
+    int n; cin>>n;
+    vector<array<int,2>> a(n);
+    vector<int> zero,one;
+    for(int i = 0; i < n; i++) {
+        cin>>a[i][0];
     }
-    rep(i,n) {
-        int x;
-        cin>>x;
-        if(x == 1) one++;
-        else zero++;
-    }
-    b = a;
-    sort(all(b));
-    rep(i,n) {
-        if(a[i] != b[i]) {
-            if(one == 0 || zero == 0) {
-                cout << "No" << nl;
-                return;
-            }
+    for(int i = 0; i < n; i++) {
+        cin>>a[i][1];
+        if(a[i][1] == 0) {
+            zero.push_back(a[i][0]);
+        } else {
+            one.push_back(a[i][0]);
         }
     }
-    cout << "Yes" << nl;
+    for(int i = 1; i < (int)zero.size(); i++) {
+        if(zero[i] < zero[i-1]) {
+            found = true;
+        }
+    }
+    for(int i = 1; i < (int)one.size(); i++) {
+        if(one[i] < one[i-1]) {
+            found = true;
+        }
+    }
+    if(found && (!zero.size() || !one.size())) {
+        cout << "NO" << nl;
+        return;
+    }
+    cout << "YES" << nl;
 }
 
 int main(){
